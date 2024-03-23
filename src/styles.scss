@@ -1,1 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
+@import './assets/scss/variables.scss';
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: $textFont;
+    // height: 100vh;
+    // overflow-y: hidden;
+    background-color: $bgColor;
+    // background-image: url('./assets/img/crossline-lines.webp');
+    // background-image: url('./assets/img/cork-board.webp');
+    background-image: url('./assets/img/prism.png');
+    // background-blend-mode: exclusion;
+}
+
+::selection {
+    background-color: $hoverColor;
+    color: $textColor;
+}
+
+@media screen and (min-width: 1024px) {
+    body {
+        overflow-y: hidden;
+    }
+}

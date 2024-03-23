@@ -1,0 +1,129 @@
+@import './../assets/scss/variables.scss';
+
+main.main {}
+
+@media screen and (max-width: 1024px) {
+    .background {
+        display: none;
+    }
+}
+
+@keyframes animate {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+    }
+
+    100% {
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%;
+    }
+}
+
+.background {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    background-color: $bgColor;
+    background-image: url('./../assets/img/prism.png');
+    overflow: hidden;
+}
+
+.background li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: animate 25s linear infinite;
+}
+
+
+
+
+.background li:nth-child(0) {
+    left: 39%;
+    width: 232px;
+    height: 232px;
+    bottom: -232px;
+    animation-delay: 1s;
+}
+
+.background li:nth-child(1) {
+    left: 77%;
+    width: 319px;
+    height: 319px;
+    bottom: -319px;
+    animation-delay: 4s;
+}
+
+.background li:nth-child(2) {
+    left: 56%;
+    width: 322px;
+    height: 322px;
+    bottom: -322px;
+    animation-delay: 9s;
+}
+
+.background li:nth-child(3) {
+    left: 17%;
+    width: 180px;
+    height: 180px;
+    bottom: -180px;
+    animation-delay: 13s;
+}
+
+.background li:nth-child(4) {
+    left: 85%;
+    width: 227px;
+    height: 227px;
+    bottom: -227px;
+    animation-delay: 4s;
+}
+
+.background li:nth-child(5) {
+    left: 4%;
+    width: 270px;
+    height: 270px;
+    bottom: -270px;
+    animation-delay: 19s;
+}
+
+.background li:nth-child(6) {
+    left: 69%;
+    width: 305px;
+    height: 305px;
+    bottom: -305px;
+    animation-delay: 24s;
+}
+
+.background li:nth-child(7) {
+    left: 3%;
+    width: 215px;
+    height: 215px;
+    bottom: -215px;
+    animation-delay: 25s;
+}
+
+.background li:nth-child(8) {
+    left: 88%;
+    width: 244px;
+    height: 244px;
+    bottom: -244px;
+    animation-delay: 38s;
+}
+
+.background li:nth-child(9) {
+    left: 57%;
+    width: 288px;
+    height: 288px;
+    bottom: -288px;
+    animation-delay: 40s;
+}

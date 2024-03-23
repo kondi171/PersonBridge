@@ -1,0 +1,123 @@
+@import 'variables.scss';
+
+%loginForm {
+    border-radius: 5vmin;
+    padding: 2vmin 3vmin;
+    margin: 5vmin;
+    background: linear-gradient(#212121, #212121) padding-box,
+        linear-gradient(145deg, transparent 35%, $primaryColor, $secondaryColor) border-box;
+    border: 2px solid transparent;
+    background-size: 200% 100%;
+    animation: gradient 2s ease infinite;
+    // height: 60vh;
+    min-width: 200px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 100%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .login-form__heading {
+        font-family: $decorativeFont;
+        text-align: center;
+        font-weight: bold;
+        font-size: 5vmax;
+        color: $secondaryColor;
+        padding: 2vmin;
+
+        & span:first-of-type {
+            color: $primaryColor;
+        }
+    }
+
+    .form {
+        margin-top: 2vmin;
+
+        .login-button {
+            display: block;
+            font-weight: bold;
+            letter-spacing: .5vmin;
+            background: linear-gradient(45deg, $primaryColor 0%, darken($primaryColor, 10%) 100%);
+            color: $bgColor;
+            font-size: 5vmin;
+            text-transform: uppercase;
+            padding-block: 2vmin;
+            margin: 2vmin auto;
+            border-radius: 5vmin;
+            box-shadow: $primaryColor 0 0 1vmin .1vmin;
+            border: none;
+            transition: all 0.2s ease-in-out;
+            width: 75%;
+            font-family: $decorativeFont;
+
+            &:hover {
+                // transform: scale(1.03);
+                cursor: pointer;
+                color: $secondaryColor;
+                letter-spacing: 1px;
+                box-shadow: $secondaryColor 0 0 1vmin .1vmin;
+            }
+
+            &:active {
+                transform: scale(0.9);
+
+            }
+        }
+
+        .forgot-password {
+            display: block;
+            margin: 3vmin;
+            margin-left: 5vmin;
+            font-weight: bold;
+
+            a {
+                font-size: 3vmax;
+                color: $secondaryColor;
+                text-decoration: none;
+                transition-duration: .4s;
+
+                &:hover {
+                    color: $textColor;
+                }
+            }
+        }
+
+        .input {
+            width: 90%;
+            background: $textColor;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin: 2% 5%;
+            box-shadow: 0 0 2vmin .1vmin darken($textColor, 20%);
+            border-inline: 1vmin solid transparent;
+            color: $secondaryColor;
+            outline-style: none;
+            transition-duration: .4s;
+
+            &::-moz-placeholder,
+            &::placeholder {
+                color: rgb(170, 170, 170);
+            }
+
+            &:focus {
+                transform: translateX(3vmin);
+                box-shadow: $secondaryColor 0 .2vmax 3vmax 0;
+            }
+        }
+    }
+}
