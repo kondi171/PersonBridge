@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEnvelope, faFingerprint, faMicrophone, faKey, faE } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,10 +11,14 @@ import { faEnvelope, faFingerprint, faMicrophone, faKey, faE } from '@fortawesom
   styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent {
+  constructor(private router: Router) { }
   icons = {
     password: faKey,
     biometric: faFingerprint,
     voice: faMicrophone,
     mail: faEnvelope
+  }
+  switchToRegisterPage() {
+    this.router.navigate(['/register']);
   }
 }
