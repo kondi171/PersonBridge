@@ -1,0 +1,194 @@
+@import './../../../assets/scss/variables.scss';
+
+.chat {
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    position: relative;
+    display: flex;
+    width: 100%;
+    padding: 2vmin 1vmin;
+    background-color: $blackColor;
+    border-bottom: .2vmin solid $primaryColor;
+    box-shadow: 0 0 2vmin .2vmin $primaryColor;
+    z-index: 4;
+    flex-shrink: 0;
+
+    .cog {
+      position: absolute;
+      right: 4vmin;
+      bottom: 4vmin;
+      color: $primaryColor;
+      font-size: 7vmin;
+      transition-duration: .4s;
+
+      &:hover {
+        color: $secondaryColor;
+        transform: rotate(180deg);
+      }
+    }
+
+    .avatar {
+      width: 15vmin;
+      margin: 2vmin 5vmin;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 120%;
+        border-radius: 5vmin;
+        border: .7vmin solid $primaryColor;
+      }
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .identifier {
+        color: $textColor;
+        font-size: 8vmin;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+
+        &__dot {
+          min-width: 4vmin;
+          min-height: 4vmin;
+          border-radius: 50%;
+          background-color: #00ab17;
+        }
+
+        &__info {
+          color: #00ab17;
+          margin-left: 2vmin;
+        }
+      }
+    }
+  }
+
+  .messages {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .blocked-message {
+      text-align: center;
+      color: lighten($bgColor, 20%);
+      margin-bottom: 3vmin;
+    }
+  }
+
+  .message-type {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $blackColor;
+    z-index: 4;
+    border-top: .2vmin solid $primaryColor;
+    box-shadow: 0 0 2vmin .2vmin $primaryColor;
+    margin-bottom: -1vmin;
+    flex-shrink: 0;
+    padding: 1.5vmin;
+
+    textarea {
+      height: 70%;
+      width: 70%;
+      margin: 0 5vmin;
+      padding: 2vmin;
+      resize: none;
+      border-radius: 5vmin;
+      width: 90%;
+      background-color: $bgColor;
+      border: none;
+      box-shadow: 0 0 2vmin .1vmin darken($textColor, 20%);
+      border-inline: 1vmin solid transparent;
+      color: $textColor;
+      outline-style: none;
+      transition-duration: .4s;
+
+      /* disable scrollbar visibility for Chrome, Safari and Opera */
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* disable scrollbar visibility for IE and Edge */
+      -ms-overflow-style: none;
+      /* disable scrollbar visibility for Firefox */
+      scrollbar-width: none;
+
+    }
+
+    .send-btn {
+      display: block;
+      font-weight: bold;
+      letter-spacing: .5vmin;
+      background: linear-gradient(45deg, $primaryColor 0%, darken($primaryColor, 10%) 100%);
+      color: $bgColor;
+      font-size: 4vmin;
+      text-transform: uppercase;
+      padding-block: 2vmin;
+      border-radius: 5vmin;
+      box-shadow: $primaryColor 0 0 1vmin .1vmin;
+      border: none;
+      transition: all 0.2s ease-in-out;
+      width: 40%;
+      font-family: $decorativeFont;
+      margin: 1vmin 5vmin;
+
+      &:hover {
+        // transform: scale(1.03);
+        cursor: pointer;
+        color: $secondaryColor;
+        letter-spacing: 1px;
+        box-shadow: $secondaryColor 0 0 1vmin .1vmin;
+      }
+
+      &:active {
+        transform: scale(0.9);
+
+      }
+    }
+
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .chat {
+    .header .info .status {
+      &__info {
+        font-size: 5vmin;
+      }
+    }
+
+    .messages {
+      .blocked-message {
+        font-size: 4vmin;
+      }
+    }
+
+    .message-type {
+      textarea {
+        font-size: 4vmin;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .access-page {
+    .header .info .status {
+      &__info {
+        font-size: 5vmin;
+      }
+    }
+  }
+}

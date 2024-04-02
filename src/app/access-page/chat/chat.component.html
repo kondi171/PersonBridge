@@ -1,0 +1,55 @@
+<section class="chat">
+  <header class="header">
+    <div class="avatar">
+      <img src="./../../assets/img/landing-avatars/Marshal.jpg" alt="Avatar">
+    </div>
+    <div class="info">
+      <div class="identifier">
+        Marshall Johnston
+      </div>
+      <div class="status">
+        <div class="status__dot"></div>
+        <div class="status__info">Online</div>
+      </div>
+    </div>
+    <fa-icon class="fa cog" [icon]="icons.cog"></fa-icon>
+  </header>
+  <div class="messages">
+    <div class="message">
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg"
+        message="Hi! I am Marshall. Nice to meet you ;]" [isYou]="false" />
+    </div>
+    <div class="message">
+      <app-message-box name="Konrad" avatarSrc="./../../assets/img/Konrad.png"
+        message="Hello Marshall! My name is Konrad. What brings you here?" [isYou]="true" />
+    </div>
+    <div class="message">
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg"
+        message="I am killing the time by writing with different people. So what's up?" [isYou]="false" />
+    </div>
+    <div class="message">
+      <app-message-box name="Konrad" avatarSrc="./../../assets/img/Konrad.png"
+        message="Did I tell you the story about Michael who chewed gum so much that he went blind?" [isYou]="true" />
+    </div>
+    <div class="message">
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg" message="Noo..."
+        [isYou]="false" />
+    </div>
+    <div class="message">
+      <app-message-box name="Konrad" avatarSrc="./../../assets/img/Konrad.png" message="The End" [isYou]="true" />
+    </div>
+    <div class="message">
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg" message="It is sad"
+        [isYou]="false" />
+    </div>
+    <div class="message">
+      <app-message-box name="Konrad" avatarSrc="./../../assets/img/Konrad.png" message="No, he was blind from his birth"
+        [isYou]="true" />
+    </div>
+    <div class="blocked-message">Marshall blocked you</div>
+  </div>
+  <div class="message-type">
+    <textarea placeholder="Type your message..."></textarea>
+    <button class="send-btn">Send</button>
+  </div>
+</section>

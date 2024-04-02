@@ -1,0 +1,12 @@
+<div class="message-box" [ngClass]="{ 'is-you': isYou }">
+  <div class="avatar">
+    <img [src]="avatarSrc" [alt]="name">
+  </div>
+  <div class="message">
+    <div class="name">{{ name }}</div>
+    <div class="message__wrapper">
+      <span class="content">{{ message }}</span>
+      <div class="date">14:37</div>
+    </div>
+  </div>
+</div>

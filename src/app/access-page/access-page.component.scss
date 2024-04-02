@@ -1,0 +1,161 @@
+@import './../../assets/scss/variables.scss';
+
+.access-page {
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    position: relative;
+    display: flex;
+    width: 100%;
+    padding: 2vmin 1vmin;
+    background-color: $blackColor;
+    border-bottom: .2vmin solid $primaryColor;
+    box-shadow: 0 0 2vmin .2vmin $primaryColor;
+    z-index: 4;
+    flex-shrink: 0;
+
+    .cog {
+      position: absolute;
+      right: 4vmin;
+      bottom: 4vmin;
+      color: $primaryColor;
+      font-size: 8vmin;
+      transition-duration: .4s;
+
+      &:hover {
+        color: $secondaryColor;
+        transform: rotate(180deg);
+      }
+    }
+
+    .avatar {
+      width: 15vmin;
+      margin: 2vmin 5vmin;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 120%;
+        border-radius: 5vmin;
+        border: .7vmin solid $primaryColor;
+      }
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .identifier {
+        color: $textColor;
+        font-size: 8vmin;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+
+        &__dot {
+          min-width: 4vmin;
+          min-height: 4vmin;
+          border-radius: 50%;
+          background-color: #00ab17;
+        }
+
+        &__info {
+          color: #00ab17;
+          margin-left: 2vmin;
+        }
+      }
+    }
+  }
+
+  .messages {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .message {
+      width: 100%;
+      padding: 2vmin 5vmin;
+      padding-left: 0;
+      transition-duration: .2s;
+
+      &:nth-of-type(even) {
+        background: #00000048;
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-color: $secondaryColor;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: $blackColor;
+    z-index: 4;
+    border-top: .2vmin solid $primaryColor;
+    box-shadow: 0 0 2vmin .2vmin $primaryColor;
+    margin-bottom: -1vmin;
+    flex-shrink: 0;
+
+    h2.title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-family: $decorativeFont;
+      font-size: 10vmin;
+      display: flex;
+      justify-content: center;
+      flex-direction: row-reverse;
+      transform: scale(.5);
+
+      .logo-part {
+        position: relative;
+
+        &--first {
+          order: 2;
+          color: $primaryColor;
+          transform: translateY(1.2vmin) scale(1.2);
+        }
+
+        &--second {
+          order: 1;
+          z-index: 10;
+          color: $secondaryColor;
+          margin-left: 1.5vmin;
+        }
+
+        &--image {
+          position: absolute;
+          top: -13vmin;
+          left: 42.5%;
+          width: 15vmin;
+          z-index: 12;
+          margin-top: 5vmin;
+        }
+      }
+    }
+  }
+}
+
+// Dla tabletów (768px - 1023px)
+@media screen and (min-width: 768px) {
+  .access-page {
+    .header .info .status {
+      &__info {
+        font-size: 5vmin;
+      }
+    }
+  }
+}

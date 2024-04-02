@@ -1,0 +1,22 @@
+<div class="message" [ngClass]="{ 'read' : read}">
+  <div class="message__avatar">
+    <img [src]="avatarSrc" [alt]="person">
+  </div>
+  <div class="info-wrapper">
+    <div class="message__person">
+      {{ person }}
+    </div>
+    <div class="message__status" *ngIf="status">
+      <div class="status__dot online-dot"></div>
+      <div class="status__info online-info">Online</div>
+    </div>
+    <div class="message__status message__status--offline" *ngIf="!status">
+      <div class="status__dot offline-dot"></div>
+      <div class="status__info offline-info">Offline</div>
+    </div>
+    <div class="last-message">
+      {{ lastMessage }}
+    </div>
+  </div>
+  <div class="date">14:37</div>
+</div>

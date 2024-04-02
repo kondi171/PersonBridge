@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEnvelope, faFingerprint, faMicrophone, faKey, faE } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faFingerprint, faMicrophone, faKey } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-login-page',
