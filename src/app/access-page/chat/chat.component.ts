@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faVideoCamera, faPhone, faSmile } from '@fortawesome/free-solid-svg-icons';
 import { MessageBoxComponent } from './message-box/message-box.component';
 
 @Component({
@@ -12,6 +12,9 @@ import { MessageBoxComponent } from './message-box/message-box.component';
 })
 export class ChatComponent {
   icons = {
-    cog: faCog
+    audio: faPhone,
+    video: faVideoCamera,
+    settings: faEllipsisV,
+    emoticons: faSmile,
   }
 }

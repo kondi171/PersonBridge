@@ -1,11 +1,18 @@
 @import './../../assets/scss/variables.scss';
 
 .access-page {
-  position: absolute;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+
+  .mobile {
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .desktop {
+    display: none;
+  }
 
   .header {
     position: relative;
@@ -27,8 +34,9 @@
       transition-duration: .4s;
 
       &:hover {
+        cursor: pointer;
         color: $secondaryColor;
-        transform: rotate(180deg);
+        transform: scale(1.6);
       }
     }
 
@@ -84,6 +92,10 @@
       padding: 2vmin 5vmin;
       padding-left: 0;
       transition-duration: .2s;
+      // border-radius: 4vmin;
+      // background-color: #fff;
+      border-top-right-radius: 2vmin;
+      border-bottom-right-radius: 2vmin;
 
       &:nth-of-type(even) {
         background: #00000048;
@@ -92,7 +104,6 @@
       &:hover {
         cursor: pointer;
         background-color: $secondaryColor;
-        transform: scale(1.1);
       }
     }
   }
@@ -155,6 +166,105 @@
     .header .info .status {
       &__info {
         font-size: 5vmin;
+      }
+    }
+  }
+}
+
+// Dla ekranów desktopowych (min-width: 1024px)
+@media screen and (min-width: 1024px) {
+  .access-page {
+    display: flex;
+
+    .mobile {
+      width: 30vw;
+      border-right: .3vmin solid $primaryColor;
+      // box-shadow: 0 0 2vmin .2vmin $primaryColor;
+
+    }
+
+    .desktop {
+      display: block;
+      width: 70vw;
+    }
+
+    .header {
+      box-shadow: none;
+      padding: 0;
+      height: 12vmin;
+
+      .cog {
+        display: none;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .avatar {
+        width: 100% / 3;
+        height: 100%;
+        padding: 2vmin 0;
+        margin: 0;
+
+        img {
+          width: 50%;
+          border-radius: 1vmin;
+          border: .3vmin solid $primaryColor;
+        }
+      }
+
+      .info {
+        margin-left: 2vmin;
+
+        .identifier {
+          font-size: 4vmin;
+        }
+
+        .status {
+
+          &__dot {
+            min-width: 2vmin;
+            min-height: 2vmin;
+          }
+
+          &__info {
+            font-size: 2vmin;
+
+          }
+        }
+      }
+    }
+
+    .messages {
+      .message {
+        margin: 1vmin 0;
+
+      }
+    }
+
+    .footer {
+      height: 10vh;
+      box-shadow: none;
+
+      h2.title {
+        font-size: 6vmin;
+
+        .logo-part {
+
+          &--first {}
+
+          &--second {}
+
+          &--image {
+            position: absolute;
+            top: -4vmin;
+            left: 42.5%;
+            width: 8vmin;
+            z-index: 12;
+            margin-top: 0;
+          }
+        }
       }
     }
   }

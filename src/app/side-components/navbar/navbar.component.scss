@@ -1,0 +1,116 @@
+@import './../../../assets/scss/variables.scss';
+
+.sidebar {
+  display: none;
+}
+
+@media screen and (min-width: 1024px) {
+
+  .sidebar {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4.5vw;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 1vmin;
+    background-color: lighten($blackColor, 15%);
+    // background-color: $Color;
+    transition: ease-in-out .3s;
+    overflow: hidden;
+    z-index: 10;
+    border-left: .3vmin solid $primaryColor;
+
+    &:hover {
+      width: 9vw;
+
+      & .items .item .text {
+        opacity: 1;
+      }
+    }
+
+    .items {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+
+      .item {
+        display: flex;
+        align-items: center;
+        margin: 2vmin 0;
+        text-align: center;
+        height: 10%;
+
+        // height: 100vh / 6;
+        // background-color: red;
+        &.active {
+          .icon {
+            transform: scale(1.1);
+            color: $primaryColor;
+          }
+
+          .text {
+            transform: skew(10deg);
+            color: $primaryColor;
+          }
+
+          color: $primaryColor;
+        }
+
+        &:hover {
+          cursor: pointer;
+
+          .icon {
+            transform: scale(1.1);
+            color: $primaryColor;
+          }
+
+          .text {
+            color: $primaryColor;
+            transform: skew(10deg);
+          }
+        }
+
+        .icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 5vmin;
+          height: 5vmin;
+          flex-shrink: 1;
+          color: $textColor;
+          font-size: 5vmin;
+          margin: 0 1vmin;
+          transition: ease-in-out .3s;
+        }
+
+        .text {
+          opacity: 0;
+          transition: ease-in-out .3s;
+          margin-left: 1vmin;
+          white-space: nowrap;
+          color: $textColor;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1280px) and (orientation: landscape) {
+  .sidebar {
+    .items {
+      .item {
+        .icon {
+          font-size: 3vmin;
+        }
+
+        .text {
+          font-size: 1.5vmin;
+          color: $textColor;
+        }
+      }
+    }
+  }
+}

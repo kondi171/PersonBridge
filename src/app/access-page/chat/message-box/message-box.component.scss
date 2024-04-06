@@ -134,3 +134,65 @@
     }
   }
 }
+
+@media screen and (min-width: 1024px) {
+  .message-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 4vmin 2vmin;
+
+    &.is-you {
+      justify-content: flex-end;
+      flex-direction: row-reverse;
+
+      .avatar {
+        img {
+          width: 5vmin;
+          height: 5vmin;
+          border: .3vmin solid $secondaryColor;
+        }
+      }
+
+      .message {
+
+        &__wrapper {
+          justify-content: flex-end;
+
+          .date {}
+
+          .content {}
+        }
+
+        .name {}
+      }
+    }
+
+    .avatar {
+
+      img {
+        width: 5vmin;
+        height: 5vmin;
+        border-radius: 2.5vmin;
+        border: .3vmin solid $primaryColor;
+      }
+    }
+
+    .message {
+      .message__wrapper {
+
+        .date {
+          font-size: 2vmin;
+        }
+
+        .content {
+          font-size: 2vmin;
+        }
+      }
+
+      .name {
+        font-size: 2vmin;
+      }
+    }
+  }
+}

@@ -23,6 +23,25 @@ body {
     color: $textColor;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    // background-color: $bgColor;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: $hoverColor;
+    transition-duration: .4s;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: $secondaryColor;
+}
+
 @media screen and (min-width: 1024px) {
     body {
         overflow-y: hidden;

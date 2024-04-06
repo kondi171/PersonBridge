@@ -12,7 +12,21 @@
         <div class="status__info">Online</div>
       </div>
     </div>
-    <fa-icon class="fa cog" [icon]="icons.cog"></fa-icon>
+    <div class="icons">
+      <div class="icon-wrapper">
+        <fa-icon class="fa icon" [icon]="icons.audio" />
+        <span class="text">Audio Call</span>
+      </div>
+      <div class="icon-wrapper">
+        <fa-icon class="fa icon" [icon]="icons.video" />
+        <span class="text">Video Call</span>
+      </div>
+      <div class="icon-wrapper">
+        <fa-icon class="fa icon" [icon]="icons.settings" />
+        <span class="text">Settings</span>
+      </div>
+    </div>
+
   </header>
   <div class="messages">
     <div class="message">
@@ -49,7 +63,10 @@
     <div class="blocked-message">Marshall blocked you</div>
   </div>
   <div class="message-type">
-    <textarea placeholder="Type your message..."></textarea>
+    <div class="textarea">
+      <textarea placeholder="Type your message..."></textarea>
+      <fa-icon class="fa emoticons" [icon]="icons.emoticons" />
+    </div>
     <button class="send-btn">Send</button>
   </div>
 </section>

@@ -5,7 +5,8 @@
   align-items: center;
   justify-content: stretch;
   // background-color: #fff;
-  // width: 100%;
+  // width: 100%; 
+
   position: relative;
 
   &.read {
@@ -78,7 +79,7 @@
   }
 
   .date {
-    color: $hoverColor;
+    color: lighten($bgColor, 20%);
     // margin-left: 8vmin;
     align-content: flex-end;
     position: absolute;
@@ -109,6 +110,75 @@
         width: 100%;
         height: 100%;
       }
+    }
+  }
+}
+
+// Dla ekranów desktopowych (min-width: 1024px)
+@media screen and (min-width: 1024px) {
+  .message {
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+    position: relative;
+
+    &.read {
+      .message__person {
+        color: red;
+      }
+    }
+
+    &__avatar {
+      width: 100% / 3;
+      // background-color: $bgColor;
+      // border-right: .3vmin solid $primaryColor;
+      // margin-right: 2vmin;
+
+      img {
+        width: 50%;
+        height: 50%;
+        border: .3vmin solid $primaryColor;
+      }
+    }
+
+    &__person {
+
+      font-size: 3vmin;
+    }
+
+    &__status {
+
+      .status {
+        &__dot {
+          min-width: 2vmin;
+          min-height: 2vmin;
+        }
+
+        &__info {
+          font-size: 2vmin;
+        }
+      }
+    }
+
+    .online-dot {}
+
+    .online-info {}
+
+    .offline-dot {}
+
+    .offline-info {}
+
+    .info-wrapper {
+      padding-left: 2vmin;
+      border-left: .3vmin solid $primaryColor;
+    }
+
+    .last-message {
+      font-size: 2vmin;
+    }
+
+    .date {
+      font-size: 2vmin;
     }
   }
 }
