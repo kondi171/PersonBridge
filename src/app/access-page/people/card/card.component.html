@@ -1,0 +1,15 @@
+<div class="card" [ngClass]="{
+  'card--online': type === CardType.ONLINE,
+  'card--offline': type === CardType.OFFLINE,
+  'card--blocked': type === CardType.BLOCKED,
+  'card--request': type === CardType.REQUEST
+}">
+  <div class="card-border-top">
+  </div>
+  <div class="img">
+    <img [src]="avatarSrc" [alt]="name">
+  </div>
+  <span class="name">{{name}}</span>
+  <p class="mail">{{mail}}</p>
+  <button>Message</button>
+</div>

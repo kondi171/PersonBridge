@@ -1,12 +1,9 @@
-@import './../../../assets/scss/variables.scss';
+@import './../../../../assets/scss/variables.scss';
 
 .message {
   display: flex;
   align-items: center;
   justify-content: stretch;
-  // background-color: #fff;
-  // width: 100%; 
-
   position: relative;
 
   &.read {
@@ -54,19 +51,19 @@
   }
 
   .online-dot {
-    background-color: #00ab17;
+    background-color: $onlineColor;
   }
 
   .online-info {
-    color: #00ab17;
+    color: $onlineColor;
   }
 
   .offline-dot {
-    background-color: #b80000;
+    background-color: $offlineColor;
   }
 
   .offline-info {
-    color: #b80000;
+    color: $offlineColor;
   }
 
   .info-wrapper {
@@ -80,10 +77,25 @@
 
   .date {
     color: lighten($bgColor, 20%);
-    // margin-left: 8vmin;
     align-content: flex-end;
     position: absolute;
     right: 0;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .message {
+
+    &__avatar {
+
+
+      img {
+        width: 40%;
+        height: 40%;
+        border-radius: 50%;
+        border: .7vmin solid $primaryColor;
+      }
+    }
   }
 }
 
@@ -99,12 +111,11 @@
   }
 }
 
-@media screen and (max-width: 1024px) and (orientation: landscape) {
+@media screen and (min-width: 1024px) and (orientation: landscape) {
   .message {
-
     &__avatar {
-      width: 10%;
-      margin: 0 4vmin;
+      width: 30%;
+      margin: 0;
 
       img {
         width: 100%;
@@ -114,7 +125,6 @@
   }
 }
 
-// Dla ekranów desktopowych (min-width: 1024px)
 @media screen and (min-width: 1024px) {
   .message {
     display: flex;
@@ -130,9 +140,6 @@
 
     &__avatar {
       width: 100% / 3;
-      // background-color: $bgColor;
-      // border-right: .3vmin solid $primaryColor;
-      // margin-right: 2vmin;
 
       img {
         width: 50%;
@@ -143,7 +150,7 @@
 
     &__person {
 
-      font-size: 3vmin;
+      font-size: 2.5vmin;
     }
 
     &__status {
@@ -159,14 +166,6 @@
         }
       }
     }
-
-    .online-dot {}
-
-    .online-info {}
-
-    .offline-dot {}
-
-    .offline-info {}
 
     .info-wrapper {
       padding-left: 2vmin;

@@ -1,0 +1,93 @@
+@import './../../../assets/scss/variables.scss';
+@import './../../../assets/scss/placeholders.scss';
+
+.smart-chatbots {
+    height: 100vh;
+    overflow-y: scroll;
+
+    .heading {
+        @extend %sectionHeading;
+        margin-bottom: 15vmin;
+    }
+
+    .users {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        // margin: 10vmin 0;
+        position: relative;
+
+        .row-three,
+        .row-four {
+            display: flex;
+        }
+
+        .user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 1vmin 4vmin;
+            text-align: center;
+            transition-duration: .4s;
+
+            &:hover {
+                cursor: pointer;
+
+                img {
+                    transform: scale(1.1);
+                    border: .1vmin solid $primaryColor;
+                    box-shadow: $primaryColor 0 0 1vmin .2vmin;
+                }
+
+                span {
+                    color: $primaryColor;
+                }
+            }
+
+            img {
+                width: 20vmin;
+                border-radius: 50%;
+                border: .1vmin solid $secondaryColor;
+                box-shadow: $secondaryColor 0 0 1vmin .2vmin;
+                transition-duration: .4s;
+            }
+
+            span {
+                display: block;
+                width: 100%;
+                margin: 2vmin;
+                font-size: 4vmin;
+                color: $textColor;
+                transition-duration: .4s;
+            }
+        }
+    }
+
+    .footer {
+        margin-top: 15vmin;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+
+    .smart-chatbots {
+
+        h3 {
+            font-size: 4vmin;
+        }
+
+        .users {
+            .user {
+                img {
+                    width: 10vmin;
+                }
+
+                span {
+                    font-size: 2vmin;
+                }
+            }
+        }
+    }
+}

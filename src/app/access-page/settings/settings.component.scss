@@ -1,0 +1,324 @@
+@import './../../../assets/scss/variables.scss';
+@import './../../../assets/scss/placeholders.scss';
+@import './../../../assets/scss/mixins.scss';
+
+.settings {
+  height: 100vh;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  .heading {
+    @extend %sectionHeading;
+  }
+
+  .personal-info {
+    text-align: center;
+
+    .avatar {
+      width: 40vmin;
+      height: 40vmin;
+      position: relative;
+      margin: 5vmin auto;
+      transition-duration: .4s;
+
+      &:hover {
+        cursor: pointer;
+        transform: scale(1.2);
+      }
+
+      &__img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: .7vmin solid $primaryColor;
+      }
+
+      &__change {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        color: $textColor;
+        font-size: 4vmin;
+        opacity: 0;
+        background-color: $dynamicStateColor;
+        padding: 1vmin;
+        border-radius: 50%;
+        transition-duration: .4s;
+      }
+
+      &:hover {
+        .avatar__img {
+          filter: blur(5px);
+        }
+
+        .avatar__change {
+          opacity: 1;
+        }
+      }
+    }
+
+    .user {
+      font-size: 8vmin;
+      color: $textColor;
+    }
+
+    .mail {
+      font-size: 5vmin;
+      color: $secondaryColor;
+      margin: 2vmin;
+    }
+  }
+
+  .zones {
+    .zone {
+      &__title {
+        font-size: 8vmin;
+        color: $primaryColor;
+        margin: 4vmin 0 4vmin 4vmin;
+      }
+
+      &--edit {
+        .edit {
+          font-size: 6vmin;
+          margin: 2vmin 0 0 4vmin;
+
+          .icon {
+            color: $primaryColor;
+            width: 8vmin;
+            margin: 0 4vmin;
+            transition-duration: .4s;
+          }
+
+          .text {
+            transition-duration: .4s;
+            color: $textColor;
+          }
+
+          &:hover {
+            cursor: pointer;
+
+            .icon {
+              color: $secondaryColor;
+            }
+
+            .text {
+              color: $primaryColor;
+            }
+          }
+        }
+      }
+
+      &--biometric {
+
+        .biometrics {
+          display: flex;
+          justify-content: space-evenly;
+
+          .biometric {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 4vmin;
+
+            .icon {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 6vmin;
+              width: 10vmin;
+              height: 10vmin;
+              border: .7vmin solid $primaryColor;
+              background-color: $bgColor;
+              color: $primaryColor;
+              border-radius: 50%;
+              padding: 8vmin;
+              transition-duration: .4s;
+
+            }
+
+            .text {
+              color: $primaryColor;
+              text-align: center;
+              margin-top: 2vmin;
+              transition-duration: .4s;
+
+            }
+
+            &:hover {
+              cursor: pointer;
+
+              .icon {
+                border-color: $secondaryColor;
+                color: $secondaryColor;
+              }
+
+              .text {
+                color: $secondaryColor;
+              }
+            }
+          }
+        }
+      }
+
+      &--danger {
+        .zone__title {
+          color: $offlineColor;
+        }
+
+        .option {
+          width: 70%;
+          font-size: 5vmin;
+          margin: 6vmin auto;
+          padding: 3vmin 1vmin;
+          border-radius: 2vmin;
+          border: none;
+          display: block;
+          transition-duration: .4s;
+
+          .icon {
+            margin-left: 2vmin;
+          }
+
+          &--primary {
+            background: linear-gradient(45deg, $primaryColor 0%, darken($primaryColor, 10%) 100%);
+            color: $blackColor;
+
+            &:hover {
+              cursor: pointer;
+              color: darken($primaryColor, 20%);
+            }
+          }
+
+          &--remove {
+            background: linear-gradient(45deg, $offlineColor 0%, darken($offlineColor, 10%) 100%);
+            color: $textColor;
+
+
+            &:hover {
+              cursor: pointer;
+              color: darken($offlineColor, 20%);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .settings {
+    .zones {
+      .zone {
+        &--biometric {
+          .biometrics {
+            .biometric {
+              .icon {}
+
+              .text {}
+            }
+          }
+        }
+
+        &--danger {
+          .option {
+            width: 60%;
+
+            &--primary {
+              width: 40%;
+            }
+
+            &--remove {
+              width: 40%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .settings {
+    .zones {
+      .zone {
+        &--biometric {
+          .biometrics {
+            .biometric {
+              .text {
+                font-size: 6vmin;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .settings {
+    .personal-info {
+      .avatar {
+        width: 25vmin;
+        height: 25vmin;
+        margin: 5vmin auto;
+
+        img {
+          border: .3vmin solid $primaryColor;
+        }
+      }
+    }
+
+    .zones {
+      .zone {
+
+        &--biometric {
+          .biometrics {
+            .biometric {
+              .icon {
+                border: .3vmin solid $primaryColor;
+              }
+
+              .text {
+                font-size: 4vmin;
+              }
+            }
+          }
+        }
+
+        &--danger {
+
+          .option {
+            width: 70%;
+
+            &--primary {
+              width: 50%;
+              font-size: 3vmin;
+              margin: 6vmin auto;
+              padding: 2vmin;
+            }
+
+            &--remove {
+              width: 50%;
+              font-size: 3vmin;
+              margin: 6vmin auto;
+              padding: 2vmin;
+            }
+          }
+        }
+      }
+    }
+  }
+}

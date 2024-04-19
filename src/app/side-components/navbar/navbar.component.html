@@ -1,20 +1,24 @@
-<nav class="sidebar">
+<nav [class]="device === Device.DESKTOP ? 'sidebar--desktop' : 'sidebar--mobile'" class="sidebar">
   <div class="items">
-    <div class="item active">
+    <a routerLink="/access/chat" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.chats" />
       <div class="text">Chats</div>
-    </div>
-    <div class="item">
+    </a>
+    <a routerLink="/access/people" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.friends" />
-      <div class="text">Friends</div>
-    </div>
-    <div class="item">
+      <div class="text">People</div>
+    </a>
+    <a routerLink="/access/explore" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.explore" />
       <div class="text">Explore</div>
-    </div>
-    <div class="item">
+    </a>
+    <a routerLink="/access/chatbots" routerLinkActive="active" class="item">
+      <fa-icon class="fa icon" [icon]="icons.chatbots" />
+      <div class="text">Chatbots</div>
+    </a>
+    <a routerLink="/access/settings" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.settings" />
       <div class="text">Settings</div>
-    </div>
+    </a>
   </div>
 </nav>

@@ -1,0 +1,76 @@
+@import './../../../assets/scss/variables.scss';
+@import './../../../assets/scss/placeholders.scss';
+@import './../../../assets/scss/mixins.scss';
+
+.people {
+  height: 100vh;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  .heading {
+    @extend %sectionHeading;
+  }
+
+  .box {
+    width: 100%;
+    padding: 0 4vmin;
+
+    &:nth-of-type(even) {
+      background-color: lighten($dynamicStateColor, 10%);
+    }
+
+    h3 {
+      font-family: $decorativeFont;
+      font-size: 6vmin;
+      color: $primaryColor;
+      font-weight: bold;
+      text-align: center;
+      padding: 6vmin;
+
+      strong {
+        color: $textColor;
+      }
+
+      span.online {
+        color: $onlineColor;
+      }
+
+      span.offline {
+        color: $offlineColor;
+      }
+    }
+
+    .users {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .people {
+    .box {
+      h3 {
+        font-family: $decorativeFont;
+        font-size: 6vmin;
+        color: $primaryColor;
+      }
+
+      .users {
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}

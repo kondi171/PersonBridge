@@ -1,72 +1,14 @@
 <section class="access-page">
-  <section class="mobile">
-    <header class="header">
-      <div class="avatar">
-        <img src="./../../assets/img/Konrad.png" alt="Avatar">
-      </div>
-      <div class="info">
-        <div class="identifier">
-          Konrad Nowak
-        </div>
-        <div class="status">
-          <div class="status__dot"></div>
-          <div class="status__info">Online</div>
-        </div>
-      </div>
-      <fa-icon class="fa cog" [icon]="icons.cog"></fa-icon>
-    </header>
-    <div class="messages">
-      <div class="message">
-        <app-message-row person="Marshall Johnston" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg"
-          [status]="true" [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Dawn Thompson" avatarSrc="./../../assets/img/landing-avatars/Dawn.jpg" [status]="true"
-          [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Edith Pena" avatarSrc="./../../assets/img/landing-avatars/Edith.jpg" [status]="false"
-          [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Edna Willis" avatarSrc="./../../assets/img/landing-avatars/Edna.jpg" [status]="true"
-          [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="George Perkins" avatarSrc="./../../assets/img/landing-avatars/George.jpg"
-          [status]="false" [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Johnni Hopkins" avatarSrc="./../../assets/img/landing-avatars/Johnni.jpg"
-          [status]="true" [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Marvin Murphy" avatarSrc="./../../assets/img/landing-avatars/Marvin.jpg"
-          [status]="true" [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Ryan Arnold" avatarSrc="./../../assets/img/landing-avatars/Ryan.jpg" [status]="true"
-          [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Tamara Gomez" avatarSrc="./../../assets/img/landing-avatars/Tamara.jpg"
-          [status]="false" [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-      <div class="message">
-        <app-message-row person="Tracy Burton" avatarSrc="./../../assets/img/landing-avatars/Tracy.jpg" [status]="false"
-          [read]="false" lastMessage="lorem ipsum dolor sit amet..." />
-      </div>
-    </div>
-    <footer class="footer">
-      <h2 class="title">
-        <span class="logo-part--first">Person</span>
-        <img class="logo-part--image" src="./../../assets/img/PersonBridge-logo.png" alt="">
-        <span class="logo-part--second">Bridge</span>
-      </h2>
-    </footer>
-  </section>
-  <section class="desktop">
-    <app-chat />
-    <app-navbar />
-  </section>
+  <app-panel *ngIf="isMobile" [device]="device" />
+  <div class="outlet">
+    <router-outlet />
+  </div>
+  <app-navbar />
+  <!-- <app-modal [visible]="isModalVisible" (close)="isModalVisible = false"> -->
+  <!-- <app-someones-audio /> -->
+  <!-- <app-your-audio /> -->
+  <!-- <app-someones-video /> -->
+  <!-- <app-your-video /> -->
+  <!-- <app-pin /> -->
+  <!-- </app-modal> -->
 </section>

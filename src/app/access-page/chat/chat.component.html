@@ -1,7 +1,10 @@
 <section class="chat">
   <header class="header">
+    <a routerLink="/access" routerLinkActive="active" class="icon-back">
+      <fa-icon class="fa " [icon]="icons.back" />
+    </a>
     <div class="avatar">
-      <img src="./../../assets/img/landing-avatars/Marshal.jpg" alt="Avatar">
+      <img src="./../../assets/img/landing-avatars/Marshall.jpg" alt="Avatar">
     </div>
     <div class="info">
       <div class="identifier">
@@ -11,26 +14,27 @@
         <div class="status__dot"></div>
         <div class="status__info">Online</div>
       </div>
+      <div class="icons">
+        <div class="icon-wrapper">
+          <fa-icon class="fa icon" [icon]="icons.audio" />
+          <span class="text">Audio Call</span>
+        </div>
+        <div class="icon-wrapper">
+          <fa-icon class="fa icon" [icon]="icons.video" />
+          <span class="text">Video Call</span>
+        </div>
+        <a routerLink="/access/chat/settings" class="icon-wrapper">
+          <fa-icon class="fa icon" [icon]="icons.settings" />
+          <span class="text">Settings</span>
+        </a>
+      </div>
     </div>
-    <div class="icons">
-      <div class="icon-wrapper">
-        <fa-icon class="fa icon" [icon]="icons.audio" />
-        <span class="text">Audio Call</span>
-      </div>
-      <div class="icon-wrapper">
-        <fa-icon class="fa icon" [icon]="icons.video" />
-        <span class="text">Video Call</span>
-      </div>
-      <div class="icon-wrapper">
-        <fa-icon class="fa icon" [icon]="icons.settings" />
-        <span class="text">Settings</span>
-      </div>
-    </div>
+
 
   </header>
   <div class="messages">
     <div class="message">
-      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg"
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshall.jpg"
         message="Hi! I am Marshall. Nice to meet you ;]" [isYou]="false" />
     </div>
     <div class="message">
@@ -38,7 +42,7 @@
         message="Hello Marshall! My name is Konrad. What brings you here?" [isYou]="true" />
     </div>
     <div class="message">
-      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg"
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshall.jpg"
         message="I am killing the time by writing with different people. So what's up?" [isYou]="false" />
     </div>
     <div class="message">
@@ -46,14 +50,14 @@
         message="Did I tell you the story about Michael who chewed gum so much that he went blind?" [isYou]="true" />
     </div>
     <div class="message">
-      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg" message="Noo..."
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshall.jpg" message="Noo..."
         [isYou]="false" />
     </div>
     <div class="message">
       <app-message-box name="Konrad" avatarSrc="./../../assets/img/Konrad.png" message="The End" [isYou]="true" />
     </div>
     <div class="message">
-      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshal.jpg" message="It is sad"
+      <app-message-box name="Marshall" avatarSrc="./../../assets/img/landing-avatars/Marshall.jpg" message="It is sad"
         [isYou]="false" />
     </div>
     <div class="message">
@@ -62,11 +66,14 @@
     </div>
     <div class="blocked-message">Marshall blocked you</div>
   </div>
-  <div class="message-type">
-    <div class="textarea">
-      <textarea placeholder="Type your message..."></textarea>
-      <fa-icon class="fa emoticons" [icon]="icons.emoticons" />
+  <div class="type-message">
+    <div class="input-container">
+      <input type="text" class="input-container__input" placeholder="Type your message...">
+      <fa-icon class="input-container__icon" [icon]="icons.emoticons" />
     </div>
-    <button class="send-btn">Send</button>
+    <button class="type-message__btn">
+      Send
+      <fa-icon class="fa icon" [icon]="icons.send"></fa-icon>
+    </button>
   </div>
 </section>

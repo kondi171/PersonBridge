@@ -1,0 +1,251 @@
+@import './../../../assets/scss/variables.scss';
+@import './../../../assets/scss/placeholders.scss';
+@import './../../../assets/scss/mixins.scss';
+
+.explore {
+  height: 100vh;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  .heading {
+    @extend %sectionHeading;
+  }
+
+  .find {
+    h3 {
+      color: $primaryColor;
+      text-align: center;
+      font-size: 6vmin;
+      padding: 2vmin;
+      margin: 2vmin;
+    }
+
+    .searchbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2vmin;
+
+      .input-container {
+        position: relative;
+        width: 70%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 2vmin;
+        height: 5vmax;
+
+        &__input {
+          @extend %input;
+          padding-left: 10vw;
+          padding-block: 3vmin;
+          color: $bgColor;
+          background-color: $textColor;
+          font-size: 3.5vmin;
+          height: 5vmax;
+
+          &::placeholder {
+            color: $bgColor;
+          }
+
+          &:focus {
+            box-shadow: 0 0 2vmin .2vmin $secondaryColor;
+            background-color: $textColor;
+            color: $secondaryColor;
+
+            &::placeholder {
+              color: $secondaryColor;
+            }
+
+            &+.input-container__icon {
+              color: $secondaryColor;
+
+              &:hover {
+                color: $bgColor;
+              }
+            }
+          }
+        }
+
+        &__icon {
+          position: absolute;
+          left: 6vw;
+          font-size: 6vmin;
+          color: $bgColor;
+          transition-duration: .4s
+        }
+      }
+
+      &__btn {
+        @include btn($bgColor, $primaryColor, $secondaryColor);
+        margin: 0 2vmin;
+        padding-block: 2.5vmin;
+        height: 5vmax;
+      }
+    }
+
+    .results {
+      display: flex;
+      flex-direction: column;
+      margin-top: 5vmin;
+
+      &__count {
+        font-size: 4vmin;
+        text-align: center;
+        color: $primaryColor;
+        margin-bottom: 2vmin;
+      }
+
+      .result {
+        &:nth-of-type(even) {
+          background-color: lighten($dynamicStateColor, 10%);
+        }
+      }
+
+      &>:last-child {
+        margin-bottom: 12vmin;
+        border-bottom: .7vmin solid $secondaryColor;
+      }
+
+      .no-result {
+        color: $textColor;
+        text-align: center;
+        font-size: 10vmin;
+        margin-top: 10vmin;
+      }
+    }
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .explore {
+    .find {
+      .searchbar {
+        .input-container {
+          &__input {
+            padding-left: 7vw;
+            width: 100%;
+          }
+
+          &__icon {
+            left: 5vw;
+          }
+        }
+
+        &__btn {
+          width: 20%;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .explore {
+    .find {
+      .searchbar {
+        .input-container {
+          height: 6vmax;
+
+          &__input {
+            height: 6vmax;
+          }
+        }
+
+        &__btn {
+          height: 6vmax;
+        }
+      }
+
+      .results {
+        &>:last-child {
+          margin-bottom: 0;
+          border: none;
+        }
+      }
+
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .explore {
+    .find {
+      .searchbar {
+        height: 9vh;
+        box-shadow: none;
+
+        .input-container {
+          &__input {
+            border-radius: 5vmin;
+            border: none;
+            font-size: 2.5vmin;
+            padding-left: 5vw;
+            box-shadow: 0 0 1vmin .1vmin darken($textColor, 20%);
+            transition-duration: .4s;
+            height: 6vh;
+          }
+
+          &__icon {
+            font-size: 4vmin;
+            transition-duration: .4s;
+            left: 3vw;
+
+            &:hover {
+              cursor: pointer;
+              color: $secondaryColor;
+            }
+          }
+        }
+
+        &__btn {
+          height: 6vh;
+          font-size: 3vmin;
+          padding-block: 1.5vmin;
+          border-radius: 5vmin;
+          border: none;
+          transition: all 0.2s ease-in-out;
+          width: 35%;
+          font-family: $decorativeFont;
+          margin: 1vmin 5vmin;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) and (orientation: portrait) {
+  .explore {
+    .find {
+      h3 {
+        margin-bottom: 4vmin;
+      }
+
+      .searchbar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .input-container {
+          margin-top: 4vmin;
+
+          &__input {
+            padding-left: 7vw;
+            // font-size: 3vmin;
+            margin: 4vmin 0;
+          }
+        }
+
+        &__btn {
+          margin: 4vmin;
+        }
+      }
+    }
+  }
+}

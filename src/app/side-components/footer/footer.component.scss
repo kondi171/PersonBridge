@@ -1,0 +1,64 @@
+@import './../../../assets/scss/variables.scss';
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: $blackColor;
+  z-index: 4;
+  border-top: .3vmin solid $primaryColor;
+  box-shadow: 0 0 2vmin .2vmin $primaryColor;
+  margin-bottom: -1vmin;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+
+  &.is-fixed {
+    position: fixed;
+  }
+
+  h2.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: $decorativeFont;
+    font-size: 10vmin;
+    display: flex;
+    justify-content: center;
+    flex-direction: row-reverse;
+    transform: scale(.5);
+
+    .logo-part {
+      position: relative;
+
+      &--first {
+        order: 2;
+        color: $primaryColor;
+        transform: translateY(1.2vmin) scale(1.2);
+      }
+
+      &--second {
+        order: 1;
+        z-index: 10;
+        color: $secondaryColor;
+        margin-left: 1.5vmin;
+      }
+
+      &--image {
+        position: absolute;
+        top: -13vmin;
+        left: 42.5%;
+        width: 15vmin;
+        z-index: 12;
+        margin-top: 5vmin;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .footer {
+    display: none;
+  }
+}

@@ -1,0 +1,75 @@
+<section class="settings">
+  <h2 class="heading">
+    <a routerLink="/access" routerLinkActive="active" class="icon-back">
+      <fa-icon class="fa" [icon]="icons.back" />
+    </a>
+    <span>Settings</span>
+    <fa-icon class="fa icon" [icon]="icons.section" />
+  </h2>
+  <div class="personal-info">
+    <div class="avatar">
+      <img class="avatar__img" src="./../../assets/img/Konrad.png" alt="Avatar">
+      <span class="avatar__change">Change Avatar</span>
+    </div>
+    <div class="user">
+      Konrad Nowak
+    </div>
+    <div class="mail">
+      wk.k.nowak&commat;gmail.com
+    </div>
+  </div>
+  <div class="zones">
+    <article class="zone zone--edit">
+      <h3 class="zone__title">Edit Zone:</h3>
+      <div class="edit">
+        <fa-icon class="fa icon" [icon]="icons.edit.name" />
+        <span class="text">Edit name</span>
+      </div>
+      <div class="edit">
+        <fa-icon class="fa icon" [icon]="icons.edit.lastname" />
+        <span class="text">Edit lastname</span>
+      </div>
+      <div class="edit">
+        <fa-icon class="fa icon" [icon]="icons.edit.mail" />
+        <span class="text">Edit mail</span>
+      </div>
+      <div class="edit">
+        <fa-icon class="fa icon" [icon]="icons.edit.password" />
+        <span class="text">Edit password</span>
+      </div>
+    </article>
+    <article class="zone zone--biometric">
+      <h3 class="zone__title">Biometric Zone:</h3>
+      <div class="biometrics">
+        <div class="biometric">
+          <fa-icon class="fa icon" [icon]="icons.biometric.fingerprint" />
+          <span class="text">Fingerprint</span>
+        </div>
+        <div class="biometric">
+          <fa-icon class="fa icon" [icon]="icons.biometric.face" />
+          <span class="text">Face</span>
+        </div>
+        <div class="biometric">
+          <fa-icon class="fa icon" [icon]="icons.biometric.voice" />
+          <span class="text">Voice</span>
+        </div>
+      </div>
+    </article>
+    <article class="zone zone--danger">
+      <h3 class="zone__title">Danger Zone:</h3>
+      <button class="option option--primary">
+        <span>Log out</span>
+        <fa-icon class="fa icon" [icon]="icons.logout" />
+      </button>
+      <button class="option option--remove">
+        <span>Delete messages</span>
+        <fa-icon class="fa icon" [icon]="icons.messages" />
+      </button>
+      <button class="option option--remove">
+        <span>Delete account</span>
+        <fa-icon class="fa icon" [icon]="icons.remove" />
+      </button>
+    </article>
+  </div>
+  <app-footer />
+</section>

@@ -1,0 +1,18 @@
+@import './../../../../assets/scss/variables.scss';
+@import './../../../../assets/scss/mixins.scss';
+
+.card--online {
+  @include card($onlineColor);
+}
+
+.card--offline {
+  @include card($offlineColor);
+}
+
+.card--blocked {
+  @include card($supportColor);
+}
+
+.card--request {
+  @include card($secondaryColor);
+}

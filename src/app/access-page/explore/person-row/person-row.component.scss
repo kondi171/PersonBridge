@@ -1,0 +1,136 @@
+@import './../../../../assets/scss/variables.scss';
+@import './../../../../assets/scss/placeholders.scss';
+@import './../../../../assets/scss/mixins.scss';
+
+.result {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: $dynamicStateColor;
+  padding: 5vmin;
+  border-top: .7vmin solid $secondaryColor;
+
+  &__avatar {
+    width: 40%;
+    // height: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 60%;
+      // height: 60%;
+      border-radius: 50%;
+      border: .7vmin solid $primaryColor;
+    }
+  }
+
+  &__person {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: $textColor;
+    font-size: 6vmin;
+    width: 100%;
+
+    button {
+      margin-top: 3vmin;
+
+      &.request {
+        @include btn($bgColor, $primaryColor, $secondaryColor);
+        width: 50vmin;
+        font-size: 3.5vmin;
+
+      }
+
+      &.sent {
+        @include btn($textColor, $secondaryColor, $primaryColor);
+        width: 50vmin;
+        font-size: 3.5vmin;
+      }
+
+
+      .icon {
+        margin-left: 2vmin;
+      }
+    }
+  }
+
+}
+
+// @media screen and (orientation: landscape) {
+//   .result {
+//     &__avatar {
+//       img {
+//         width: 40%;
+//         height: 40%;
+//         border-radius: 50%;
+//         border: .7vmin solid $primaryColor;
+//       }
+//     }
+//   }
+// }
+
+// @media screen and (min-width: 1024px) and (orientation: landscape) {
+//   .result {
+//     &__avatar {
+//       width: 30%;
+
+//       img {
+//         width: 100%;
+//         height: 100%;
+//       }
+//     }
+//   }
+// }
+
+@media screen and (min-width: 1024px) {
+  .result {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 2vmin 0;
+    // background-color: #fff;
+    justify-content: center;
+
+    &__avatar {
+      img {
+        width: 60%;
+        height: 60%;
+        border-radius: 50%;
+        border: .3vmin solid $primaryColor;
+      }
+    }
+
+
+    &__person {
+      color: $textColor;
+      font-size: 5vmin;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 80%;
+      text-align: center;
+
+      button {
+        &.request {
+          width: 25vmin;
+          font-size: 1.5vmin;
+        }
+
+        &.sent {
+          width: 25vmin;
+          font-size: 1.5vmin;
+        }
+
+        .icon {
+          margin-left: 2vmin;
+        }
+      }
+    }
+
+  }
+}
