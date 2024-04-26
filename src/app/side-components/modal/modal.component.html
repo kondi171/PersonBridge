@@ -1,0 +1,7 @@
+<div class="modal" [class.visible]="visible">
+    <div class="modal-content">
+        <ng-content></ng-content>
+        <!-- <button class="close-button" (click)="closeModal()">Close</button> -->
+    </div>
+</div>
+<div class="overlay" [class.visible]="visible" (click)="closeModal()"></div>

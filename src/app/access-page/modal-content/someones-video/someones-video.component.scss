@@ -1,0 +1,70 @@
+@import './../../../../assets/scss/variables.scss';
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    .avatar {
+        width: 100%;
+        height: 50%;
+        text-align: center;
+
+        img {
+            width: 25vmin;
+            height: 25vmin;
+            border-radius: 50%;
+            border: .7vmin solid $primaryColor;
+        }
+    }
+
+    h3 {
+        text-align: center;
+        color: $textColor;
+        margin: 2vmin 0;
+    }
+
+    .call {
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        margin: 4vmin 0vmin;
+
+        .icon {
+            border-radius: 50%;
+            padding: 4vmin;
+            color: $textColor;
+            transition-duration: .4s;
+
+            &:first-child {
+                background-color: #00ab17;
+                box-shadow: 0 0 2vmin 1vmin #00ab17;
+                border: .3vmin solid darken(#00ab17, 20%);
+                margin-right: 6vmin;
+
+                &:hover {
+                    cursor: pointer;
+                    transform: scale(1.2);
+                    box-shadow: 0 0 4vmin 2vmin #00ab17;
+                }
+            }
+
+            &:last-child {
+                background-color: #b80000;
+                box-shadow: 0 0 2vmin 1vmin #b80000;
+                border: .3vmin solid darken(#b80000, 20%);
+                margin-left: 6vmin;
+
+                &:hover {
+                    cursor: pointer;
+                    transform: scale(1.2);
+                    box-shadow: 0 0 4vmin 2vmin #b80000;
+                }
+            }
+
+
+        }
+    }
+}
