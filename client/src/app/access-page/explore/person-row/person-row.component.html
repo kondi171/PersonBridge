@@ -1,21 +1,25 @@
 <div routerLink="/access/chat" class="result">
   <div class="result__avatar">
-    <img [src]="avatarSrc" [alt]="person">
+    <img [src]="person.avatar" [alt]="person.name">
   </div>
   <div class="result__person">
-    {{ person }}
-    <ng-container *ngIf="!innerRequestSent; else sent">
-      <button (click)="handleRequest()" class="request">
+    <span class="name">
+      {{ person.name }} {{ person.lastname }}
+    </span>
+    <span class="mail">
+      {{ person.mail }}
+    </span>
+    <ng-container *ngIf="yourRequests.includes(person._id)">
+      <button class="sent" (click)="handleCancelRequest()">
+        Request Sent
+        <fa-icon class="fa icon" [icon]="icons.sent"></fa-icon>
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!yourRequests.includes(person._id)">
+      <button (click)="handleSendRequest()" class="request">
         Send Request
         <fa-icon class="fa icon" [icon]="icons.request"></fa-icon>
       </button>
     </ng-container>
-    <ng-template #sent>
-      <button class="sent">
-        Request Sent
-        <fa-icon class="fa icon" [icon]="icons.sent"></fa-icon>
-      </button>
-    </ng-template>
-
   </div>
 </div>

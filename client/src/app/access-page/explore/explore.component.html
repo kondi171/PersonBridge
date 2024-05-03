@@ -1,66 +1,51 @@
 <section class="explore">
-    <h2 class="heading">
-        <a routerLink="/access" routerLinkActive="active" class="icon-back">
-            <fa-icon class="fa" [icon]="icons.back" />
-        </a>
-        <span>Explore</span>
-        <fa-icon class="fa icon" [icon]="icons.section" />
-    </h2>
-    <div class="find">
-        <h3>Find your beloved person...</h3>
-        <div class="searchbar">
-            <div class="input-container">
-                <input type="search" class="input-container__input" placeholder="Search for a person...">
-                <fa-icon class="input-container__icon" [icon]="icons.search" />
-            </div>
-            <button class="searchbar__btn">Search</button>
-        </div>
-        <div class="results">
-            <span class="results__count">Results: 10 people found</span>
-            <div class="result">
-                <app-person-row person="Marshall Johnston"
-                    avatarSrc="./../../../assets/img/landing-avatars/Marshall.jpg" [requestSent]="true" />
-            </div>
-            <div class="result">
-                <app-person-row person="Dawn Thompson" avatarSrc="./../../../assets/img/landing-avatars/Dawn.jpg"
-                    [requestSent]="true" />
-            </div>
-            <div class="result">
-                <app-person-row person="Edith Pena" avatarSrc="./../../../assets/img/landing-avatars/Edith.jpg"
-                    [requestSent]="false" />
-            </div>
-            <div class="result">
-                <app-person-row person="Edna Willis" avatarSrc="./../../../assets/img/landing-avatars/Edna.jpg"
-                    [requestSent]="false" />
-            </div>
-            <div class="result">
-                <app-person-row person="George Perkins" avatarSrc="./../../../assets/img/landing-avatars/George.jpg"
-                    lastMessage="lorem ipsum dolor sit amet..." [requestSent]="true" />
-            </div>
-            <div class="result">
-                <app-person-row person="Johnni Hopkins" avatarSrc="./../../../assets/img/landing-avatars/Johnni.jpg"
-                    lastMessage="lorem ipsum dolor sit amet..." [requestSent]="true" />
-            </div>
-            <div class="result">
-                <app-person-row person="Marvin Murphy" avatarSrc="./../../../assets/img/landing-avatars/Marvin.jpg"
-                    [requestSent]="true" />
-            </div>
-            <div class="result">
-                <app-person-row person="Ryan Arnold" avatarSrc="./../../../assets/img/landing-avatars/Ryan.jpg"
-                    [requestSent]="true" />
-            </div>
-            <div class="result">
-                <app-person-row person="Tamara Gomez" avatarSrc="./../../../assets/img/landing-avatars/Tamara.jpg"
-                    [requestSent]="false" />
-            </div>
-            <div class="result">
-                <app-person-row person="Tracy Burton" avatarSrc="./../../../assets/img/landing-avatars/Tracy.jpg"
-                    [requestSent]="true" />
-            </div>
-            <!-- <div class="no-result">
-                No results found!
-            </div> -->
-        </div>
+  <h2 class="heading">
+    <a routerLink="/access" routerLinkActive="active" class="icon-back">
+      <fa-icon class="fa" [icon]="icons.back" />
+    </a>
+    <span>Explore</span>
+    <fa-icon class="fa icon" [icon]="icons.section" />
+  </h2>
+
+  <div class="find" *ngIf="showResults">
+    <h3>Find your beloved person...</h3>
+    <div class="searchbar">
+      <div class="input-container">
+        <input [(ngModel)]="searchInputValue" type="search" class="input-container__input"
+          placeholder="Search for a person...">
+        <fa-icon class="input-container__icon" [icon]="icons.search" />
+      </div>
+      <button (click)="handleFindPeople()" class="searchbar__btn">Search</button>
     </div>
-    <app-footer [position]="Position.FIXED" />
+    <div class="results">
+      <span class="results__count">Results: {{results.length}} {{results.length === 1 ? 'person' : ' people'}}
+        found</span>
+      <div *ngIf="results.length === 0" class="no-result">
+        No results found!
+      </div>
+      <div *ngIf="results.length > 0" class="result">
+        <app-person-row *ngFor="let result of results" [person]="result" />
+      </div>
+
+    </div>
+  </div>
+  <div class="request" *ngIf="showRequests">
+    <h3 class="request__count">{{requestCounter}} {{requestCounter === 1 ? 'requests' : ' request'}} sent</h3>
+    <app-person-row *ngFor="let result of requests" [person]="result" [requestCounter]="requestCounter"
+      (requestCounterChange)="updateRequestCounter($event)">
+    </app-person-row>
+    <div *ngIf="requests.length === 0" class="no-result">
+      No request found!
+    </div>
+  </div>
+  <div class="select-content">
+    <div (click)="showResults = true; showRequests = false" [class.active]="showResults">
+      <fa-icon class="icon" [icon]="icons.search"></fa-icon>
+      <span>Find</span>
+    </div>
+    <div (click)="showResults = false; showRequests = true; handleSentRequest()" [class.active]="showRequests">
+      <fa-icon class="icon" [icon]="icons.request"></fa-icon>
+      <span>Requests</span>
+    </div>
+  </div>
 </section>

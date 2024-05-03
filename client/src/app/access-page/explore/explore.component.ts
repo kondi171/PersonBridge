@@ -1,23 +1,98 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faChevronLeft, faMagnifyingGlass, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faMagnifyingGlass, faSearch, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../../side-components/footer/footer.component';
 import { PersonRowComponent } from './person-row/person-row.component';
 import { Position } from '../../typescript/enums';
+import { environment } from '../../app.environment';
+import { FormsModule } from '@angular/forms';
+import { SearchResult } from '../../typescript/interfaces';
+import { CommonModule } from '@angular/common';
+import { StoreService } from '../../services/store.service';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [FontAwesomeModule, RouterModule, PersonRowComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PersonRowComponent, FooterComponent],
   templateUrl: './explore.component.html',
   styleUrl: './explore.component.scss'
 })
-export class ExploreComponent {
+export class ExploreComponent implements OnInit {
   Position = Position;
+  searchInputValue: string = '';
   icons = {
     search: faMagnifyingGlass,
     section: faSearch,
     back: faChevronLeft,
+    request: faUserPlus
+  }
+  results: SearchResult[] = [];
+  requests: SearchResult[] = [];
+  yourID: string = '' as string;
+  showResults = true;
+  showRequests = false;
+  requestCounter: number = 0;
+
+  constructor(private storeService: StoreService) {
+    const loggedUser = this.storeService.getLoggedUser();
+    if (loggedUser) this.yourID = loggedUser._id;
+  }
+
+  ngOnInit(): void {
+    this.handleSentRequest();
+  }
+
+  handleSentRequest() {
+    fetch(`${environment.apiUrl}/explore/requests/${this.yourID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Internal Server Error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.requests = data;
+        this.requestCounter = data.length;
+        return data;
+      })
+      .catch(error => {
+        console.error('Internal Server Error:', error);
+        throw error;
+      });
+  }
+
+  handleFindPeople() {
+    if (this.searchInputValue.length === 0) return;
+    fetch(`${environment.apiUrl}/explore/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ yourID: this.yourID, searchInputValue: this.searchInputValue })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Internal Server Error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.message === 'No users found!') this.results = [];
+        else this.results = data;
+        return data;
+      })
+      .catch(error => {
+        console.error('Internal Server Error:', error);
+        throw error;
+      });
+  }
+  updateRequestCounter(newCounter: number) {
+    this.requestCounter = newCounter;
   }
 }

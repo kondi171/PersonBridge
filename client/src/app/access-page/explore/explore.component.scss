@@ -5,6 +5,9 @@
 .explore {
   height: 100vh;
   overflow-y: scroll;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 
   &::-webkit-scrollbar {
     display: none;
@@ -18,6 +21,10 @@
   }
 
   .find {
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex: 1;
+
     h3 {
       color: $primaryColor;
       text-align: center;
@@ -47,7 +54,7 @@
           padding-block: 3vmin;
           color: $bgColor;
           background-color: $textColor;
-          font-size: 3.5vmin;
+          font-size: 3.4vmin;
           height: 5vmax;
 
           &::placeholder {
@@ -93,7 +100,6 @@
     .results {
       display: flex;
       flex-direction: column;
-      margin-top: 5vmin;
 
       &__count {
         font-size: 4vmin;
@@ -103,21 +109,72 @@
       }
 
       .result {
-        &:nth-of-type(even) {
-          background-color: lighten($dynamicStateColor, 10%);
+        &:nth-of-type(odd) {
+          // background-color: lighten($dynamicStateColor, 5%);
         }
-      }
-
-      &>:last-child {
-        margin-bottom: 12vmin;
-        border-bottom: .7vmin solid $secondaryColor;
       }
 
       .no-result {
         color: $textColor;
         text-align: center;
-        font-size: 10vmin;
-        margin-top: 10vmin;
+        font-size: 6vmin;
+        border-bottom: none;
+      }
+    }
+
+  }
+
+  .request {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex: 1;
+
+    .no-result {
+      color: $textColor;
+      text-align: center;
+      font-size: 6vmin;
+      border-bottom: none;
+    }
+
+    &__count {
+      color: $primaryColor;
+      text-align: center;
+      font-size: 8vmin;
+      padding: 2vmin;
+      margin: 2vmin;
+    }
+  }
+
+  .select-content {
+    font-size: 4vmin;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $textColor;
+    border-top: .7vmin solid $primaryColor;
+    background-color: $blackColor;
+
+    div {
+      background-color: $blackColor;
+      width: 40vw;
+      padding: 1vmin;
+      border-radius: 5vmin;
+      border: .7vmin solid $textColor;
+      transition-duration: .4s;
+      margin: 2vmin;
+      margin-top: 2.7vmin;
+
+      span {
+        margin: 2vmin;
+      }
+
+      &.active {
+        color: $primaryColor;
+        border-color: $primaryColor;
+        transform: scale(1.1);
       }
     }
   }
@@ -217,6 +274,29 @@
         }
       }
     }
+
+    .select-content {
+      font-size: 2vmin;
+      height: 9vh;
+      // padding-bottom: 5vmin;
+      background-color: $blackColor;
+      border-top: .3vmin solid $primaryColor;
+
+      div {
+        width: 15vw;
+        border: .3vmin solid $textColor;
+
+        span {
+          margin: 2vmin;
+        }
+
+        &:hover {
+          color: $secondaryColor;
+          border-color: $secondaryColor;
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
 
@@ -237,7 +317,6 @@
 
           &__input {
             padding-left: 7vw;
-            // font-size: 3vmin;
             margin: 4vmin 0;
           }
         }

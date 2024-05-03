@@ -6,20 +6,16 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: $dynamicStateColor;
   padding: 5vmin;
-  border-top: .7vmin solid $secondaryColor;
 
   &__avatar {
     width: 40%;
-    // height: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
 
     img {
       width: 60%;
-      // height: 60%;
       border-radius: 50%;
       border: .7vmin solid $primaryColor;
     }
@@ -33,6 +29,12 @@
     color: $textColor;
     font-size: 6vmin;
     width: 100%;
+
+    .mail {
+      font-size: 3vmin;
+      margin-bottom: 2vmin;
+      color: $secondaryColor;
+    }
 
     button {
       margin-top: 3vmin;
@@ -88,11 +90,9 @@
 @media screen and (min-width: 1024px) {
   .result {
     width: 100%;
-    background-color: transparent;
     border: none;
     padding: 0;
     margin: 2vmin 0;
-    // background-color: #fff;
     justify-content: center;
 
     &__avatar {
