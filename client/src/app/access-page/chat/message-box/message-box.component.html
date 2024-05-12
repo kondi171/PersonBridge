@@ -1,12 +1,13 @@
-<div class="message-box" [ngClass]="{ 'is-you': isYou }">
+<div class="message-box" [ngClass]="{'is-you': message.sender === 'Self'}">
   <div class="avatar">
-    <img [src]="avatarSrc" [alt]="name">
+    <img [src]="message.sender === 'Self' ? yourAvatar : avatar" [alt]="message.sender === 'Self' ? yourName : name">
   </div>
   <div class="message">
-    <div class="name">{{ name }}</div>
+    <div class="name">{{ message.sender === 'Self' ? yourName : name }}</div>
     <div class="message__wrapper">
-      <span class="content">{{ message }}</span>
-      <div class="date">14:37</div>
+      <span class="content">{{ message.content }}</span>
+      <div class="date">{{ message.date }}</div>
     </div>
   </div>
 </div>
+

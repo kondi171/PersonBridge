@@ -1,50 +1,50 @@
 @import './assets/scss/variables.scss';
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: $textFont;
-    // height: 100vh;
-    // overflow-y: hidden;
-    overflow: hidden;
-    background-color: $bgColor;
-    // background-image: url('./assets/img/crossline-lines.webp');
-    // background-image: url('./assets/img/cork-board.webp');
-    background-image: url('./assets/img/prism.png');
-    // background-blend-mode: exclusion;
+  font-family: $textFont;
+  // height: 100vh;
+  // overflow-y: hidden;
+  overflow: hidden;
+  background-color: $bgColor;
+  // background-image: url('./assets/img/crossline-lines.webp');
+  // background-image: url('./assets/img/cork-board.webp');
+  background-image: url('./assets/img/prism.png');
+  // background-blend-mode: exclusion;
 }
 
 ::selection {
-    background-color: $supportColor;
-    color: $textColor;
+  background-color: $supportColor;
+  color: $textColor;
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    border-radius: 4vmin;
-    margin: 10px;
+  border-radius: 4vmin;
+  margin: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #0000003d;
-    border-radius: 4vmin;
-    transition-duration: .4s;
+  background-color: #0000003d;
+  border-radius: 4vmin;
+  transition-duration: .4s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    cursor: pointer;
-    background: $secondaryColor;
+  cursor: pointer;
+  background: $secondaryColor;
 }
 
 @media screen and (min-width: 1024px) {
-    body {
-        overflow-y: hidden;
-    }
+  body {
+    overflow-y: hidden;
+  }
 }

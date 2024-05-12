@@ -5,8 +5,9 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 
 import userRoutes from "./routes/users.routes";
-import exploreRoutes from "./routes/explore.routes";
 import authenticationRoutes from "./routes/authentication.routes";
+import accessRoutes from "./routes/access.routes";
+import exploreRoutes from "./routes/explore.routes";
 
 import startSocketServer from "./middlewares/websocket.middleware";
 
@@ -50,8 +51,9 @@ app.use(session({
 }));
 
 app.use(userRoutes);
-app.use(exploreRoutes);
 app.use(authenticationRoutes);
+app.use(accessRoutes);
+app.use(exploreRoutes);
 
 const server = startSocketServer(app);
 

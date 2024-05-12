@@ -239,6 +239,12 @@
 
 @media screen and (min-width: 1024px) {
   .chat-settings {
+    .icon-back {
+      display: none;
+    }
+
+    // background-color: lighten($dynamicStateColor,10%);
+
     .clip {
       margin-top: -20vmin;
 

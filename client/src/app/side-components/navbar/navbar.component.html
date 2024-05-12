@@ -1,6 +1,6 @@
 <nav [class]="device === Device.DESKTOP ? 'sidebar--desktop' : 'sidebar--mobile'" class="sidebar">
   <div class="items">
-    <a routerLink="/access/chat" routerLinkActive="active" class="item">
+    <a [routerLink]="['/access/chat', chatID]" [ngClass]="{'active': isChatActive}" class="item">
       <fa-icon class="fa icon" [icon]="icons.chats" />
       <div class="text">Chats</div>
     </a>

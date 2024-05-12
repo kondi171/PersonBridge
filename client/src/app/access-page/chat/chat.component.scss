@@ -118,6 +118,7 @@
   .messages {
     overflow-x: hidden;
     overflow-y: auto;
+    flex: 1;
 
     .blocked-message {
       text-align: center;

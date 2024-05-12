@@ -10,13 +10,13 @@
       {{ person.mail }}
     </span>
     <ng-container *ngIf="yourRequests.includes(person._id)">
-      <button class="sent" (click)="handleCancelRequest()">
+      <button class="sent" (click)="handleCancelRequest({name:person.name, lastname: person.lastname})">
         Request Sent
         <fa-icon class="fa icon" [icon]="icons.sent"></fa-icon>
       </button>
     </ng-container>
     <ng-container *ngIf="!yourRequests.includes(person._id)">
-      <button (click)="handleSendRequest()" class="request">
+      <button (click)="handleSendRequest({name:person.name, lastname: person.lastname})" class="request">
         Send Request
         <fa-icon class="fa icon" [icon]="icons.request"></fa-icon>
       </button>

@@ -5,6 +5,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  margin: 0;
 
   .header {
     position: relative;
@@ -78,7 +80,7 @@
   .messages {
     overflow-x: hidden;
     overflow-y: auto;
-
+    flex: 1;
 
     .message {
       width: 100%;
@@ -97,6 +99,22 @@
         background-color: $secondaryColor;
       }
     }
+
+    .no-messages {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 90%;
+      font-size: 6vmin;
+      text-align: center;
+      padding: 2vmin;
+      color: darken($bgColor, 10%);
+      text-shadow: 1px 1px 3px $primaryColor,
+        -1px -1px 3px $primaryColor,
+        1px -1px 3px $primaryColor,
+        -1px 1px 3px $primaryColor;
+
+    }
   }
 
   .footer {
@@ -107,45 +125,21 @@
     z-index: 4;
     border-top: .3vmin solid $primaryColor;
     box-shadow: 0 0 2vmin .2vmin $primaryColor;
-    margin-bottom: -1vmin;
     flex-shrink: 0;
 
-    h2.title {
+    .brand {
+      width: 100%;
+      margin: 5vmin 2vmin 2vmin 2vmin;
       display: flex;
       justify-content: center;
       align-items: center;
-      text-align: center;
-      font-family: $decorativeFont;
-      font-size: 10vmin;
-      display: flex;
-      justify-content: center;
-      flex-direction: row-reverse;
-      transform: scale(.5);
 
-      .logo-part {
-        position: relative;
+      &:hover {
+        cursor: pointer;
+      }
 
-        &--first {
-          order: 2;
-          color: $primaryColor;
-          transform: translateY(1.2vmin) scale(1.2);
-        }
-
-        &--second {
-          order: 1;
-          z-index: 10;
-          color: $secondaryColor;
-          margin-left: 1.5vmin;
-        }
-
-        &--image {
-          position: absolute;
-          top: -13vmin;
-          left: 42.5%;
-          width: 15vmin;
-          z-index: 12;
-          margin-top: 5vmin;
-        }
+      img {
+        width: 100%;
       }
     }
   }
@@ -224,27 +218,14 @@
     }
 
     .footer {
-      height: 10vh;
+      height: 9vh;
       box-shadow: none;
 
-      h2.title {
-        font-size: 6vmin;
-
-        .logo-part {
-
-          &--first {}
-
-          &--second {}
-
-          &--image {
-            position: absolute;
-            top: -4vmin;
-            left: 42.5%;
-            width: 8vmin;
-            z-index: 12;
-            margin-top: 0;
-          }
-        }
+      .brand {
+        position: relative;
+        margin: 2vmin 15% 2vmin 15%;
+        width: 50%;
+        text-align: center;
       }
     }
   }
