@@ -1,17 +1,16 @@
 <section class="access-page">
   <app-panel *ngIf="isMobile" [device]="device" />
   <div class="outlet">
-    <router-outlet />
+    <router-outlet></router-outlet>
+    <div class="welcome" [ngClass]="{'hidden': !isAccessVisible()}">
+      <h3>Welcome to</h3>
+      <div class="brand">
+        <img class="img" src="./../../assets/img/PersonBridge-brand.png" alt="PersonBridge Brand">
+      </div>
+      <span>Nice to see you!</span>
+    </div>
   </div>
-  <app-navbar />
-  <!-- <app-modal [visible]="isModalVisible" (close)="isModalVisible = false"> -->
-  <!-- <app-someones-audio /> -->
-  <!-- <app-your-audio /> -->
-  <!-- <app-someones-video /> -->
-  <!-- <app-your-video /> -->
-  <!-- <app-pin /> -->
-  <!-- </app-modal> -->
+  <app-navbar></app-navbar>
+  <app-loader *ngIf="isLoaderVisible" />
+  <img class="no-display" src="./../../assets/img/Blank-Avatar.jpg" alt="Avatar">
 </section>
-
-<!-- gJKkzxRt1toy7TCr -->
-<!-- mongodb+srv://WebKing:<password>@cluster0.niyeq92.mongodb.net/ -->

@@ -1,5 +1,16 @@
 @import './../../assets/scss/variables.scss';
 
+.hidden {
+  display: none !important;
+}
+
+.welcome {
+  display: none;
+}
+
+.no-display {
+  display: none;
+}
 
 // Dla tabletów (768px - 1023px)
 @media screen and (min-width: 768px) {}
@@ -11,7 +22,33 @@
 
     .outlet {
       width: 65vw;
-      background-color: $dynamicStateColor;
+      background-color: lighten($dynamicStateColor, 5%);
+
+      .welcome {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 70vh;
+
+        img {
+          width: 80%;
+          margin: 0 10%;
+        }
+
+        h3 {
+          color: $textColor;
+          font-size: 6vmin;
+          margin-bottom: 2vmin;
+        }
+
+        span {
+          color: $secondaryColor;
+          font-size: 4vmin;
+          font-weight: bold;
+          text-transform: uppercase;
+        }
+      }
     }
   }
 }

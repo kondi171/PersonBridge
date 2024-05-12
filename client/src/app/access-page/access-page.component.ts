@@ -16,6 +16,8 @@ import { YourAudioComponent } from './modal-content/your-audio/your-audio.compon
 import { SomeonesVideoComponent } from './modal-content/someones-video/someones-video.component';
 import { YourVideoComponent } from './modal-content/your-video/your-video.component';
 import { PINComponent } from './modal-content/pin/pin.component';
+import { StoreService } from '../services/store.service';
+import { LoaderComponent } from '../side-components/loader/loader.component';
 
 @Component({
   selector: 'app-access-page',
@@ -36,6 +38,7 @@ import { PINComponent } from './modal-content/pin/pin.component';
     SomeonesVideoComponent,
     YourVideoComponent,
     PINComponent,
+    LoaderComponent
   ],
   templateUrl: './access-page.component.html',
   styleUrls: ['./access-page.component.scss']
@@ -44,8 +47,9 @@ export class AccessPageComponent implements OnInit {
   isMobile = false;
   isModalVisible = true;
   device = Device.DESKTOP;
+  isLoaderVisible = true;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private storeService: StoreService) { }
 
   ngOnInit(): void {
     this.checkScreenWidth();
@@ -54,7 +58,12 @@ export class AccessPageComponent implements OnInit {
     ).subscribe(() => {
       this.checkScreenWidth();
     });
+
+    setTimeout(() => {
+      this.isLoaderVisible = false;
+    }, 2000);
   }
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -68,6 +77,12 @@ export class AccessPageComponent implements OnInit {
     if (window.innerWidth >= 1024) this.device = Device.DESKTOP;
     else this.device = Device.MOBILE;
   }
+
+  isAccessVisible() {
+    const segments = this.router.url.split('/');
+    return segments.length === 2 && segments[1] === 'access';
+  }
+
 
   openModal() {
     this.isModalVisible = true;

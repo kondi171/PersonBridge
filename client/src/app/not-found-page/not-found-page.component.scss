@@ -1,0 +1,121 @@
+@import './../../assets/scss/variables.scss';
+@import './../../assets/scss/mixins.scss';
+
+.not-found-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 4vmin;
+
+  .brand {
+    z-index: 10;
+
+    img {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+
+  strong {
+    font-weight: bold;
+    color: $secondaryColor;
+    font-size: 9vmin;
+    z-index: 10;
+  }
+
+  h3 {
+    color: $textColor;
+    font-size: 11vmin;
+    z-index: 10;
+  }
+
+  p {
+    color: $secondaryColor;
+    font-size: 6vmin;
+    z-index: 10;
+  }
+
+  .emoticon {
+    position: fixed;
+    bottom: 0;
+    right: 2vmin;
+
+    img {
+      width: 25vmin;
+      height: 25vmin;
+    }
+  }
+
+  button {
+    @include btn($bgColor, $primaryColor, $secondaryColor);
+    width: 80%;
+    margin-top: 5vmin;
+  }
+}
+
+@media (orientation: landscape) {
+  .not-found-page button {
+    width: 50%;
+    margin-top: 5vmin;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .not-found-page {
+    width: 70%;
+
+    .info {
+      padding: 2vmin;
+      border-radius: 5vmin;
+      background-color: #0000007e;
+      z-index: 10;
+
+      .brand {
+        margin: 4vmin;
+        z-index: 10;
+
+        img {
+          width: 150%;
+          margin: 0 10%;
+        }
+      }
+
+      strong {
+        font-weight: bold;
+        color: $secondaryColor;
+        font-size: 10vmin;
+        margin-top: -12vmin;
+      }
+
+      h3 {
+        color: $textColor;
+        font-size: 12vmin;
+      }
+
+      p {
+        color: $secondaryColor;
+        font-size: 6vmin;
+      }
+
+      button {
+        margin: 2vmin auto;
+      }
+    }
+
+    .emoticon {
+      position: fixed;
+      bottom: -5vmin;
+      right: 5vmin;
+
+      img {
+        width: 120%;
+        height: 120%;
+      }
+    }
+  }
+}
