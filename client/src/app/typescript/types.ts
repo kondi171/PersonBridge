@@ -34,3 +34,8 @@ export type Message = {
     date: string,
     sender: string
 }
+
+export type FullName = {
+    name: string,
+    lastname: string
+}

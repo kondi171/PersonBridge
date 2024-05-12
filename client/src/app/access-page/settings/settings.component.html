@@ -8,7 +8,7 @@
   </h2>
   <div class="personal-info">
     <div class="avatar">
-      <img class="avatar__img" src="./../../assets/img/Konrad.png" alt="Avatar">
+      <img class="avatar__img" src="./../../assets/img/Blank-Avatar.jpg" alt="Avatar">
       <span class="avatar__change">Change Avatar</span>
     </div>
     <div class="user">
@@ -57,7 +57,7 @@
     </article>
     <article class="zone zone--danger">
       <h3 class="zone__title">Danger Zone:</h3>
-      <button class="option option--primary">
+      <button (click)="logout()" class="option option--primary">
         <span>Log out</span>
         <fa-icon class="fa icon" [icon]="icons.logout" />
       </button>

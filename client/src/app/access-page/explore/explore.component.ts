@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { SearchResult } from '../../typescript/interfaces';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
+import { UpdateUserService } from '../../services/update-user.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-explore',
@@ -34,7 +36,7 @@ export class ExploreComponent implements OnInit {
   showRequests = false;
   requestCounter: number = 0;
 
-  constructor(private storeService: StoreService) {
+  constructor(private storeService: StoreService, private updateUser: UpdateUserService) {
     const loggedUser = this.storeService.getLoggedUser();
     if (loggedUser) this.yourID = loggedUser._id;
   }
@@ -59,6 +61,11 @@ export class ExploreComponent implements OnInit {
       .then(data => {
         this.requests = data;
         this.requestCounter = data.length;
+        this.updateUser.updateUser(this.yourID).then(data => {
+          this.storeService.setLoggedUser(data);
+        }).catch(error => {
+          console.error('An Error Occured while user update:', error);
+        });
         return data;
       })
       .catch(error => {

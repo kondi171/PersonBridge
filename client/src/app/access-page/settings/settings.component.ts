@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faCog, faComments, faEnvelope, faFaceLaugh, faFingerprint, faKey, faMicrophone, faRightFromBracket, faTrashCan, faUser, faUserGroup, faUserMinus } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../../side-components/footer/footer.component';
+import { StoreService } from '../../services/store.service';
+import { SocketService } from '../../services/socket.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-settings',
@@ -30,13 +33,19 @@ export class SettingsComponent {
       voice: faMicrophone
     }
   }
+
+  constructor(
+    private storeService: StoreService,
+    private socketService: SocketService,
+    private router: Router,
+    private toastr: ToastrService
+  ) { }
+
+  logout() {
+    this.storeService.removeLoggedUser();
+    this.socketService.disconnect();
+    this.router.navigate(['/login']);
+    this.toastr.success('You have successfully logged out!', 'Logout Successful');
+
+  }
 }
-// icons = {
-//   messages: faComments,
-//   mute: faBellSlash,
-//   ignore: faCommentSlash,
-//   block: faLock,
-//   pin: faKey,
-//   nickname: faA,
-//   remove: faUserMinus,
-// }

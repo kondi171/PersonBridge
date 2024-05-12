@@ -106,12 +106,7 @@
         text-align: center;
         color: $primaryColor;
         margin-bottom: 2vmin;
-      }
-
-      .result {
-        &:nth-of-type(odd) {
-          // background-color: lighten($dynamicStateColor, 5%);
-        }
+        margin-top: 4vmin;
       }
 
       .no-result {
@@ -132,8 +127,8 @@
     flex: 1;
 
     .no-result {
-      color: $textColor;
       text-align: center;
+      color: $textColor;
       font-size: 6vmin;
       border-bottom: none;
     }
