@@ -7,10 +7,7 @@
     <fa-icon class="fa icon" [icon]="icons.section" />
   </h2>
   <div class="personal-info">
-    <div class="avatar">
-      <img class="avatar__img" [src]="loggedUser!.avatar" alt="Avatar">
-      <span class="avatar__change">Change Avatar</span>
-    </div>
+    <app-change-avatar />
     <div class="user">
       {{loggedUser!.name}} {{loggedUser!.lastname}}
     </div>

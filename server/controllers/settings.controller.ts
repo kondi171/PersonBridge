@@ -1,6 +1,32 @@
 import { Request, Response } from "express";
 import userModel from "../models/users.model";
 import bcrypt from 'bcrypt';
+import { promises as fsPromises } from 'fs';
+import path from 'path';
+
+export const uploadAvatar = async (req: Request, res: Response): Promise<void> => {
+    if (req.file && req.params.id) {
+        const userID = req.params.id;
+        const filePath = `usersAvatars/${req.file.filename}`;
+        const avatarDirectory = path.join(__dirname, '..', 'usersAvatars');
+        const newAvatarPath = path.join(avatarDirectory, req.file.filename);
+        try {
+            const files = await fsPromises.readdir(avatarDirectory);
+            const oldAvatars = files.filter(file => file.includes(userID) && path.join(avatarDirectory, file) !== newAvatarPath);
+            for (const file of oldAvatars) {
+                await fsPromises.unlink(path.join(avatarDirectory, file));
+            }
+            await userModel.findByIdAndUpdate(userID, { avatar: filePath });
+            res.json({ message: 'Avatar updated successfully.', avatar: filePath });
+        } catch (error) {
+            console.error('Error updating user avatar:', error);
+            res.status(500).json({ message: 'Failed to update user avatar.' });
+        }
+    } else {
+        res.status(400).json({ message: 'No file uploaded.' });
+    }
+};
+
 
 export const editName = async (req: Request, res: Response): Promise<void> => {
     const { id, name, password } = req.body;

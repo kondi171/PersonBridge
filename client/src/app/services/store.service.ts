@@ -11,20 +11,18 @@ export class StoreService {
   private userSubject = new BehaviorSubject<User | null>(this.getLoggedUserFromLocalStorage());
   user$ = this.userSubject.asObservable();
 
-  setUserToken(token: string) {
-    localStorage.setItem('userToken', token);
-  }
-
-  getUserToken() {
-    localStorage.getItem('userToken');
-    return localStorage.getItem('userToken');
-  }
-
   setLoggedUser(user: User) {
     localStorage.setItem('loggedUser', JSON.stringify(user));
     this.userSubject.next(user);
   }
-
+  updateAvatar(avatarUrl: string) {
+    const currentUser = this.userSubject.value;
+    if (currentUser) {
+      const updatedUser = { ...currentUser, avatar: avatarUrl };
+      localStorage.setItem('loggedUser', JSON.stringify(updatedUser));
+      this.userSubject.next(updatedUser);
+    }
+  }
   removeLoggedUser() {
     localStorage.removeItem('loggedUser');
     this.userSubject.next(null);
@@ -45,5 +43,14 @@ export class StoreService {
 
   getActiveChatID() {
     return this.activeChatID;
+  }
+
+  setUserToken(token: string) {
+    localStorage.setItem('userToken', token);
+  }
+
+  getUserToken() {
+    localStorage.getItem('userToken');
+    return localStorage.getItem('userToken');
   }
 }

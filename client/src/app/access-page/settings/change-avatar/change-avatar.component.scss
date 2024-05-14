@@ -1,0 +1,65 @@
+@import './../../../../assets/scss/variables';
+@import './../../../../assets/scss/placeholders';
+@import './../../../../assets/scss/mixins';
+
+.avatar {
+  width: 40vmin;
+  height: 40vmin;
+  position: relative;
+  margin: 5vmin auto;
+  transition-duration: .4s;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: .7vmin solid $primaryColor;
+  }
+
+  &__change {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: $textColor;
+    font-size: 4vmin;
+    opacity: 0;
+    background-color: $dynamicStateColor;
+    padding: 1vmin;
+    border-radius: 50%;
+    transition-duration: .4s;
+  }
+
+  &:hover {
+    .avatar__img {
+      filter: blur(5px);
+    }
+
+    .avatar__change {
+      opacity: 1;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .avatar {
+    width: 25vmin;
+    height: 25vmin;
+    margin: 5vmin auto;
+
+    img {
+      border: .3vmin solid $primaryColor;
+    }
+  }
+}

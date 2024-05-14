@@ -3,7 +3,6 @@ import userModel from "../models/users.model";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
-    console.log(id)
     if (!id) return;
     try {
         const user = await userModel.findOne({ _id: id });

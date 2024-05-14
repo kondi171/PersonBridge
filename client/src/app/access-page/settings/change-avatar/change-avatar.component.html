@@ -1,0 +1,5 @@
+<div (click)="fileInput.click()" class="avatar">
+  <img class="avatar__img" [src]="avatar" alt="Avatar">
+  <span class="avatar__change">Change Avatar</span>
+</div>
+<input #fileInput type="file" name="file" (change)="uploadAvatar($event)" hidden>

@@ -38,7 +38,6 @@ if (cluster.isMaster) {
   const dbname: string = "PersonBridge";
 
   mongoose.connect(`mongodb+srv://${username}:${password}@${clusterURL}.mongodb.net/${dbname}`);
-  // mongoose.connect(`mongodb+srv://${username}:${password}@${clusterURL}/${dbname}`);
 
   const db = mongoose.connection;
   const corsOptions = {
@@ -56,6 +55,11 @@ if (cluster.isMaster) {
   app.use(express.urlencoded({
     extended: true,
     limit: '50mb',
+  }));
+  app.use('/usersAvatars', express.static('usersAvatars', {
+    setHeaders: function (res, path) {
+      res.set('Cache-Control', 'no-cache');
+    }
   }));
 
   // Session configuration

@@ -1,7 +1,11 @@
 import express, { Router } from "express";
-import { editName, editLastname, editMail, editPassword, deleteMessages, deleteAccount } from '../controllers/settings.controller';
+import upload from "../middlewares/multer.middleware";
+import { editName, editLastname, editMail, editPassword, deleteMessages, deleteAccount, uploadAvatar } from '../controllers/settings.controller';
 
 const router: Router = express.Router();
+
+router.post('/v1/settings/avatar/:id', upload.single('avatar'), uploadAvatar);
+
 
 router.patch('/v1/settings/name', editName);
 router.patch('/v1/settings/lastname', editLastname);

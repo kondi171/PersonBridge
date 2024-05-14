@@ -10,6 +10,7 @@ import { Device } from '../../typescript/enums';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
 import { Friend, User } from '../../typescript/types';
+import { environment } from '../../app.environment';
 
 @Component({
   selector: 'app-panel',
@@ -29,29 +30,31 @@ export class PanelComponent {
   loggedUser: User | null = null;
   Device = Device;
   @Input() device: Device = Device.DESKTOP;
-  // name: string = '';
-  // lastname: string = '';
-  // friends: Friend[] = [];
-  // avatar: string = '';
-  // status: string = '';
   icons = {
     cog: faCog
   };
 
   constructor(private router: Router, private storeService: StoreService) {
-    // if (storeService.getLoggedUser()) {
-    //   this.name = storeService.getLoggedUser()!.name;
-    //   this.lastname = storeService.getLoggedUser()!.lastname;
-    //   this.status = storeService.getLoggedUser()!.status;
-    //   this.avatar = storeService.getLoggedUser()!.avatar;
-    //   this.friends = storeService.getLoggedUser()!.friends;
-    // }
+
     this.subscription = this.storeService.user$.subscribe(user => {
       this.loggedUser = user;
+      if (this.loggedUser?.avatar) {
+        const timestamp = new Date().getTime();
+        this.loggedUser.avatar = this.ensureFullURL(this.loggedUser.avatar) + `?${timestamp}`;
+      }
     });
+
+
   }
   showMessages(id: string) {
     this.storeService.setActiveChatID(id);
     this.router.navigate(['/access/chat', id]);
   }
+  ensureFullURL(path: string): string {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path; // Jest już pełnym URL-em
+    }
+    return `${environment.serverURL}/${path}`; // Dodaj bazowy URL serwera
+  }
+
 }

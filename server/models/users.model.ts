@@ -21,7 +21,7 @@ const UserSchema: Schema = new Schema({
     avatar: {
         type: String,
         required: false,
-        default: "./../../assets/img/Blank-Avatar.jpg"
+        default: "usersAvatars/Blank-Avatar.jpg"
     },
     status: {
         type: String,

@@ -21,6 +21,7 @@ import { FaceComponent } from './biometric-zone/face/face.component';
 import { VoiceComponent } from './biometric-zone/voice/voice.component';
 import { DeleteMessagesComponent } from './danger-zone/delete-messages/delete-messages.component';
 import { DeleteAccountComponent } from './danger-zone/delete-account/delete-account.component';
+import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 
 
 @Component({
@@ -31,6 +32,7 @@ import { DeleteAccountComponent } from './danger-zone/delete-account/delete-acco
     FontAwesomeModule,
     RouterModule,
     FooterComponent,
+    ChangeAvatarComponent,
     ModalComponent,
     EditNameComponent,
     EditLastnameComponent,
