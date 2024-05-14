@@ -1,9 +1,9 @@
 import express, { Router } from "express";
-import { getUsers, sendRequest, getRequests, cancelRequest } from '../controllers/explore.controller';
+import { findUsers, sendRequest, getRequests, cancelRequest } from '../controllers/explore.controller';
 
 const router: Router = express.Router();
 
-router.post('/v1/explore/users', getUsers);
+router.post('/v1/explore/find', findUsers);
 
 router.put('/v1/explore/request', sendRequest);
 

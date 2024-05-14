@@ -28,6 +28,7 @@
     "@ngrx/store-devtools": "^17.2.0",
     "@types/node-fetch": "^2.6.11",
     "angular2-notifications": "^16.0.1",
+    "jwt-decode": "^4.0.0",
     "ngx-toastr": "^18.0.0",
     "node-fetch": "^3.3.2",
     "rxjs": "~7.8.0",

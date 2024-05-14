@@ -41,7 +41,6 @@ export class PersonRowComponent {
     }
   }
 
-
   handleSendRequest(fullname: FullName) {
     this.yourRequests.push(this.person._id);
     this.requestCounter++;
@@ -59,7 +58,8 @@ export class PersonRowComponent {
         }
         this.updateUser.updateUser(this.yourID).then(data => {
           this.storeService.setLoggedUser(data);
-          this.yourID = this.storeService.getLoggedUser().id;
+          const loggedUser = this.storeService.getLoggedUser();
+          if (loggedUser) this.yourID = loggedUser._id;
         }).catch(error => {
           console.error('An Error Occured while user update:', error);
           this.toastr.error('An Error Occured while user update!', 'Error');

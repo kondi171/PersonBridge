@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { BackgroundEffectComponent } from '../side-components/background-effect/background-effect.component';
+import { BackgroundEffectComponent } from '../features/background-effect/background-effect.component';
 import { FormsModule } from '@angular/forms';
 import { RegisterData } from '../typescript/interfaces';
 import { environment } from '../app.environment';
@@ -62,7 +62,6 @@ export class RegisterPageComponent {
       valid = false;
     }
     if (!this.registerData.password || this.registerData.password.length < 6) {
-      console.log('Password must be at least 6 characters long!');
       this.toastr.error('Password must be at least 6 characters long!', 'Register Successful');
       valid = false;
     }

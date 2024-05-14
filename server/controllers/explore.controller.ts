@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import userModel from "../models/users.model";
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
+export const findUsers = async (req: Request, res: Response): Promise<void> => {
     const { yourID, searchInputValue } = req.body;
+    if (!yourID) return;
     try {
         const users = await userModel.find({
             $and: [
@@ -25,6 +26,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const getRequests = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
+    if (!id) return;
     try {
         const user = await userModel.find({
             "requests.received": id
@@ -45,6 +47,7 @@ export const getRequests = async (req: Request, res: Response): Promise<void> =>
 
 export const sendRequest = async (req: Request, res: Response): Promise<void> => {
     const { yourID, personID } = req.body;
+    if (!yourID) return;
     try {
         await userModel.findByIdAndUpdate(
             personID,
@@ -66,6 +69,7 @@ export const sendRequest = async (req: Request, res: Response): Promise<void> =>
 
 export const cancelRequest = async (req: Request, res: Response): Promise<void> => {
     const { yourID, personID } = req.body;
+    if (!yourID) return;
     try {
         await userModel.findByIdAndUpdate(
             personID,

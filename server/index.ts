@@ -11,6 +11,7 @@ import userRoutes from "./routes/users.routes";
 import authenticationRoutes from "./routes/authentication.routes";
 import accessRoutes from "./routes/access.routes";
 import exploreRoutes from "./routes/explore.routes";
+import settingsRoutes from "./routes/settings.routes";
 
 import startSocketServer from "./middlewares/websocket.middleware";
 
@@ -72,6 +73,7 @@ if (cluster.isMaster) {
   app.use(authenticationRoutes);
   app.use(accessRoutes);
   app.use(exploreRoutes);
+  app.use(settingsRoutes);
 
   const server = startSocketServer(app);
 

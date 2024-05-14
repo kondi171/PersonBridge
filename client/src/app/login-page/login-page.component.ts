@@ -2,7 +2,7 @@ import { Component, NgModule } from '@angular/core';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEnvelope, faFingerprint, faMicrophone, faKey } from '@fortawesome/free-solid-svg-icons';
-import { BackgroundEffectComponent } from '../side-components/background-effect/background-effect.component';
+import { BackgroundEffectComponent } from '../features/background-effect/background-effect.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StoreService } from '../services/store.service';
@@ -47,10 +47,6 @@ export class LoginPageComponent {
     this.router.navigate(['/register']);
   }
 
-  showSuccess() {
-
-  }
-
   onSubmit() {
     fetch(`${environment.apiUrl}/authentication/login`, {
       method: 'POST',
@@ -67,10 +63,11 @@ export class LoginPageComponent {
         return response.json();
       })
       .then(data => {
-        if (data.message === "No user found!") {
+        if (data.message) {
           this.toastr.error(data.message, 'Login Error');
           return;
         } else {
+          // this.storeService.setUserToken(data.token);
           this.storeService.setLoggedUser(data);
           this.socketService.emitLogin(data._id)
           this.router.navigate(['/access']);

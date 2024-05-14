@@ -1,0 +1,9 @@
+<div class="modal-content">
+  <h3>Delete Account</h3>
+  <strong>Are you sure?</strong>
+  <span>This operation is irreversible!</span>
+  <label for="password">Password:</label>
+  <input [(ngModel)]="password" class="input" type="password" name="password" id="password"
+    placeholder="Type password...">
+  <button (click)="deleteAccount()">Delete</button>
+</div>

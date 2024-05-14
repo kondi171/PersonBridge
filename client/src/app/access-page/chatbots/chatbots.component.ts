@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBrain, faChevronLeft, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FooterComponent } from '../../side-components/footer/footer.component';
+import { FooterComponent } from '../../features/footer/footer.component';
 import { Position } from '../../typescript/enums';
 import { RouterModule } from '@angular/router';
 

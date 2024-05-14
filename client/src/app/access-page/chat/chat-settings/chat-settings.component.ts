@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBellSlash, faCommentSlash, faLock, faKey, faA, faComments, faUserMinus, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { FooterComponent } from '../../../side-components/footer/footer.component';
+import { FooterComponent } from '../../../features/footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { Position } from '../../../typescript/enums';
 @Component({

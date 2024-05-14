@@ -9,7 +9,7 @@ import { SettingsComponent } from './access-page/settings/settings.component';
 import { ChatSettingsComponent } from './access-page/chat/chat-settings/chat-settings.component';
 import { ChatbotsComponent } from './access-page/chatbots/chatbots.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
-import { LoaderComponent } from './side-components/loader/loader.component';
+import { LoaderComponent } from './features/loader/loader.component';
 import { RedirectGuard } from './services/redirect-guard.service';
 import { AuthGuard } from './services/auth-guard.service';
 

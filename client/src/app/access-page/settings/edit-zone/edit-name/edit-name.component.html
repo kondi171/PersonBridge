@@ -1,0 +1,9 @@
+<form class="modal-content" (ngSubmit)="editName()">
+  <h3>Edit Name</h3>
+  <label for="new-name">Name:</label>
+  <input [(ngModel)]="newName" class="input" type="text" name="name" id="new-name" placeholder="Type name...">
+  <label for="password">Password:</label>
+  <input [(ngModel)]="password" class="input" type="password" name="password" id="password"
+    placeholder="Type password...">
+  <button type="submit">Change</button>
+</form>

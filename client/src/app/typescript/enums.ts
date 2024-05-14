@@ -22,3 +22,16 @@ export enum Position {
   STICKY,
   FIXED
 }
+
+export enum Modal {
+  CHANGE_AVATAR,
+  EDIT_NAME,
+  EDIT_LASTNAME,
+  EDIT_MAIL,
+  EDIT_PASSWORD,
+  SET_FINGERPRINT,
+  SET_FACE,
+  SET_VOICE,
+  DELETE_MESSAGES,
+  DELETE_ACCOUNT,
+}

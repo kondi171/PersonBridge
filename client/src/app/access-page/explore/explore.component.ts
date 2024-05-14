@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faMagnifyingGlass, faSearch, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { FooterComponent } from '../../side-components/footer/footer.component';
+import { FooterComponent } from '../../features/footer/footer.component';
 import { PersonRowComponent } from './person-row/person-row.component';
 import { Position } from '../../typescript/enums';
 import { environment } from '../../app.environment';
@@ -36,7 +36,7 @@ export class ExploreComponent implements OnInit {
   showRequests = false;
   requestCounter: number = 0;
 
-  constructor(private storeService: StoreService, private updateUser: UpdateUserService) {
+  constructor(private storeService: StoreService, private updateUser: UpdateUserService, private toastr: ToastrService) {
     const loggedUser = this.storeService.getLoggedUser();
     if (loggedUser) this.yourID = loggedUser._id;
   }
@@ -75,8 +75,11 @@ export class ExploreComponent implements OnInit {
   }
 
   handleFindPeople() {
-    if (this.searchInputValue.length === 0) return;
-    fetch(`${environment.apiUrl}/explore/users`, {
+    if (this.searchInputValue.length === 0) {
+      this.toastr.error('Search input is empty!', 'Search failed');
+      return;
+    }
+    fetch(`${environment.apiUrl}/explore/find`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

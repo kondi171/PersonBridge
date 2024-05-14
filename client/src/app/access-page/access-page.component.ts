@@ -5,19 +5,20 @@ import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { MessageRowComponent } from './panel/message-row/message-row.component';
 import { ChatComponent } from './chat/chat.component';
-import { NavbarComponent } from '../side-components/navbar/navbar.component';
+import { NavbarComponent } from '../features/navbar/navbar.component';
 import { PeopleComponent } from './people/people.component';
 import { ExploreComponent } from './explore/explore.component';
 import { SettingsComponent } from './settings/settings.component';
 import { PanelComponent } from './panel/panel.component';
-import { ModalComponent } from '../side-components/modal/modal.component';
-import { SomeonesAudioComponent } from './modal-content/someones-audio/someones-audio.component';
-import { YourAudioComponent } from './modal-content/your-audio/your-audio.component';
-import { SomeonesVideoComponent } from './modal-content/someones-video/someones-video.component';
-import { YourVideoComponent } from './modal-content/your-video/your-video.component';
-import { PINComponent } from './modal-content/pin/pin.component';
+
+import { ModalComponent } from '../features/modal-wrapper/modal-wrapper.component';
+import { SomeonesAudioComponent } from './modals/someones-audio/someones-audio.component';
+import { YourAudioComponent } from './modals/your-audio/your-audio.component';
+import { SomeonesVideoComponent } from './modals/someones-video/someones-video.component';
+import { YourVideoComponent } from './modals/your-video/your-video.component';
+import { PINComponent } from './modals/pin/pin.component';
 import { StoreService } from '../services/store.service';
-import { LoaderComponent } from '../side-components/loader/loader.component';
+import { LoaderComponent } from '../features/loader/loader.component';
 
 @Component({
   selector: 'app-access-page',
@@ -47,7 +48,7 @@ export class AccessPageComponent implements OnInit {
   isMobile = false;
   isModalVisible = true;
   device = Device.DESKTOP;
-  isLoaderVisible = true;
+  isLoaderVisible = false;
 
   constructor(private router: Router, private storeService: StoreService) { }
 
@@ -82,7 +83,6 @@ export class AccessPageComponent implements OnInit {
     const segments = this.router.url.split('/');
     return segments.length === 2 && segments[1] === 'access';
   }
-
 
   openModal() {
     this.isModalVisible = true;

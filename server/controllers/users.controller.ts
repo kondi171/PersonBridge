@@ -3,6 +3,7 @@ import userModel from "../models/users.model";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
+    if (!id) return;
     try {
         const user = await userModel.findOne({ _id: id });
         res.send(user);
@@ -15,7 +16,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
     const yourID = req.body.yourID;
     const personID = req.body.personID;
     const message = req.body.message;
-    console.log(message)
+    if (!yourID) return;
     try {
         const you = await userModel.findOne({ _id: yourID });
 

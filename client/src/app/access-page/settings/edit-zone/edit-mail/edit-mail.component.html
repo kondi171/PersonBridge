@@ -1,0 +1,9 @@
+<form class="modal-content" (ngSubmit)="editMail()">
+  <h3>Edit Mail</h3>
+  <label for="new-mail">Mail:</label>
+  <input [(ngModel)]="newMail" class="input" type="text" name="mail" id="new-mail" placeholder="Type mail...">
+  <label for="password">Password:</label>
+  <input [(ngModel)]="password" class="input" type="password" name="password" id="password"
+    placeholder="Type password...">
+  <button type="submit">Change</button>
+</form>

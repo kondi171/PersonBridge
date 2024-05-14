@@ -3,7 +3,7 @@ import { CardComponent } from './card/card.component';
 import { CardType } from '../../typescript/enums';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { FooterComponent } from '../../side-components/footer/footer.component';
+import { FooterComponent } from '../../features/footer/footer.component';
 import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-people',
