@@ -29,7 +29,7 @@ export class DeleteAccountComponent {
       this.toastr.error('Password which you provided is empty!', 'Delete failed');
       return;
     }
-    fetch(`${environment.apiUrl}/settings/account`, {
+    fetch(`${environment.apiURL}/settings/account`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'

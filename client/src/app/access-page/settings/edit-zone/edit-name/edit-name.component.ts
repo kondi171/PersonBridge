@@ -39,7 +39,7 @@ export class EditNameComponent {
       return;
     }
 
-    fetch(`${environment.apiUrl}/settings/name`, {
+    fetch(`${environment.apiURL}/settings/name`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'

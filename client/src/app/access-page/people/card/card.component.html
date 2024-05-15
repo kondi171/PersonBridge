@@ -1,4 +1,4 @@
-<div class="card" [ngClass]="{
+<div *ngIf="fadeOut" [@fadeOut] class="card" [ngClass]="{
   'card--online': type === CardType.ONLINE,
   'card--offline': type === CardType.OFFLINE,
   'card--blocked': type === CardType.BLOCKED,
@@ -7,9 +7,18 @@
   <div class="card-border-top">
   </div>
   <div class="img">
-    <img [src]="avatarSrc" [alt]="name">
+    <img [src]="person.avatar" [alt]="person.name">
   </div>
-  <span class="name">{{name}}</span>
-  <p class="mail">{{mail}}</p>
-  <button>Message</button>
+  <span class="name">{{person.name}} {{person.lastname}}</span>
+  <p class="mail">{{person.mail}}</p>
+  <div class="message-card" *ngIf="type === CardType.ONLINE || type === CardType.OFFLINE">
+    <button>Message</button>
+  </div>
+  <div class="blocked-card" *ngIf="type === CardType.BLOCKED">
+    <button (click)="unblock()">Unblock</button>
+  </div>
+  <div class="request-card" *ngIf="type === CardType.REQUEST">
+    <button (click)="acceptRequest()">Accept</button>
+    <button (click)="ignoreRequest()">Ignore</button>
+  </div>
 </div>

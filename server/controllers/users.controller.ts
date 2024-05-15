@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import userModel from "../models/users.model";
+import { Friend } from "../typescript/interfaces";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -25,7 +26,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
             return;
         }
 
-        const friendIndex = you.friends.findIndex((friend) => friend.id === personID);
+        const friendIndex = you.friends.findIndex((friend: Friend) => friend.id === personID);
 
         if (friendIndex === -1) {
             res.status(404).send({ message: "Nie znaleziono przyjaciela." });

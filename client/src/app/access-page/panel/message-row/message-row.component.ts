@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Friend } from '../../../typescript/types';
+import { Friend } from '../../../typescript/interfaces';
 import { StoreService } from '../../../services/store.service';
 import { GetUserService } from '../../../services/get-user.service';
 

@@ -4,8 +4,9 @@
       <fa-icon class="fa icon" [icon]="icons.chats" />
       <div class="text">Chats</div>
     </a>
-    <a routerLink="/access/people" routerLinkActive="active" class="item">
+    <a routerLink="/access/people" routerLinkActive="active" class="item" #rla="routerLinkActive">
       <fa-icon class="fa icon" [icon]="icons.friends" />
+      <span class="requests" *ngIf="requestsCounter > 0" [class.active]="rla.isActive">{{requestsCounter}}</span>
       <div class="text">People</div>
     </a>
     <a routerLink="/access/explore" routerLinkActive="active" class="item">

@@ -30,14 +30,14 @@ export class ChangeAvatarComponent {
       const formData = new FormData();
       formData.append('avatar', file);
 
-      fetch(`${environment.apiUrl}/settings/avatar/${this.yourID}`, {
+      fetch(`${environment.apiURL}/settings/avatar/${this.yourID}`, {
         method: 'POST',
         body: formData
       })
         .then(response => response.json())
         .then(data => {
           this.toastr.success('Avatar uploaded successfully!', 'Success');
-          fetch(`${environment.apiUrl}/access/user/${this.yourID}`, {
+          fetch(`${environment.apiURL}/access/user/${this.yourID}`, {
             method: 'GET',
           })
             .then(response => response.json())

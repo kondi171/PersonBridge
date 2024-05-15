@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { UserDocument } from "../typescript/interfaces";
+import { MessageSender, UserStatus } from "../typescript/enums";
 
 const UserSchema: Schema = new Schema({
     name: {
@@ -20,13 +21,13 @@ const UserSchema: Schema = new Schema({
     },
     avatar: {
         type: String,
-        required: false,
-        default: "usersAvatars/Blank-Avatar.jpg"
+        required: true,
+        default: "resources/avatars/Blank-Avatar.jpg"
     },
     status: {
         type: String,
         required: true,
-        default: "Online"
+        default: UserStatus.ONLINE
     },
     biometrics: {
         fingerprint: {
@@ -59,10 +60,10 @@ const UserSchema: Schema = new Schema({
         }
     ],
     requests: {
-        received: [],
-        sent: []
+        received: [String],
+        sent: [String]
     },
-    blocked: [],
+    blocked: [String],
     chatbots: []
 });
 

@@ -1,56 +1,51 @@
 import { Document } from "mongoose";
+import { Biometrics, Message } from "./types";
+import { UserStatus } from "./enums";
 
-export type User = {
-    _id: string,
-    name: string,
-    lastname: string,
-    mail: string,
-    password: string,
-    avatar: string,
-    status: string,
-    biometrics: {
-        fingerprint: string,
-        voice: string,
-        face: string,
-    },
-    friends: Friend[],
-    requests: {
-        received: [],
-        sent: []
-    },
-    blocked: [],
-    chatbots: []
-}
-
-export type Friend = {
-    id: string,
-    settings: {
-        nickname: string,
-        PIN: string,
-    },
-    messages: Message[]
-}
-
-export type Message = {
-    content: string,
-    date: string,
-    sender: string
-}
-
-export interface Biometrics {
-    fingerprint?: string;
-    voice?: string;
-    face?: string;
-}
+// export interface User {
+//     _id: string,
+//     name: string,
+//     lastname: string,
+//     mail: string,
+//     password: string,
+//     avatar: string,
+//     status: string,
+//     biometrics: {
+//         fingerprint: string,
+//         voice: string,
+//         face: string,
+//     },
+//     friends: Friend[],
+//     requests: {
+//         received: string[],
+//         sent: string[]
+//     },
+//     blocked: string[],
+//     chatbots: []
+// }
 
 export interface UserDocument extends Document {
     name: string;
     lastname: string;
     mail: string;
     password: string;
-    avatar?: string;
-    status: string;
-    biometrics?: Biometrics;
+    avatar: string;
+    status: UserStatus;
+    biometrics: Biometrics;
     friends: Friend[];
-    chatbots: any[]; // Typ dla chatbots może być dowolny
+    requests: {
+        received: string[];
+        sent: string[];
+    };
+    blocked: string[];
+    chatbots: any[];
+}
+
+export interface Friend {
+    id: string,
+    settings: {
+        nickname: string,
+        PIN: string,
+    },
+    messages: Message[]
 }

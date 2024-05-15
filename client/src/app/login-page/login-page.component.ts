@@ -9,6 +9,7 @@ import { StoreService } from '../services/store.service';
 import { environment } from '../app.environment';
 import { SocketService } from '../services/socket.service';
 import { ToastrService } from 'ngx-toastr';
+import { LoginData } from '../typescript/types';
 
 
 @Component({
@@ -24,7 +25,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./login-page.component.scss'],
 })
 export class LoginPageComponent {
-  loginData = {
+  loginData: LoginData = {
     mail: '',
     password: ''
   };
@@ -48,7 +49,7 @@ export class LoginPageComponent {
   }
 
   onSubmit() {
-    fetch(`${environment.apiUrl}/authentication/login`, {
+    fetch(`${environment.apiURL}/authentication/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

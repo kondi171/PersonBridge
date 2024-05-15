@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCircleCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
-import { SearchResult } from '../../../typescript/interfaces';
+import { SearchResult } from '../../../typescript/types';
 import { environment } from '../../../app.environment';
 import { StoreService } from '../../../services/store.service';
 import { UpdateUserService } from '../../../services/update-user.service';
@@ -16,7 +16,7 @@ import { FullName } from '../../../typescript/types';
   templateUrl: './person-row.component.html',
   styleUrl: './person-row.component.scss'
 })
-export class PersonRowComponent {
+export class PersonRowComponent implements OnInit {
   @Input() person: SearchResult = {
     _id: '',
     name: '',
@@ -40,12 +40,16 @@ export class PersonRowComponent {
       this.yourRequests = loggedUser.requests.sent;
     }
   }
+  ngOnInit(): void {
+    const timestamp = new Date().getTime();
+    this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
+  }
 
   handleSendRequest(fullname: FullName) {
     this.yourRequests.push(this.person._id);
     this.requestCounter++;
     this.requestCounterChange.emit(this.requestCounter);
-    fetch(`${environment.apiUrl}/explore/request`, {
+    fetch(`${environment.apiURL}/explore/request`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -64,7 +68,7 @@ export class PersonRowComponent {
           console.error('An Error Occured while user update:', error);
           this.toastr.error('An Error Occured while user update!', 'Error');
         });
-        this.toastr.info('Request Sent!', `${fullname.name} ${fullname.lastname}`);
+        this.toastr.success('Request Sent!', `${fullname.name} ${fullname.lastname}`);
         return response.json();
       })
       .catch(error => {
@@ -80,7 +84,7 @@ export class PersonRowComponent {
     if (indexToRemove !== -1) {
       this.yourRequests.splice(indexToRemove, 1);
     }
-    fetch(`${environment.apiUrl}/explore/request`, {
+    fetch(`${environment.apiURL}/explore/request`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -105,5 +109,11 @@ export class PersonRowComponent {
         this.toastr.error('Internal Server Error!', 'Error');
         throw error;
       });
+  }
+  ensureFullURL(path: string): string {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    return `${environment.serverURL}/${path}`;
   }
 }

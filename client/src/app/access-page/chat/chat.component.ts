@@ -105,7 +105,7 @@ export class ChatComponent {
         sender: 'Self'
       }
     };
-    fetch(`${environment.apiUrl}/send`, {
+    fetch(`${environment.apiURL}/send`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

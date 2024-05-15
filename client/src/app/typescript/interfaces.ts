@@ -1,19 +1,32 @@
-export interface RegisterData {
-    mail: string,
-    name: string,
-    lastname: string,
-    password: string
-}
+import { Message } from "./types"
 
-export interface SearchResult {
+export type User = {
     _id: string,
-    mail: string,
     name: string,
     lastname: string,
+    mail: string,
+    password: string,
     avatar: string,
+    status: string,
+    biometrics: {
+        fingerprint: string,
+        voice: string,
+        face: string,
+    },
+    friends: Friend[],
+    requests: {
+        received: [],
+        sent: []
+    },
+    blocked: [],
+    chatbots: []
 }
 
-export interface LoginData {
-    mail: string,
-    password: string
+export type Friend = {
+    id: string,
+    settings: {
+        nickname: string,
+        PIN: string,
+    },
+    messages: Message[]
 }

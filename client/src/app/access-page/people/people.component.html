@@ -5,46 +5,42 @@
     </a>
     <span>People</span>
     <fa-icon class="fa icon" [icon]="icons.section" />
+    <div class="friends" [@fadeInTotal]>
+      <strong>{{totalFriends}}</strong>
+      <p>
+        <span>Friends</span>
+        <fa-icon class="fa icon" [icon]="icons.friends" />
+      </p>
+    </div>
   </h2>
-  <div class="box">
-    <h3><span class="online">On</span>line - <strong>3</strong></h3>
-    <div class="users">
-      <app-card name="Marshall Johnston" avatarSrc="./../../assets/img/landing-avatars/Marshall.jpg"
-        mail="Marshall@example.com" [type]="cardType.ONLINE" />
-      <app-card name="Dawn Thompson" avatarSrc="./../../assets/img/landing-avatars/Dawn.jpg" mail="Dawn@example.com"
-        [type]="cardType.ONLINE" />
-      <app-card name="Edith Pena" avatarSrc="./../../assets/img/landing-avatars/Edith.jpg" mail="Edith@example.com"
-        [type]="cardType.ONLINE" />
+  <div class="boxes">
+    <div class="box" [@fadeInCard]>
+      <h3><span class="online">On</span>line - <strong>{{online.length}}</strong></h3>
+      <div class="users">
+        <app-card *ngFor="let on of online" [person]="on" [type]="cardType.ONLINE" />
+      </div>
+    </div>
+    <div class="box" [@fadeInCard]>
+      <h3><span class="offline">Off</span>line - <strong>{{offline.length}}</strong></h3>
+      <div class="users">
+        <app-card *ngFor="let off of offline" [person]="off" [type]="cardType.OFFLINE" />
+      </div>
+    </div>
+    <div class="box" [@fadeInCard]>
+      <h3>Blocked - <strong>{{blocked.length}}</strong></h3>
+      <div class="users">
+        <app-card *ngFor="let block of blocked" [person]="block" [type]="cardType.BLOCKED"
+          (blockedHandled)="handleBlocked($event)" />
+      </div>
+    </div>
+    <div class="box" [@fadeInCard]>
+      <h3>Reqests - <strong>{{requests.length}}</strong></h3>
+      <div class="users">
+        <app-card *ngFor="let request of requests" [person]="request" [type]="cardType.REQUEST"
+          (requestHandled)="handleRequest($event)" />
+      </div>
     </div>
   </div>
-  <div class="box">
-    <h3><span class="offline">Off</span>line - <strong>4</strong></h3>
-    <div class="users">
-      <app-card name="Edna Willis" avatarSrc="./../../assets/img/landing-avatars/Edna.jpg" mail="Edna@example.com"
-        [type]="cardType.OFFLINE" />
-      <app-card name="George Perkins" avatarSrc="./../../assets/img/landing-avatars/George.jpg"
-        mail="George@example.com" [type]="cardType.OFFLINE" />
-      <app-card name="Johnni Hopkins" avatarSrc="./../../assets/img/landing-avatars/Johnni.jpg"
-        mail="Johnni@example.com" [type]="cardType.OFFLINE" />
-      <app-card name="Marvin Murphy" avatarSrc="./../../assets/img/landing-avatars/Marvin.jpg" mail="Marvin@example.com"
-        [type]="cardType.OFFLINE" />
-    </div>
-  </div>
-  <div class="box">
-    <h3>Blocked - <strong>2</strong></h3>
-    <div class="users">
-      <app-card name="Ryan Arnold" avatarSrc="./../../assets/img/landing-avatars/Ryan.jpg" mail="Ryan@example.com"
-        [type]="cardType.BLOCKED" />
-      <app-card name="Tamara Gomez" avatarSrc="./../../assets/img/landing-avatars/Tamara.jpg" mail="Tamara@example.com"
-        [type]="cardType.BLOCKED" />
-    </div>
-  </div>
-  <div class="box">
-    <h3>Reqests - <strong>1</strong></h3>
-    <div class="users">
-      <app-card name="Tracy Burton" avatarSrc="./../../assets/img/landing-avatars/Tracy.jpg" mail="Tracy@example.com"
-        [type]="cardType.REQUEST" />
-    </div>
-  </div>
+
   <app-footer />
 </section>

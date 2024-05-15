@@ -20,7 +20,7 @@ export class DeleteMessagesComponent {
   }
 
   deleteMessages() {
-    fetch(`${environment.apiUrl}/settings/messages`, {
+    fetch(`${environment.apiURL}/settings/messages`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'

@@ -10,7 +10,7 @@ import { ModalComponent } from '../../features/modal-wrapper/modal-wrapper.compo
 import { Modal } from '../../typescript/enums';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { User } from '../../typescript/types';
+import { User } from '../../typescript/interfaces';
 
 import { EditNameComponent } from './edit-zone/edit-name/edit-name.component';
 import { EditLastnameComponent } from './edit-zone/edit-lastname/edit-lastname.component';

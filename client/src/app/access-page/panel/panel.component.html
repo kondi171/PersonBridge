@@ -18,12 +18,13 @@
 
   </header>
   <div class="messages">
-    <div *ngIf="loggedUser?.friends?.length" class="no-messages">
+    <div class="no-messages">
+      <!-- <div *ngIf="loggedUser?.friends?.length === 0" class="no-messages"> -->
       There is no messages yet!
     </div>
-    <div (click)="showMessages(friend.id)" class="message" *ngFor="let friend of loggedUser?.friends">
-      <app-message-row [person]="friend"></app-message-row>
-    </div>
+    <!-- <div (click)="showMessages(friend.id)" class="message" *ngFor="let friend of loggedUser?.friends"> -->
+    <!-- <app-message-row [person]="friend"></app-message-row> -->
+    <!-- </div> -->
   </div>
   <footer class="footer">
     <ng-template [ngIf]="device === Device.DESKTOP">

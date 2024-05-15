@@ -6,17 +6,14 @@ import "express-session";
 //     }
 // }
 
-export type Friend = {
-    id: string,
-    settings: {
-        nickname: string,
-        PIN: string,
-    },
-    messages: Message[]
-}
-
 export type Message = {
     content: string,
     date: string,
     sender: string
+}
+
+export type Biometrics = {
+    fingerprint: string;
+    voice: string;
+    face: string;
 }

@@ -7,8 +7,8 @@ import path from 'path';
 export const uploadAvatar = async (req: Request, res: Response): Promise<void> => {
     if (req.file && req.params.id) {
         const userID = req.params.id;
-        const filePath = `usersAvatars/${req.file.filename}`;
-        const avatarDirectory = path.join(__dirname, '..', 'usersAvatars');
+        const filePath = `resources/avatars/${req.file.filename}`;
+        const avatarDirectory = path.join(__dirname, '..', 'resources/avatars');
         const newAvatarPath = path.join(avatarDirectory, req.file.filename);
         try {
             const files = await fsPromises.readdir(avatarDirectory);

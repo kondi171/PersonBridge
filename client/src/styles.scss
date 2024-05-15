@@ -11,11 +11,10 @@ body {
   // height: 100vh;
   // overflow-y: hidden;
   overflow: hidden;
-  background-color: $bgColor;
-  // background-image: url('./assets/img/crossline-lines.webp');
-  // background-image: url('./assets/img/cork-board.webp');
+  background-color: $secondaryColor;
   background-image: url('./assets/img/prism.png');
-  // background-blend-mode: exclusion;
+  background-image: url('./assets/img/black_linen_v2.png');
+  // background-blend-mode: hard-light;
 }
 
 ::selection {

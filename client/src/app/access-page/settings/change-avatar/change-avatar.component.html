@@ -2,4 +2,5 @@
   <img class="avatar__img" [src]="avatar" alt="Avatar">
   <span class="avatar__change">Change Avatar</span>
 </div>
-<input #fileInput type="file" name="file" (change)="uploadAvatar($event)" hidden>
+<input #fileInput type="file" name="file" (change)="uploadAvatar($event)"
+  accept="image/jpeg, image/png, image/gif, image/webp, image/svg+xml, image/avif" hidden>

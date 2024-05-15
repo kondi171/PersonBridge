@@ -39,7 +39,7 @@ export class EditLastnameComponent {
       this.toastr.error('Lastname which you provided is the same as the previous one!', 'Editing failed');
       return;
     }
-    fetch(`${environment.apiUrl}/settings/lastname`, {
+    fetch(`${environment.apiURL}/settings/lastname`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'

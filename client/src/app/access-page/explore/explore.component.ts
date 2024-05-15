@@ -7,18 +7,27 @@ import { PersonRowComponent } from './person-row/person-row.component';
 import { Position } from '../../typescript/enums';
 import { environment } from '../../app.environment';
 import { FormsModule } from '@angular/forms';
-import { SearchResult } from '../../typescript/interfaces';
+import { SearchResult } from '../../typescript/types';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
 import { UpdateUserService } from '../../services/update-user.service';
 import { ToastrService } from 'ngx-toastr';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PersonRowComponent, FooterComponent],
   templateUrl: './explore.component.html',
-  styleUrl: './explore.component.scss'
+  styleUrl: './explore.component.scss',
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-in', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class ExploreComponent implements OnInit {
   Position = Position;
@@ -46,7 +55,7 @@ export class ExploreComponent implements OnInit {
   }
 
   handleSentRequest() {
-    fetch(`${environment.apiUrl}/explore/requests/${this.yourID}`, {
+    fetch(`${environment.apiURL}/explore/requests/${this.yourID}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -79,7 +88,7 @@ export class ExploreComponent implements OnInit {
       this.toastr.error('Search input is empty!', 'Search failed');
       return;
     }
-    fetch(`${environment.apiUrl}/explore/find`, {
+    fetch(`${environment.apiURL}/explore/find`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -105,4 +114,5 @@ export class ExploreComponent implements OnInit {
   updateRequestCounter(newCounter: number) {
     this.requestCounter = newCounter;
   }
+
 }

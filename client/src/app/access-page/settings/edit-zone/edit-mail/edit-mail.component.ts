@@ -38,7 +38,7 @@ export class EditMailComponent {
       this.toastr.error('Mail which you provided is the same as the previous one!', 'Editing failed');
       return;
     }
-    fetch(`${environment.apiUrl}/settings/mail`, {
+    fetch(`${environment.apiURL}/settings/mail`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'

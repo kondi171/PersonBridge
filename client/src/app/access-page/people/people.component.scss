@@ -4,7 +4,10 @@
 
 .people {
   height: 100vh;
+  width: 100%;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 
   &::-webkit-scrollbar {
     display: none;
@@ -17,59 +20,165 @@
     @extend %sectionHeading;
   }
 
-  .box {
-    width: 100%;
-    padding: 0 4vmin;
+  .boxes {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: center;
 
-    &:nth-of-type(even) {
-      background-color: lighten($dynamicStateColor, 10%);
+    &::-webkit-scrollbar {
+      display: none;
     }
 
-    h3 {
-      font-family: $decorativeFont;
-      font-size: 6vmin;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    .box {
+      width: 100%;
+      padding: 0 4vmin;
+      flex: 1;
+
+      &:nth-of-type(even) {
+        background-color: lighten($dynamicStateColor, 10%);
+      }
+
+      h3 {
+        font-family: $decorativeFont;
+        font-size: 6vmin;
+        color: $primaryColor;
+        font-weight: bold;
+        text-align: center;
+        padding: 6vmin;
+
+        strong {
+          color: $textColor;
+        }
+
+        span.online {
+          color: $onlineColor;
+        }
+
+        span.offline {
+          color: $offlineColor;
+        }
+      }
+
+      .users {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+  }
+
+  .friends {
+    position: fixed;
+    width: 25%;
+    top: 10vh;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(2, 115, 94, 0.5);
+    opacity: 0.7;
+    padding: 1vmin;
+    border-radius: 2vmin;
+    margin: 2vmin;
+    z-index: 20;
+
+    strong {
+      font-size: 5vmin;
       color: $primaryColor;
-      font-weight: bold;
-      text-align: center;
-      padding: 6vmin;
-
-      strong {
-        color: $textColor;
-      }
-
-      span.online {
-        color: $onlineColor;
-      }
-
-      span.offline {
-        color: $offlineColor;
-      }
     }
 
-    .users {
+    p {
+      color: $textColor;
+      margin: 0 2vmin;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
+
+      span {
+        font-size: 3vmin;
+        margin-right: 1vmin;
+      }
+
+      .icon {
+        font-size: 4vmin;
+      }
     }
+  }
+
+}
+
+@media screen and (min-width: 540px) {
+  .people .friends {
+    margin: 6vmin 2vmin;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .people .friends {
+    width: 15%;
+    margin: 10vmin 2vmin;
   }
 }
 
 @media screen and (min-width: 1024px) {
   .people {
-    .box {
-      h3 {
-        font-family: $decorativeFont;
-        font-size: 6vmin;
-        color: $primaryColor;
+    // height: 130vh;
+
+    .boxes {
+      // flex: 1;
+      flex-shrink: 0 !important;
+
+      .box {
+        h3 {
+          font-family: $decorativeFont;
+          font-size: 6vmin;
+          color: $primaryColor;
+        }
+
+        .users {
+          width: 100%;
+          display: flex;
+          justify-content: space-evenly;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+      }
+    }
+
+    .friends {
+      position: absolute;
+      width: 20%;
+      top: 12vh;
+      margin: 2vmin;
+
+      strong {
+        font-size: 5vmin;
       }
 
-      .users {
-        width: 100%;
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        flex-wrap: wrap;
+      p {
+        justify-content: center;
+
+        span {
+          font-size: 2vmin;
+          margin-right: 0;
+        }
+
+        .icon {
+          width: 10%;
+          font-size: 3vmin;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
       }
     }
   }

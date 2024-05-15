@@ -7,7 +7,7 @@
     <fa-icon class="fa icon" [icon]="icons.section" />
   </h2>
 
-  <div class="find" *ngIf="showResults">
+  <div class="find" *ngIf="showResults" [@fadeIn]>
     <h3>Find your beloved person...</h3>
     <div class="searchbar">
       <div class="input-container">
@@ -29,7 +29,7 @@
 
     </div>
   </div>
-  <div class="request" *ngIf="showRequests">
+  <div class="request" *ngIf="showRequests" [@fadeIn]>
     <h3 class="request__count">{{requestCounter}} {{requestCounter === 1 ? 'requests' : ' request'}} sent</h3>
     <app-person-row *ngFor="let result of requests" [person]="result" [requestCounter]="requestCounter"
       (requestCounterChange)="updateRequestCounter($event)">

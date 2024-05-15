@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../app.environment';
-import { LoginData } from '../typescript/interfaces';
+import { LoginData } from '../typescript/types';
 import { StoreService } from './store.service';
 
 @Injectable({

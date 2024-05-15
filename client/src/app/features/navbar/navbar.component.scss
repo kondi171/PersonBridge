@@ -25,6 +25,7 @@
         color: $textColor;
         text-decoration: none;
         font-size: 3vmax;
+        position: relative;
 
         &:last-of-type {
           display: none;
@@ -36,6 +37,23 @@
 
         .text {
           display: none;
+        }
+
+        .requests {
+          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 4vmin;
+          height: 4vmin;
+          top: -3vmin;
+          right: -3vmin;
+          padding: 3vmin;
+          color: $bgColor;
+          border-radius: 50%;
+          background-color: $primaryColor;
+          font-size: 4vmin;
+          font-family: $decorativeFont;
         }
       }
     }
@@ -85,6 +103,25 @@
           text-align: center;
           height: 10%;
           text-decoration: none;
+          position: relative;
+
+          .requests {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2vmin;
+            height: 2vmin;
+            top: -2vmin;
+            right: 5vmin;
+            padding: 2vmin;
+            color: $bgColor;
+            border-radius: 50%;
+            background-color: $primaryColor;
+            font-size: 2vmin;
+            font-family: $decorativeFont;
+            transition-duration: .4s;
+          }
 
           &:last-of-type {
             display: flex;
@@ -110,13 +147,21 @@
             .icon {
               transform: scale(1.1);
               color: $primaryColor;
-
             }
 
             .text {
               color: $primaryColor;
               transform: skew(10deg);
+            }
 
+            span.requests {
+              color: $bgColor;
+              background-color: $primaryColor;
+
+              &.active {
+                color: $bgColor;
+                background-color: $primaryColor;
+              }
             }
           }
 
@@ -157,9 +202,6 @@
         width: 17vw;
       }
 
-      .items {
-        .item {}
-      }
     }
   }
 }
@@ -171,6 +213,15 @@
 
       &:hover {
         width: 14vw;
+
+        .items .item .requests {
+          background-color: $textColor;
+
+          &.active {
+            color: $bgColor;
+            background-color: $primaryColor;
+          }
+        }
       }
     }
   }

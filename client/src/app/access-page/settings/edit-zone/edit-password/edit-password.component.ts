@@ -43,7 +43,7 @@ export class EditPasswordComponent {
       return;
     }
 
-    fetch(`${environment.apiUrl}/settings/password`, {
+    fetch(`${environment.apiURL}/settings/password`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'

@@ -6,6 +6,8 @@ import { Device } from '../../typescript/enums';
 import { StoreService } from '../../services/store.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { User } from '../../typescript/interfaces';
 
 @Component({
   selector: 'app-navbar',
@@ -19,9 +21,13 @@ export class NavbarComponent {
   Device = Device;
   @Input() device = Device.DESKTOP;
   chatID: string = '';
-
+  subscription: Subscription;
+  requestsCounter: number = 0;
   constructor(private storeService: StoreService, private router: Router) {
     this.chatID = storeService.getActiveChatID();
+    this.subscription = this.storeService.counter$.subscribe(counter => {
+      this.requestsCounter = counter;
+    });
   }
 
   get isChatActive(): boolean {

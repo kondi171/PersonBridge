@@ -9,7 +9,7 @@ export class UpdateUserService {
     constructor() { }
 
     updateUser(id: string) {
-        return fetch(`${environment.apiUrl}/access/user/${id}`, {
+        return fetch(`${environment.apiURL}/access/user/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

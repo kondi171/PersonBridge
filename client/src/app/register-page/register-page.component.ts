@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackgroundEffectComponent } from '../features/background-effect/background-effect.component';
 import { FormsModule } from '@angular/forms';
-import { RegisterData } from '../typescript/interfaces';
+import { RegisterData } from '../typescript/types';
 import { environment } from '../app.environment';
 import { ToastrService } from 'ngx-toastr';
 
@@ -28,7 +28,7 @@ export class RegisterPageComponent {
   }
 
   registerUser() {
-    fetch(`${environment.apiUrl}/authentication/register`, {
+    fetch(`${environment.apiURL}/authentication/register`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -62,11 +62,11 @@ export class RegisterPageComponent {
       valid = false;
     }
     if (!this.registerData.password || this.registerData.password.length < 6) {
-      this.toastr.error('Password must be at least 6 characters long!', 'Register Successful');
+      this.toastr.error('Password must be at least 6 characters long!', 'Register Error');
       valid = false;
     }
     if (valid) {
-      this.toastr.success('Registration successful!', 'Register Error');
+      this.toastr.success('Registration successful!', 'Register Successful');
       this.registerUser();
       this.registerData = {
         mail: '',

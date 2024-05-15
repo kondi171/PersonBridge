@@ -3,11 +3,20 @@ import userModel from "../models/users.model";
 
 export const findUsers = async (req: Request, res: Response): Promise<void> => {
     const { yourID, searchInputValue } = req.body;
-    if (!yourID) return;
+    if (!yourID) {
+        res.status(400).json({ message: "Missing user ID" });
+        return;
+    }
     try {
+        const currentUser = await userModel.findById(yourID, 'friends');
+        if (!currentUser) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+        const friendsIDs = currentUser.friends.map(friend => friend.id);
         const users = await userModel.find({
             $and: [
-                { _id: { $ne: yourID } },
+                { _id: { $nin: [yourID, ...friendsIDs] } },
                 {
                     $or: [
                         { name: { $regex: searchInputValue, $options: "i" } },
@@ -17,10 +26,15 @@ export const findUsers = async (req: Request, res: Response): Promise<void> => {
                 }
             ]
         }, { mail: 1, name: 1, lastname: 1, avatar: 1 });
-        if (users.length === 0) res.send({ message: "No users found!" });
-        else res.send(users);
+
+        if (users.length === 0) {
+            res.send({ message: "No users found!" });
+        } else {
+            res.send(users);
+        }
     } catch (error) {
-        res.status(500).send(error);
+        console.error('Error during findUsers operation:', error);
+        res.status(500).json({ message: "An error occurred during the search.", error: error });
     }
 };
 
