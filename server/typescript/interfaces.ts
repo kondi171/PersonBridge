@@ -47,5 +47,10 @@ export interface Friend {
         nickname: string,
         PIN: number,
     },
+    accessibility: {
+        mute: boolean,
+        ignore: boolean,
+        block: boolean
+    },
     messages: Message[]
 }

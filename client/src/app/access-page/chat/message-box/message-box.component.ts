@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Message } from '../../../typescript/types';
-import { StoreService } from '../../../services/store.service';
 import { Subscription } from 'rxjs';
-import { User } from '../../../typescript/interfaces';
+import { StoreService } from '../../../services/store.service';
+import { FriendChatData, User } from '../../../typescript/interfaces';
 import { environment } from '../../../app.environment';
+import { MessageSender } from '../../../typescript/enums';
+
 @Component({
   selector: 'app-message-box',
   standalone: true,
@@ -17,24 +18,32 @@ export class MessageBoxComponent implements OnInit {
   @Input() message: {
     content: string;
     date: Date;
-    sender: string;
+    sender: MessageSender;
   } = {
       content: '',
       date: new Date(),
-      sender: ''
+      sender: MessageSender.YOU
     };
-  @Input() friendData = {
+
+  @Input() friendData: FriendChatData = {
     id: '',
     name: '',
     lastname: '',
     status: '',
     avatar: '',
+    accessibility: {
+      mute: false,
+      ignore: false,
+      block: false,
+    },
     settings: {
       nickname: '',
       PIN: 0,
-    }
+    },
+    blocked: []
   };
 
+  MessageSender = MessageSender;
   loggedUserSubscription: Subscription;
   loggedUser: User | null = null;
   formattedDate: string = '';

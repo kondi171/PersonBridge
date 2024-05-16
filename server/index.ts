@@ -10,6 +10,7 @@ import { cpus } from 'os';
 import authenticationRoutes from "./routes/authentication.routes";
 import accessRoutes from "./routes/access.routes";
 import chatRoutes from "./routes/chat.routes";
+import chatSettingsRoutes from "./routes/chat-settings.routes";
 import peopleRoutes from "./routes/people.routes";
 import exploreRoutes from "./routes/explore.routes";
 import settingsRoutes from "./routes/settings.routes";
@@ -77,6 +78,7 @@ app.use(session({
 app.use(authenticationRoutes);
 app.use(accessRoutes);
 app.use(chatRoutes);
+app.use(chatSettingsRoutes);
 app.use(peopleRoutes);
 app.use(exploreRoutes);
 app.use(settingsRoutes);

@@ -8,7 +8,8 @@ import { NavbarComponent } from "../../features/navbar/navbar.component";
 import { Device } from '../../typescript/enums';
 import { CommonModule, DatePipe } from '@angular/common';
 import { StoreService } from '../../services/store.service';
-import { Friend, MessageRow, User } from '../../typescript/interfaces';
+import { User } from '../../typescript/interfaces';
+import { MessageRow } from '../../typescript/types';
 import { environment } from '../../app.environment';
 import { ToastrService } from 'ngx-toastr';
 
@@ -105,7 +106,6 @@ export class PanelComponent implements OnInit {
   }
 
   showMessages(id: string) {
-    console.log(id)
     if (id === this.activeChatID && this.device === Device.DESKTOP && !this.componentFirstInit) return;
     this.storeService.updateChatID(id);
     this.router.navigate(['/access/chat/', id]);

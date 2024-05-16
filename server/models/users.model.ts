@@ -48,13 +48,33 @@ const UserSchema: Schema = new Schema({
             id: String,
             settings: {
                 nickname: String,
-                PIN: Number,
+                PIN: {
+                    type: Number,
+                    default: 0
+                },
+            },
+            accessibility: {
+                mute: {
+                    type: Boolean,
+                    default: false,
+                    required: true
+                },
+                ignore: {
+                    type: Boolean,
+                    default: false,
+                    required: true
+                },
+                block: {
+                    type: Boolean,
+                    default: false,
+                    required: true
+                },
             },
             messages: [
                 {
                     content: String,
                     date: Date,
-                    sender: String
+                    sender: Number
                 }
             ]
         }

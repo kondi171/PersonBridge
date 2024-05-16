@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MessageRow } from '../../../typescript/interfaces';
+import { MessageRow } from '../../../typescript/types';
 import { UserStatus } from '../../../typescript/enums';
 import { environment } from '../../../app.environment';
 

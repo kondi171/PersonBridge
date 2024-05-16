@@ -1,53 +1,7 @@
 import { Request, Response } from "express";
 import userModel from "../models/users.model";
-import { Friend } from "../typescript/interfaces";
+import { MessageSender } from "../typescript/enums";
 
-// Przyda się podczas implementacji chatSettings
-// export const getUserMessages = async (req: Request, res: Response): Promise<void> => {
-//     const userId = req.params.id;
-//     if (!userId) {
-//         res.status(400).json({ message: "User ID is required" });
-//         return;
-//     }
-//     try {
-//         const user = await userModel.findById(userId);
-//         if (!user) {
-//             res.status(404).json({ message: "User not found." });
-//             return;
-//         }
-
-//         const friendsData: any[] = user.friends.map(friend => friend); // Załóżmy, że friends jest już poprawnie typowany w Twoim modelu
-//         const friendsIDs = user.friends.map(friend => friend.id); // Zbierz ID przyjaciół
-
-//         if (friendsData.length === 0) {
-//             res.status(200).json([]);
-//             return;
-//         }
-
-//         // Znajdź wszystkich przyjaciół w bazie danych
-//         const friends = await userModel.find({
-//             '_id': { $in: friendsIDs }
-//         }).select('name lastname avatar status'); // Pobierz tylko potrzebne informacje
-
-//         // Przypisz dodatkowe dane do wyników wyszukiwania
-//         const results = friends.map(friend => {
-//             const friendData = friendsData.find(f => f.id === friend._id.toString());
-//             return {
-//                 id: friend._id,
-//                 name: friend.name,
-//                 lastname: friend.lastname,
-//                 avatar: friend.avatar,
-//                 status: friend.status,
-//                 settings: friendData ? friendData.settings : {},
-//                 messages: friendData ? friendData.messages : []
-//             };
-//         });
-//         console.log(results)
-//         res.json(results);
-//     } catch (error) {
-//         res.status(500).send(error);
-//     }
-// };
 export const getUserChat = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID } = req.params;
 
@@ -65,7 +19,7 @@ export const getUserChat = async (req: Request, res: Response): Promise<void> =>
             res.status(404).json({ message: "Friend not found" });
             return;
         }
-        const friendData = await userModel.findById(friendID).select('name lastname avatar status');
+        const friendData = await userModel.findById(friendID).select('name lastname avatar status blocked');
         if (!friendData) {
             res.status(404).json({ message: "Friend data not found" });
             return;
@@ -77,7 +31,9 @@ export const getUserChat = async (req: Request, res: Response): Promise<void> =>
                 lastname: friendData.lastname,
                 avatar: friendData.avatar,
                 status: friendData.status,
-                settings: friendRelation.settings
+                accessibility: friendRelation.accessibility,
+                settings: friendRelation.settings,
+                blocked: friendData.blocked
             },
             messages: friendRelation.messages
         });
@@ -105,21 +61,27 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
         const newMessage = {
             content: message,
             date: new Date(),
-            sender: 'Self'
+            sender: MessageSender.YOU
         };
         friend.messages.push(newMessage);
         await user.save();
         const friendDocument = await userModel.findById(friendID);
-        if (friendDocument) {
-            const userInFriend = friendDocument.friends.find(f => f.id === yourID);
-            if (userInFriend) {
+        if (!friendDocument) {
+            res.status(404).json({ message: "Friend user not found" });
+            return;
+        }
+        const userInFriend = friendDocument.friends.find(f => f.id === yourID);
+        if (userInFriend) {
+            if (!userInFriend.accessibility.ignore) {
                 const messageForFriend = {
                     content: message,
                     date: new Date(),
-                    sender: 'Other'
+                    sender: MessageSender.FRIEND
                 };
                 userInFriend.messages.push(messageForFriend);
                 await friendDocument.save();
+            } else {
+                console.log("Friend is ignoring messages from the user.");
             }
         }
         res.status(200).json({ message: "Message sent successfully" });
@@ -128,4 +90,3 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
         res.status(500).json({ message: "Error sending message" });
     }
 };
-

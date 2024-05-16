@@ -63,16 +63,16 @@ export class CardComponent implements OnInit, OnDestroy {
   unblock() {
     this.fadeOut = false;
     setTimeout(() => {
-      fetch(`${environment.apiURL}/people/blocked`, {
-        method: 'DELETE',
+      fetch(`${environment.apiURL}/chat-settings/block`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ yourID: this.yourID, friendID: this.person.id })
+        body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID })
       })
         .then(response => response.json())
-        .then(data => {
-          this.toastr.success(data.message, `${this.person.name} ${this.person.lastname}`);
+        .then(() => {
+          this.toastr.success('Friend was unblocked!', `${this.person.name} ${this.person.lastname}`);
           this.blockedHandled.emit(this.person.id);
         })
         .catch(error => {

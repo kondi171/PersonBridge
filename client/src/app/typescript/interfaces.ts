@@ -27,16 +27,41 @@ export interface Friend {
     id: string,
     settings: {
         nickname: string,
-        PIN: string,
+        PIN: number,
     },
     messages: Message[]
 }
-
-export interface MessageRow {
+export interface FriendChatData {
     id: string,
     name: string,
     lastname: string,
     avatar: string,
-    status: UserStatus,
-    lastMessage: Message
+    status: string,
+    accessibility: {
+        mute: false,
+        ignore: false,
+        block: false
+    },
+    settings: {
+        nickname: '',
+        PIN: 0,
+    },
+    blocked: string[]
+}
+export interface FriendSettingsData {
+    id: string,
+    name: string,
+    lastname: string,
+    mail: string,
+    avatar: string,
+    messagesCounter: number,
+    settings: {
+        nickname: string,
+        PIN: number,
+    },
+    accessibility: {
+        mute: boolean,
+        ignore: boolean,
+        block: boolean
+    },
 }

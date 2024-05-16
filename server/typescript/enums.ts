@@ -4,8 +4,8 @@ export enum UserStatus {
 }
 
 export enum MessageSender {
-  SELF,
-  OTHER,
+  YOU,
+  FRIEND,
   SYSTEM
 }
 

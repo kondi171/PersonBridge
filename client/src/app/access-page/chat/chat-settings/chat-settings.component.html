@@ -1,68 +1,68 @@
 <section class="chat-settings">
-    <a routerLink="/access/chat" routerLinkActive="active" class="icon-back">
-        <fa-icon class="fa " [icon]="icons.back" />
-    </a>
-    <div class="clip">
-        <div class="avatar">
-            <img src="./../../assets/img/landing-avatars/Marshall.jpg" alt="Avatar">
-            <span class="total-messages">
-                <fa-icon class="fa" [icon]="icons.messages" />
-                147
-            </span>
-        </div>
-        <div class="user">
-            Marshall Johnston
-        </div>
-        <div class="mail">
-            Marshall&commat;example.com
-        </div>
-        <div class="accessibility">
-            <div class="option active">
-                <fa-icon class="fa" [icon]="icons.mute" />
-                <span>Mute</span>
-            </div>
-            <div class="option">
-                <fa-icon class="fa" [icon]="icons.ignore" />
-                <span>Ignore</span>
-            </div>
-            <div class="option">
-                <fa-icon class="fa" [icon]="icons.block" />
-                <span>Block</span>
-            </div>
-        </div>
+  <a [routerLink]="['/access/chat', activeChatID]" routerLinkActive="active" class="icon-back">
+    <fa-icon class="fa " [icon]="icons.back" />
+  </a>
+  <div class="clip">
+    <div class="avatar">
+      <img [src]="friendInfo.avatar" [alt]="friendInfo.name">
+      <span class="total-messages">
+        <fa-icon class="fa" [icon]="icons.messages" />
+        {{friendInfo.messagesCounter}}
+      </span>
     </div>
-    <div class="settings">
-        <div class="option">
-            <div class="option__info">
-                <fa-icon class="fa" [icon]="icons.pin" />
-                <span>Set PIN</span>
-            </div>
-            <div class="pin-code">
-                <input type="password" maxlength="1">
-                <input type="password" maxlength="1">
-                <input type="password" maxlength="1">
-                <input type="password" maxlength="1">
-            </div>
-            <button>Set</button>
-        </div>
-        <div class="option">
-            <div class="option__info">
-                <fa-icon class="fa" [icon]="icons.nickname" />
-                <span>Set a nickname</span>
-            </div>
-            <input class="nickname-input" type="text" placeholder="Enter Nickname...">
-            <button>Set</button>
-        </div>
-        <button class="option remove">
-            <span>Delete messages</span>
-            <fa-icon class="fa" [icon]="icons.messages" />
-        </button>
-        <button class="option remove">
-            <span>Remove friend</span>
-            <fa-icon class="fa" [icon]="icons.remove" />
-        </button>
+    <div class="user">
+      {{friendInfo.name}} {{friendInfo.lastname}}
     </div>
-    <footer>
-        <app-footer [position]="Position.FIXED" />
-    </footer>
+    <div class="mail">
+      {{friendInfo.mail}}
+    </div>
+    <div class="accessibility">
+      <div (click)="handleMute()" class="option" [ngClass]="{'active': friendInfo.accessibility.mute}">
+        <fa-icon class="fa" [icon]="icons.mute" />
+        <span>Mute</span>
+      </div>
+      <div (click)="handleIgnore()" class="option" [ngClass]="{'active': friendInfo.accessibility.ignore}">
+        <fa-icon class="fa" [icon]="icons.ignore" />
+        <span>Ignore</span>
+      </div>
+      <div (click)="handleBlock()" class="option" [ngClass]="{'active': friendInfo.accessibility.block}">
+        <fa-icon class="fa" [icon]="icons.block" />
+        <span>Block</span>
+      </div>
+    </div>
+  </div>
+  <div class="settings">
+    <div class="option">
+      <div class="option__info">
+        <fa-icon class="fa" [icon]="icons.pin" />
+        <span>Set PIN</span>
+      </div>
+      <div class="pin-code">
+        <input type="password" maxlength="1">
+        <input type="password" maxlength="1">
+        <input type="password" maxlength="1">
+        <input type="password" maxlength="1">
+      </div>
+      <button>Set</button>
+    </div>
+    <div class="option">
+      <div class="option__info">
+        <fa-icon class="fa" [icon]="icons.nickname" />
+        <span>Set a nickname</span>
+      </div>
+      <input class="nickname-input" type="text" placeholder="Enter Nickname...">
+      <button>Set</button>
+    </div>
+    <button class="option remove">
+      <span>Delete messages</span>
+      <fa-icon class="fa" [icon]="icons.messages" />
+    </button>
+    <button class="option remove">
+      <span>Remove friend</span>
+      <fa-icon class="fa" [icon]="icons.remove" />
+    </button>
+  </div>
+  <footer>
+    <app-footer [position]="Position.FIXED" />
+  </footer>
 </section>

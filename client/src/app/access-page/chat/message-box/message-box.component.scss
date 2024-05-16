@@ -1,5 +1,11 @@
 @import './../../../../assets/scss/variables.scss';
 
+.blocked-message {
+  text-align: center;
+  color: lighten($bgColor, 20%);
+  margin: 2vmin 0;
+}
+
 .message-box {
   display: flex;
   align-items: center;
@@ -90,39 +96,16 @@
   color: red;
 }
 
+@media screen and (min-width: 768px) and (orientation: landscape) {
+  .blocked-message {
+    font-size: 4vmin;
+  }
+}
+
 @media screen and (min-width: 768px) {
   .message-box {
-    &.is-you {
-      .avatar {
-        img {}
-      }
-
-      .message {
-
-        &__wrapper {
-
-
-          .date {}
-
-          .content {}
-        }
-
-        .name {}
-      }
-    }
-
-    .avatar {
-
-
-      img {}
-    }
-
     .message {
-
-
       .message__wrapper {
-
-
         .date {
           font-size: 4vmin;
         }
@@ -140,6 +123,10 @@
 }
 
 @media screen and (min-width: 1024px) {
+  .blocked-message {
+    font-size: 2vmin;
+  }
+
   .message-box {
     display: flex;
     align-items: center;
@@ -162,13 +149,7 @@
 
         &__wrapper {
           justify-content: flex-end;
-
-          .date {}
-
-          .content {}
         }
-
-        .name {}
       }
     }
 

@@ -1,7 +1,9 @@
+import { MessageSender, UserStatus } from "./enums"
+
 export type Message = {
     content: string,
     date: Date,
-    sender: string
+    sender: MessageSender
 }
 
 export type FullName = {
@@ -35,4 +37,24 @@ export type CardData = {
     lastname: string,
     mail: string,
     avatar: string,
+}
+
+export type MessageRow = {
+    id: string,
+    name: string,
+    lastname: string,
+    avatar: string,
+    status: UserStatus,
+    lastMessage: Message
+}
+
+export type FriendAccessibility = {
+    mute: boolean,
+    ignore: boolean,
+    block: boolean
+}
+
+export type FriendSettings = {
+    nickname: string,
+    PIN: number,
 }

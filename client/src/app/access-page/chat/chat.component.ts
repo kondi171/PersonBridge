@@ -11,9 +11,9 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NoMessagesComponent } from './no-messages/no-messages.component';
 import { ToastrService } from 'ngx-toastr';
-import { UserStatus } from '../../typescript/enums';
+import { MessageSender, UserStatus } from '../../typescript/enums';
 import { Message } from '../../typescript/types';
-import { User } from '../../typescript/interfaces';
+import { FriendChatData, User } from '../../typescript/interfaces';
 
 @Component({
   selector: 'app-chat',
@@ -40,16 +40,22 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     send: faPaperPlane
   }
 
-  friendChatData = {
+  friendChatData: FriendChatData = {
     id: "",
     name: "",
     lastname: "",
     avatar: "",
     status: "",
+    accessibility: {
+      mute: false,
+      ignore: false,
+      block: false
+    },
     settings: {
       nickname: '',
       PIN: 0,
-    }
+    },
+    blocked: []
   }
   yourID = '';
   loggedUser: User | null = null;
@@ -107,12 +113,13 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
         if (data.messages.length !== 0) {
           this.messages = data.messages.map((message: Message) => ({
             ...message,
-            date: new Date(message.date)
+            date: new Date(message.date),
           }));
         }
         this.friendChatData = data.friend;
         const timestamp = new Date().getTime();
         this.friendChatData.avatar = this.ensureFullURL(data.friend.avatar) + `?${timestamp}`;
+
         this.cdr.detectChanges();
         if (this.initialized) {
           this.scrollToBottom();
@@ -126,6 +133,17 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
 
   sendMessage() {
     if (this.messageContent === '') return;
+    if (this.friendChatData.accessibility.block) {
+      this.toastr.error('Friend is blocked!', `${this.friendChatData.name} ${this.friendChatData.lastname}`);
+      return;
+    }
+    if (this.friendChatData.blocked.includes(this.yourID)) {
+      this.toastr.error('Friend is blocking you!', `${this.friendChatData.name} ${this.friendChatData.lastname}`);
+      return;
+    }
+    if (this.friendChatData.accessibility.ignore) {
+      this.toastr.warning("The message has been sent, but you will not receive a reply.'", `You ignore ${this.friendChatData.name} ${this.friendChatData.lastname}`);
+    }
     fetch(`${environment.apiURL}/chat/message`, {
       method: 'POST',
       headers: {

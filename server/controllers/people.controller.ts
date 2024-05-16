@@ -178,8 +178,7 @@ export const acceptRequest = async (req: Request, res: Response): Promise<void> 
                     friends: {
                         id: friendID,
                         settings: {
-                            nickname: friendName,
-                            PIN: ''
+                            nickname: yourName,
                         },
                         messages: []
                     }
@@ -196,7 +195,6 @@ export const acceptRequest = async (req: Request, res: Response): Promise<void> 
                         id: yourID,
                         settings: {
                             nickname: yourName,
-                            PIN: ''
                         },
                         messages: []
                     }
@@ -237,7 +235,7 @@ export const ignoreRequest = async (req: Request, res: Response): Promise<void> 
         }
         res.status(200).json({ message: "Friend request ignored." });
     } catch (error) {
-        console.error('Error during the ignoreRequest operation:', error);
+        console.error('Error during the ignoring request operation:', error);
         res.status(500).json({ message: "An error occurred while updating user data.", error: error });
     }
 };
