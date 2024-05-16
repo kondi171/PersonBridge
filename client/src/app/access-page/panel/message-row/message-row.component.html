@@ -1,26 +1,24 @@
-<!-- <div routerLink="/access/chat" class="message" [ngClass]="{ 'read' : read}"> -->
-<div class="message">
-  <div class="message__avatar">
-    <img [src]="personAvatar" [alt]="person">
+<div [routerLink]="['/access/chat', person.id]" class="message" [ngClass]="{ 'read' : read}">
+  <div class="message">
+    <div class="message__avatar">
+      <img [src]="person.avatar" [alt]="person.id">
+    </div>
+    <div class="info-wrapper">
+      <div class="message__person">
+        {{ person.name }} {{ person.lastname}}
+      </div>
+      <div class="message__status" *ngIf="person.status === UserStatus.ONLINE">
+        <div class="status__dot online-dot"></div>
+        <div class="status__info online-info">Online</div>
+        <div class="date">{{person.lastMessage.date}}</div>
+      </div>
+      <div class="message__status" *ngIf="person.status === UserStatus.OFFLINE">
+        <div class="status__dot offline-dot"></div>
+        <div class="status__info offline-info">Offline</div>
+        <div class="date">{{person.lastMessage.date}}</div>
+      </div>
+      <div class="last-message">
+        {{ person.lastMessage.content }}
+      </div>
+    </div>
   </div>
-  <div class="info-wrapper">
-    <div class="message__person">
-      {{ personName }} {{ personLastname}}
-    </div>
-    <!-- <div class="message__status" *ngIf="status"> -->
-    <div class="message__status" *ngIf="true">
-      <div class="status__dot online-dot"></div>
-      <div class="status__info online-info">Online</div>
-      <div class="date">{{date}}</div>
-    </div>
-    <!-- <div class="message__status message__status--offline" *ngIf="!status"> -->
-    <div class="message__status message__status--offline" *ngIf="false">
-      <div class="status__dot offline-dot"></div>
-      <div class="status__info offline-info">Offline</div>
-      <div class="date">{{date}}</div>
-    </div>
-    <div class="last-message">
-      {{ lastMessage }}
-    </div>
-  </div>
-</div>

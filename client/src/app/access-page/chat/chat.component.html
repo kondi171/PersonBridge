@@ -1,18 +1,24 @@
-<section class="chat">
+<section class="chat" *ngIf="!noMessages; else noMessagesTemplate">
   <header class="header">
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
       <fa-icon class="fa" [icon]="icons.back" />
     </a>
     <div class="avatar">
-      <img [src]="activeFriendAvatar" alt="Avatar">
+      <img [src]="friendChatData.avatar" alt="Avatar">
     </div>
     <div class="info">
       <div class="identifier">
-        {{activeFriendName}} {{activeFriendLastname}}
+        {{friendChatData.name}} {{friendChatData.lastname}}
       </div>
       <div class="status">
-        <div class="status__dot"></div>
-        <div class="status__info">Online</div>
+        <div class="status__dot"
+          [ngClass]="{'status__dot--online': friendChatData.status === UserStatus.ONLINE, 'status__dot--offline': friendChatData.status === UserStatus.OFFLINE}">
+        </div>
+        <div class="status__info"
+          [ngClass]="{'status__info--online': friendChatData.status === UserStatus.ONLINE, 'status__info--offline': friendChatData.status === UserStatus.OFFLINE}">
+          {{ friendChatData.status }}
+        </div>
+
       </div>
       <div class="icons">
         <div class="icon-wrapper">
@@ -23,7 +29,7 @@
           <fa-icon class="fa icon" [icon]="icons.video" />
           <span class="text">Video Call</span>
         </div>
-        <a [routerLink]="['/access/chat', activeFriendID, 'settings']" class="icon-wrapper">
+        <a [routerLink]="['/access/chat', friendChatData.id, 'settings']" class="icon-wrapper">
           <fa-icon class="fa icon" [icon]="icons.settings" />
           <span class="text">Settings</span>
         </a>
@@ -31,20 +37,25 @@
     </div>
   </header>
   <div class="messages">
-    <div class="message" *ngFor="let message of activeFriendMessages">
-      <app-message-box [name]="activeFriendName" [avatar]="activeFriendAvatar"
-        [message]="message" />
+    <div *ngIf="messages.length === 0" class="start-chat">
+      Send a message to start chatting.
+    </div>
+    <div class="message" *ngFor="let message of messages">
+      <app-message-box [friendData]="friendChatData" [message]="message" />
     </div>
     <!-- <div class="blocked-message">Marshall blocked you</div> -->
   </div>
   <div class="type-message">
     <div class="input-container">
-      <input [(ngModel)]="message" (ngModelChange)="setMessage()" type="text" class="input-container__input" placeholder="Type your message...">
+      <input [(ngModel)]="messageContent" type="text" class="input-container__input" placeholder="Type your message...">
       <fa-icon class="input-container__icon" [icon]="icons.emoticons" />
     </div>
-    <button (click)="sendMessage()"class="type-message__btn">
+    <button (click)="sendMessage()" class="type-message__btn">
       Send
       <fa-icon class="fa icon" [icon]="icons.send"></fa-icon>
     </button>
   </div>
 </section>
+<ng-template #noMessagesTemplate>
+  <app-no-messages />
+</ng-template>

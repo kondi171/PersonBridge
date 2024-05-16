@@ -45,7 +45,7 @@ export interface Friend {
     id: string,
     settings: {
         nickname: string,
-        PIN: string,
+        PIN: number,
     },
     messages: Message[]
 }

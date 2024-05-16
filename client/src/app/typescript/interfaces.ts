@@ -1,6 +1,7 @@
+import { UserStatus } from "./enums"
 import { Message } from "./types"
 
-export type User = {
+export interface User {
     _id: string,
     name: string,
     lastname: string,
@@ -22,11 +23,20 @@ export type User = {
     chatbots: []
 }
 
-export type Friend = {
+export interface Friend {
     id: string,
     settings: {
         nickname: string,
         PIN: string,
     },
     messages: Message[]
+}
+
+export interface MessageRow {
+    id: string,
+    name: string,
+    lastname: string,
+    avatar: string,
+    status: UserStatus,
+    lastMessage: Message
 }

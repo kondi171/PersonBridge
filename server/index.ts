@@ -7,9 +7,9 @@ import MongoStore from "connect-mongo";
 import cluster from 'cluster';
 import { cpus } from 'os';
 
-import userRoutes from "./routes/users.routes";
 import authenticationRoutes from "./routes/authentication.routes";
 import accessRoutes from "./routes/access.routes";
+import chatRoutes from "./routes/chat.routes";
 import peopleRoutes from "./routes/people.routes";
 import exploreRoutes from "./routes/explore.routes";
 import settingsRoutes from "./routes/settings.routes";
@@ -74,9 +74,9 @@ app.use(session({
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
 }));
 
-app.use(userRoutes);
 app.use(authenticationRoutes);
 app.use(accessRoutes);
+app.use(chatRoutes);
 app.use(peopleRoutes);
 app.use(exploreRoutes);
 app.use(settingsRoutes);

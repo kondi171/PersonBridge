@@ -110,9 +110,10 @@
       align-items: center;
       justify-content: center;
       height: 90%;
-      font-size: 6vmin;
+      font-size: 10vmin;
       text-align: center;
       padding: 2vmin;
+      margin: 2vmin;
       color: darken($bgColor, 10%);
       text-shadow: 1px 1px 3px $primaryColor,
         -1px -1px 3px $primaryColor,
@@ -150,8 +151,6 @@
   }
 }
 
-
-// Dla tabletów (768px - 1023px)
 @media screen and (min-width: 768px) {
   .panel {
     .header .info .status {
@@ -184,8 +183,8 @@
         width: 10%;
 
         img {
-          width: 80px;
-          height: 80px;
+          width: 60px;
+          height: 60px;
           border-radius: 1vmin;
           border: .3vmin solid $primaryColor;
         }
@@ -216,7 +215,10 @@
     .messages {
       .message {
         margin: 1vmin 0;
+      }
 
+      .no-messages {
+        font-size: 6vmin;
       }
     }
 
@@ -231,5 +233,12 @@
         text-align: center;
       }
     }
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .panel .header .avatar img {
+    width: 80px;
+    height: 80px;
   }
 }

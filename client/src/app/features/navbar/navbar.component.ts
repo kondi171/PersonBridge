@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCog, faUsers, faComments, faSearch, faBrain } from '@fortawesome/free-solid-svg-icons';
@@ -16,26 +16,13 @@ import { User } from '../../typescript/interfaces';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
-
-  Device = Device;
+export class NavbarComponent implements OnDestroy {
   @Input() device = Device.DESKTOP;
-  chatID: string = '';
-  subscription: Subscription;
+  Device = Device;
+  requestSubscription: Subscription;
+  chatIDSubscription: Subscription;
   requestsCounter: number = 0;
-  constructor(private storeService: StoreService, private router: Router) {
-    this.chatID = storeService.getActiveChatID();
-    this.subscription = this.storeService.counter$.subscribe(counter => {
-      this.requestsCounter = counter;
-    });
-  }
-
-  get isChatActive(): boolean {
-    const path = this.router.url;
-    const chat = path.slice(0, 13)
-    if (chat === '/access/chat/') return true;
-    else return false;
-  }
+  chatID: string = '';
 
   icons = {
     chats: faComments,
@@ -43,5 +30,27 @@ export class NavbarComponent {
     explore: faSearch,
     chatbots: faBrain,
     settings: faCog,
+  }
+
+  constructor(private storeService: StoreService, private router: Router) {
+    this.requestSubscription = this.storeService.counter$.subscribe(counter => {
+      this.requestsCounter = counter;
+    });
+    this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
+      this.chatID = chatID;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.chatIDSubscription) {
+      this.chatIDSubscription.unsubscribe();
+    }
+  }
+
+  get isChatActive(): boolean {
+    const path = this.router.url;
+    const chat = path.slice(0, 13)
+    if (chat === '/access/chat/') return true;
+    else return false;
   }
 }

@@ -1,0 +1,81 @@
+@import './../../../../assets/scss/variables.scss';
+@import './../../../../assets/scss/placeholders.scss';
+@import './../../../../assets/scss/mixins.scss';
+
+.no-messages {
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  .heading {
+    @extend %sectionHeading;
+  }
+
+  .content {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    .info {
+      text-align: center;
+      color: $textColor;
+      font-size: 12vmin;
+      margin: 0vmin 2vmin 4vmin 2vmin;
+    }
+
+    .emoticon {
+      width: 50%;
+      height: 50%;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+}
+
+
+@media screen and (min-width: 1024px) {
+  .no-messages {
+    .content {
+      flex-shrink: 0 !important;
+
+      .info {
+        font-size: 8vmin;
+
+      }
+
+      .emoticon {
+        width: 35%;
+        height: 35%;
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+}

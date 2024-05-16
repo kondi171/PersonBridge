@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Friend } from '../../../typescript/interfaces';
+import { MessageRow } from '../../../typescript/interfaces';
 import { StoreService } from '../../../services/store.service';
-import { GetUserService } from '../../../services/get-user.service';
+import { UserStatus } from '../../../typescript/enums';
+import { environment } from '../../../app.environment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-message-row',
@@ -13,28 +15,22 @@ import { GetUserService } from '../../../services/get-user.service';
   styleUrl: './message-row.component.scss'
 })
 export class MessageRowComponent implements OnInit {
-  @Input() person!: Friend;
-  personID: string = '';
-  lastMessage: string = '';
-  date: string = '';
+  @Input() person!: MessageRow;
+  UserStatus = UserStatus;
+  read = false;
 
-  personName: string = '';
-  personLastname: string = '';
-  personAvatar: string = '';
-  personStatus: string = '';
-
-  constructor(private storeService: StoreService, private getUserService: GetUserService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.personID = this.person!.id;
-    this.lastMessage = this.person!.messages[this.person.messages.length - 1].content;
-    this.date = this.person!.messages[this.person.messages.length - 1].date;
-    this.getUserService.getUser(this.personID)
-      .then(data => {
-        this.personName = data.name;
-        this.personLastname = data.lastname;
-        this.personAvatar = data.avatar;
-        this.personStatus = data.status;
-      });
+    const timestamp = new Date().getTime();
+    this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
+  }
+
+  ensureFullURL(path: string): string {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    return `${environment.serverURL}/${path}`;
   }
 }
+

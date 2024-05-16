@@ -13,9 +13,8 @@ export class AuthGuard implements CanActivate {
     canActivate(
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-        const userToken = this.storeService.getUserToken();
-        if (!userToken) {
-            // Nie zalogowany użytkownik, przekierowanie do strony logowania
+        const loggedUser = this.storeService.getLoggedUser();
+        if (!loggedUser) {
             this.router.navigate(['/login']);
             return false;
         }

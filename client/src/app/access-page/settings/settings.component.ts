@@ -81,7 +81,7 @@ export class SettingsComponent implements OnDestroy {
     private router: Router,
     private toastr: ToastrService
   ) {
-    this.subscription = this.storeService.user$.subscribe(user => {
+    this.subscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
     });
   }

@@ -72,12 +72,26 @@
           min-width: 4vmin;
           min-height: 4vmin;
           border-radius: 50%;
-          background-color: $onlineColor;
+
+          &--online {
+            background-color: $onlineColor;
+          }
+
+          &--offline {
+            background-color: $offlineColor;
+          }
         }
 
         &__info {
-          color: $onlineColor;
           margin-left: 2vmin;
+
+          &--online {
+            color: $onlineColor;
+          }
+
+          &--offline {
+            color: $offlineColor;
+          }
         }
       }
 
@@ -119,6 +133,13 @@
     overflow-x: hidden;
     overflow-y: auto;
     flex: 1;
+
+    .start-chat {
+      color: $textColor;
+      text-align: center;
+      font-size: 4vmin;
+      margin: 6vmin;
+    }
 
     .blocked-message {
       text-align: center;
@@ -440,6 +461,125 @@
         &__input {
           padding-right: 7vw;
         }
+      }
+    }
+  }
+}
+
+.no-messages {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 4vmin;
+
+  .brand {
+    z-index: 10;
+
+    img {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+
+  strong {
+    font-weight: bold;
+    color: $secondaryColor;
+    font-size: 9vmin;
+    z-index: 10;
+  }
+
+  h3 {
+    color: $textColor;
+    font-size: 11vmin;
+    z-index: 10;
+  }
+
+  p {
+    color: $secondaryColor;
+    font-size: 6vmin;
+    z-index: 10;
+  }
+
+  .emoticon {
+    position: fixed;
+    bottom: 0;
+    right: 2vmin;
+
+    img {
+      width: 25vmin;
+      height: 25vmin;
+    }
+  }
+
+  button {
+    @include btn($bgColor, $primaryColor, $secondaryColor);
+    width: 80%;
+    margin-top: 5vmin;
+  }
+}
+
+@media (orientation: landscape) {
+  .no-messages button {
+    width: 50%;
+    margin-top: 5vmin;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .no-messages {
+    width: 70%;
+
+    .info {
+      padding: 2vmin;
+      border-radius: 5vmin;
+      background-color: #0000007e;
+      z-index: 10;
+
+      .brand {
+        margin: 4vmin;
+        z-index: 10;
+
+        img {
+          width: 150%;
+          margin: 0 10%;
+        }
+      }
+
+      strong {
+        font-weight: bold;
+        color: $secondaryColor;
+        font-size: 10vmin;
+        margin-top: -12vmin;
+      }
+
+      h3 {
+        color: $textColor;
+        font-size: 12vmin;
+      }
+
+      p {
+        color: $secondaryColor;
+        font-size: 6vmin;
+      }
+
+      button {
+        margin: 2vmin auto;
+      }
+    }
+
+    .emoticon {
+      position: fixed;
+      bottom: -5vmin;
+      right: 5vmin;
+
+      img {
+        width: 120%;
+        height: 120%;
       }
     }
   }

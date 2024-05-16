@@ -86,6 +86,10 @@
   }
 }
 
+.no-messages {
+  color: red;
+}
+
 @media screen and (min-width: 768px) {
   .message-box {
     &.is-you {

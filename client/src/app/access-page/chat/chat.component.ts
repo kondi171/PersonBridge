@@ -1,34 +1,33 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEllipsisV, faVideoCamera, faPhone, faSmile, faChevronLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { MessageBoxComponent } from './message-box/message-box.component';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { RouterModule } from '@angular/router';
 import { StoreService } from '../../services/store.service';
-import { Message } from '../../typescript/types';
-import { GetUserService } from '../../services/get-user.service';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../app.environment';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { NoMessagesComponent } from './no-messages/no-messages.component';
+import { ToastrService } from 'ngx-toastr';
+import { UserStatus } from '../../typescript/enums';
+import { Message } from '../../typescript/types';
+import { User } from '../../typescript/interfaces';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, MessageBoxComponent, RouterModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, MessageBoxComponent, NoMessagesComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
-export class ChatComponent {
-  loggedUserID: string = '';
-  activeFriendID: string = '';
-  activeFriendName: string = '';
-  activeFriendLastname: string = '';
-  activeFriendStatus: string = '';
-  activeFriendAvatar: string = '';
-  activeFriendMessages: Message[] = [];
-  yourName: string = "";
-  yourAvatar: string = "";
-  message: string = "";
+export class ChatComponent implements OnDestroy {
+  UserStatus = UserStatus;
+  loggedUserSubscription: Subscription;
+  chatIDSubscription: Subscription;
+  chatID = "";
+  noMessages: boolean = true;
+  messageContent = "";
   icons = {
     audio: faPhone,
     video: faVideoCamera,
@@ -38,94 +37,95 @@ export class ChatComponent {
     send: faPaperPlane
   }
 
-  constructor(private router: Router, private storeService: StoreService, private getUserService: GetUserService) {
-    this.activeFriendID = storeService!.getActiveChatID();
-    const loggedUser = storeService.getLoggedUser();
-    if (loggedUser !== null) {
-      this.yourName = loggedUser.name;
-      this.yourAvatar = loggedUser.avatar;
+  friendChatData = {
+    id: "",
+    name: "",
+    lastname: "",
+    avatar: "",
+    status: "",
+    settings: {
+      nickname: '',
+      PIN: 0,
     }
+  }
+  yourID = '';
+  loggedUser: User | null = null;
+  messages: Message[] = [];
 
-    this.findMessages(storeService!.getActiveChatID());
-    this.checkUserID();
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.checkUserID();
+
+  constructor(private storeService: StoreService, private toastr: ToastrService, private cdr: ChangeDetectorRef) {
+    this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
+      this.loggedUser = user;
+      if (this.loggedUser?._id) {
+        this.yourID = this.loggedUser._id;
+      }
+    });
+    this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
+      this.chatID = chatID;
+      if (this.chatID === 'no-messages') this.noMessages = true;
+      else if (this.chatID !== '') {
+        this.noMessages = false;
+        this.getMessages();
+      } else this.noMessages = false;
     });
   }
 
-  findMessages(id: string) {
-    const loggedUser = this.storeService!.getLoggedUser();
-    // console.log(loggedUser)
-    if (!loggedUser) {
-      // Obsłuż przypadek, gdy getLoggedUser() zwraca null
-      return;
-    }
+  ngOnDestroy(): void {
+    this.chatIDSubscription.unsubscribe();
+    this.loggedUserSubscription.unsubscribe();
+  }
 
-    this.loggedUserID = loggedUser._id;
-
-    const settingsException = id.slice(-8);
-    if (id.length !== 24 || settingsException === 'settings') return;
-
-    this.getUserService.getUser(id)
+  getMessages() {
+    fetch(`${environment.apiURL}/chat/${this.yourID}/${this.chatID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(response => {
+        return response.json();
+      })
       .then(data => {
-        this.activeFriendName = data.name;
-        this.activeFriendLastname = data.lastname;
-        this.activeFriendStatus = data.status;
-        this.activeFriendAvatar = data.avatar;
-
-        const friend = loggedUser.friends.find((friend: { id: string; }) => friend.id === id);
-        if (friend) {
-          this.activeFriendMessages = friend.messages;
-        } else {
-          // Obsłuż przypadek, gdy znajomy o danym id nie został znaleziony
-        }
-      });
+        this.messages = data.messages;
+        this.friendChatData = data.friend;
+        const timestamp = new Date().getTime();
+        this.friendChatData.avatar = this.ensureFullURL(data.friend.avatar) + `?${timestamp}`;
+        this.cdr.detectChanges();
+      })
+      .catch(error => {
+        this.toastr.error('An Error Occured while fetching friend!', 'Data Retrieve Error');
+        console.error('Data Retrieve Error:', error);
+      })
   }
 
-  checkUserID() {
-    const path = this.router.url;
-    const personID = path.slice(-24);
-    this.storeService.setActiveChatID(personID);
-    this.findMessages(personID);
-  }
-
-  setMessage() {
-
-  }
   sendMessage() {
-    // console.log(this.message.length)
-    // if (this.message.length <= 0) return;
-    const data = {
-      yourID: this.loggedUserID,
-      personID: this.activeFriendID,
-      message: {
-        content: this.message,
-        sender: 'Self'
-      }
-    };
-    fetch(`${environment.apiURL}/send`, {
+    if (this.messageContent === '') return;
+    fetch(`${environment.apiURL}/chat/message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify('')
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error('Internal Server Error');
+          throw new Error('Retrieving messages failed');
         }
         return response.json();
-
       })
       .then(data => {
-        console.log(data);
-        // return data;
+        this.friendChatData = data;
       })
       .catch(error => {
-        console.error('Internal Server Error:', error);
-        throw error;
-      });
+        this.toastr.error('An Error Occured while fetching friend!', 'Data Retrieve Error');
+        console.error('Data Retrieve Error:', error);
+      })
+  }
+
+  ensureFullURL(path: string): string {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    return `${environment.serverURL}/${path}`;
   }
 }

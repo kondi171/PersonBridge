@@ -12,7 +12,7 @@
   <span class="name">{{person.name}} {{person.lastname}}</span>
   <p class="mail">{{person.mail}}</p>
   <div class="message-card" *ngIf="type === CardType.ONLINE || type === CardType.OFFLINE">
-    <button>Message</button>
+    <button (click)="messageFriend(person.id)">Message</button>
   </div>
   <div class="blocked-card" *ngIf="type === CardType.BLOCKED">
     <button (click)="unblock()">Unblock</button>

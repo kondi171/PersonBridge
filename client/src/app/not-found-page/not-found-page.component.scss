@@ -53,13 +53,15 @@
   button {
     @include btn($bgColor, $primaryColor, $secondaryColor);
     width: 80%;
+    margin: 10%;
     margin-top: 5vmin;
   }
 }
 
 @media (orientation: landscape) {
   .not-found-page button {
-    width: 50%;
+    width: 60%;
+    margin: 20%;
     margin-top: 5vmin;
   }
 }
@@ -70,6 +72,7 @@
     width: 70%;
 
     .info {
+      width: 100%;
       padding: 2vmin;
       border-radius: 5vmin;
       background-color: #0000007e;
@@ -88,22 +91,24 @@
       strong {
         font-weight: bold;
         color: $secondaryColor;
-        font-size: 10vmin;
+        font-size: 8vmin;
         margin-top: -12vmin;
       }
 
       h3 {
         color: $textColor;
-        font-size: 12vmin;
+        font-size: 8vmin;
       }
 
       p {
         color: $secondaryColor;
-        font-size: 6vmin;
+        font-size: 4vmin;
       }
 
       button {
-        margin: 2vmin auto;
+        width: 80%;
+        padding: 2vmin;
+        margin: 4vmin auto;
       }
     }
 

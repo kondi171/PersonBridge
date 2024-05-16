@@ -12,19 +12,18 @@
         <div class="status__info">Online</div>
       </div>
     </div>
-    <a routerLink="/access/settings" routerLinkActive="active" class="item">
+    <a routerLink="/access/settings" routerLinkActive="active" class="item" aria-label="Link to settings">
       <fa-icon class="fa cog" [icon]="icons.cog"></fa-icon>
     </a>
 
   </header>
   <div class="messages">
-    <div class="no-messages">
-      <!-- <div *ngIf="loggedUser?.friends?.length === 0" class="no-messages"> -->
+    <div *ngIf="messageRows.length === 0" class="no-messages">
       There is no messages yet!
     </div>
-    <!-- <div (click)="showMessages(friend.id)" class="message" *ngFor="let friend of loggedUser?.friends"> -->
-    <!-- <app-message-row [person]="friend"></app-message-row> -->
-    <!-- </div> -->
+    <div (click)="showMessages(messageRow.id)" class="message" *ngFor="let messageRow of messageRows">
+      <app-message-row [person]="messageRow" />
+    </div>
   </div>
   <footer class="footer">
     <ng-template [ngIf]="device === Device.DESKTOP">

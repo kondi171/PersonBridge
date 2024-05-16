@@ -73,6 +73,10 @@
 
   .last-message {
     color: $textColor;
+    width: 60vw;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .date {
@@ -85,10 +89,7 @@
 
 @media screen and (orientation: landscape) {
   .message {
-
     &__avatar {
-
-
       img {
         width: 40%;
         height: 40%;
@@ -174,10 +175,17 @@
 
     .last-message {
       font-size: 2vmin;
+      width: 150px;
     }
 
     .date {
       font-size: 2vmin;
     }
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .message .last-message {
+    width: 250px;
   }
 }

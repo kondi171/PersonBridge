@@ -35,3 +35,8 @@ export enum Modal {
   DELETE_MESSAGES,
   DELETE_ACCOUNT,
 }
+
+export enum UserStatus {
+  ONLINE = 'Online',
+  OFFLINE = 'Offline'
+}

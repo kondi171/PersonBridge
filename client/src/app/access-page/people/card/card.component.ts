@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { environment } from '../../../app.environment';
 import { ToastrService } from 'ngx-toastr';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-card',
   standalone: true,
@@ -35,17 +36,22 @@ export class CardComponent implements OnInit, OnDestroy {
   @Output() blockedHandled = new EventEmitter<string>();
 
   CardType = CardType;
-  subscription: Subscription;
+  loggedUserSubscription: Subscription;
+  chatIDSubscription: Subscription;
+  activeChatID = '';
   yourID = "";
   yourName = "";
   fadeOut = true;
-  constructor(private storeService: StoreService, private toastr: ToastrService) {
-    this.subscription = this.storeService.user$.subscribe(user => {
+  constructor(private router: Router, private storeService: StoreService, private toastr: ToastrService) {
+    this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       const loggedUser = user;
       if (loggedUser) {
         this.yourID = loggedUser._id;
         this.yourName = loggedUser.name;
       }
+    });
+    this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
+      this.activeChatID = chatID;
     });
   }
 
@@ -119,7 +125,10 @@ export class CardComponent implements OnInit, OnDestroy {
         })
     }, 400);
   }
-
+  messageFriend(id: string) {
+    this.storeService.updateChatID(id);
+    this.router.navigate([`/access/chat/${id}`]);
+  }
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
@@ -128,6 +137,7 @@ export class CardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.loggedUserSubscription.unsubscribe();
+    this.chatIDSubscription.unsubscribe();
   }
 }

@@ -2,6 +2,9 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Message } from '../../../typescript/types';
 import { StoreService } from '../../../services/store.service';
+import { Subscription } from 'rxjs';
+import { User } from '../../../typescript/interfaces';
+import { environment } from '../../../app.environment';
 @Component({
   selector: 'app-message-box',
   standalone: true,
@@ -10,23 +13,40 @@ import { StoreService } from '../../../services/store.service';
   styleUrl: './message-box.component.scss'
 })
 export class MessageBoxComponent {
-  @Input() name: string = "";
-  @Input() avatar: string = "";
+
   @Input() message: Message = {
     content: '',
     date: '',
     sender: ''
   };
-
-  yourName: string = "";
-  yourAvatar: string = "";
-  constructor(private storeService: StoreService) {
-    const loggedUser = storeService.getLoggedUser();
-    if (loggedUser !== null) {
-      this.yourName = loggedUser.name;
-      this.yourAvatar = loggedUser.avatar;
+  @Input() friendData = {
+    id: '',
+    name: '',
+    lastname: '',
+    status: '',
+    avatar: '',
+    settings: {
+      nickname: '',
+      PIN: 0,
     }
-    // console.log(this.message)
   }
 
+  loggedUserSubscription: Subscription;
+  loggedUser: User | null = null;
+
+  constructor(private storeService: StoreService) {
+    this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
+      this.loggedUser = user;
+      if (this.loggedUser?.avatar) {
+        const timestamp = new Date().getTime();
+        this.loggedUser.avatar = this.ensureFullURL(this.loggedUser.avatar) + `?${timestamp}`;
+      }
+    });
+  }
+  ensureFullURL(path: string): string {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    return `${environment.serverURL}/${path}`;
+  }
 }
