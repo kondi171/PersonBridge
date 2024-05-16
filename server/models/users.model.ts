@@ -53,7 +53,7 @@ const UserSchema: Schema = new Schema({
             messages: [
                 {
                     content: String,
-                    date: String,
+                    date: Date,
                     sender: String
                 }
             ]

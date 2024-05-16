@@ -1,4 +1,4 @@
-<div [routerLink]="['/access/chat', person.id]" class="message" [ngClass]="{ 'read' : read}">
+<div class="message" [ngClass]="{ 'read' : read}">
   <div class="message">
     <div class="message__avatar">
       <img [src]="person.avatar" [alt]="person.id">
@@ -10,12 +10,12 @@
       <div class="message__status" *ngIf="person.status === UserStatus.ONLINE">
         <div class="status__dot online-dot"></div>
         <div class="status__info online-info">Online</div>
-        <div class="date">{{person.lastMessage.date}}</div>
+        <div class="date">{{formattedDate}}</div>
       </div>
       <div class="message__status" *ngIf="person.status === UserStatus.OFFLINE">
         <div class="status__dot offline-dot"></div>
         <div class="status__info offline-info">Offline</div>
-        <div class="date">{{person.lastMessage.date}}</div>
+        <div class="date">{{formattedDate}}</div>
       </div>
       <div class="last-message">
         {{ person.lastMessage.content }}

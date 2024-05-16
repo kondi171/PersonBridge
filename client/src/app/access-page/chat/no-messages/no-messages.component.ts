@@ -16,8 +16,4 @@ export class NoMessagesComponent {
     section: faComments,
     back: faChevronLeft,
   }
-
-  test() {
-    console.log('elo')
-  }
 }

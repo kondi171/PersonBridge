@@ -54,29 +54,22 @@ export const getUserChat = async (req: Request, res: Response): Promise<void> =>
     if (!yourID || !friendID) {
         res.status(400).json({ message: "Both User and Friend IDs are required" });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
-
-        // Znalezienie przyjaciela w tablicy 'friends' użytkownika
         const friendRelation = user.friends.find(friend => friend.id === friendID);
         if (!friendRelation) {
             res.status(404).json({ message: "Friend not found" });
             return;
         }
-
-        // Pobieranie dodatkowych danych o przyjacielu z bazy danych
         const friendData = await userModel.findById(friendID).select('name lastname avatar status');
         if (!friendData) {
             res.status(404).json({ message: "Friend data not found" });
             return;
         }
-
-        // Zwrócenie danych przyjaciela wraz z ustawieniami i wiadomościami
         res.json({
             friend: {
                 id: friendData._id,
@@ -84,151 +77,55 @@ export const getUserChat = async (req: Request, res: Response): Promise<void> =>
                 lastname: friendData.lastname,
                 avatar: friendData.avatar,
                 status: friendData.status,
-                settings: friendRelation.settings // Dodano ustawienia przyjaciela
+                settings: friendRelation.settings
             },
-            messages: friendRelation.messages // Wiadomości pomiędzy użytkownikami
+            messages: friendRelation.messages
         });
     } catch (error) {
         res.status(500).send(error);
     }
 };
 
-export const getFriend = async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id;
-    if (!id) {
-        res.status(400).json({ message: "User and Friend IDs are required" });
+export const sendMessage = async (req: Request, res: Response): Promise<void> => {
+    const { yourID, friendID, message } = req.body;
+    if (!yourID || !friendID || !message) {
+        res.status(400).json({ message: "Message, User and Friend IDs are required" });
         return;
     } try {
-        const user = await userModel.findById(id);
-        if (!user) {
-            res.status(404).json({ message: "User not found" });
-            return;
-        }
-        res.json({
-            id: user._id,
-            name: user.name,
-            lastname: user.lastname,
-            avatar: user.avatar,
-            status: user.status
-        });
-    } catch (error) {
-        res.status(500).send(error);
-    }
-}
-
-export const getMessages = async (req: Request, res: Response): Promise<void> => {
-    const { yourID, friendID } = req.params;
-    if (!yourID || !friendID) {
-        res.status(400).json({ message: "User and Friend IDs are required" });
-        return;
-    }
-
-    try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
-
         const friend = user.friends.find(f => f.id === friendID);
         if (!friend) {
-            res.status(404).json({ message: "Friend not found" });
+            res.status(404).json({ message: "Friend not found in user's friend list" });
             return;
         }
-        res.json(friend);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-}
-
-export const insertMessages = async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id;
-    const friends: Friend[] = [
-        {
-            id: "66327712a9539e4158787d3d",
-            settings: {
-                nickname: "Johnni",
-                PIN: 0
-            },
-            messages: [
-                {
-                    content: "Hi mate!",
-                    date: "12:15",
-                    sender: "Self"
-                },
-                {
-                    content: "Hello my friend!",
-                    date: "12:17",
-                    sender: "Other"
-                },
-                {
-                    content: "What's up?",
-                    date: "12:20",
-                    sender: "Self"
-                }
-            ]
-        },
-        {
-            id: "66327724a9539e4158787d40",
-            settings: {
-                nickname: "Dawn",
-                PIN: 0
-            },
-            messages: [
-                {
-                    content: "Hello!",
-                    date: "12:12",
-                    sender: "Self"
-                },
-                {
-                    content: "Hi!",
-                    date: "12:13",
-                    sender: "Other"
-                },
-                {
-                    content: "How are you?",
-                    date: "12:14",
-                    sender: "Self"
-                }
-            ]
-        },
-
-    ]
-    const friend: Friend = {
-        id: "66327712a9539e4158787d3d",
-        settings: {
-            nickname: "Johnni",
-            PIN: 0
-        },
-        messages: [
-            {
-                content: "Hi mate!",
-                date: "12:15",
-                sender: "Self"
-            },
-            {
-                content: "Hello my friend!",
-                date: "12:17",
-                sender: "Other"
-            },
-            {
-                content: "What's up?",
-                date: "12:20",
-                sender: "Self"
-            }
-        ]
-    }
-    if (!id) return;
-    try {
-        const user = await userModel.findById(id);
-        if (!user) {
-            res.status(404).json({ message: "User not found" });
-            return;
-        }
-        user.friends.push(...friends);
+        const newMessage = {
+            content: message,
+            date: new Date(),
+            sender: 'Self'
+        };
+        friend.messages.push(newMessage);
         await user.save();
-        res.send('Friends added successfully');
+        const friendDocument = await userModel.findById(friendID);
+        if (friendDocument) {
+            const userInFriend = friendDocument.friends.find(f => f.id === yourID);
+            if (userInFriend) {
+                const messageForFriend = {
+                    content: message,
+                    date: new Date(),
+                    sender: 'Other'
+                };
+                userInFriend.messages.push(messageForFriend);
+                await friendDocument.save();
+            }
+        }
+        res.status(200).json({ message: "Message sent successfully" });
     } catch (error) {
-        res.status(500).send(error);
+        console.error("Error sending message: ", error);
+        res.status(500).json({ message: "Error sending message" });
     }
 };
+

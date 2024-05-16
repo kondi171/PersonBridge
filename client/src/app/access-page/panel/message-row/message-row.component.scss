@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: stretch;
   position: relative;
+  width: 100%;
 
   &.read {
     .message__person {
@@ -19,8 +20,8 @@
     align-items: center;
 
     img {
-      width: 60%;
-      height: 60%;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       border: .7vmin solid $primaryColor;
     }
@@ -91,17 +92,26 @@
   .message {
     &__avatar {
       img {
-        width: 40%;
-        height: 40%;
-        border-radius: 50%;
-        border: .7vmin solid $primaryColor;
+        width: 80px;
+        height: 80px;
       }
     }
   }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 768px) and (orientation: portrait) {
   .message {
+    &__avatar {
+      width: 30%;
+      margin: 0;
+
+      img {
+        width: 120px;
+        height: 120px;
+        border: .5vmin solid $primaryColor;
+      }
+    }
+
     .last-message {
       font-size: 4vmin;
     }
@@ -112,19 +122,7 @@
   }
 }
 
-@media screen and (min-width: 1024px) and (orientation: landscape) {
-  .message {
-    &__avatar {
-      width: 30%;
-      margin: 0;
 
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-}
 
 @media screen and (min-width: 1024px) {
   .message {
@@ -143,8 +141,8 @@
       width: 100% / 3;
 
       img {
-        width: 50%;
-        height: 50%;
+        width: 85px;
+        height: 85px;
         border: .3vmin solid $primaryColor;
       }
     }
@@ -184,8 +182,59 @@
   }
 }
 
+@media screen and (min-width: 1024px) and (orientation: landscape) {
+  .message {
+    &__avatar {
+      width: 30%;
+      margin: 0;
+
+      img {
+        width: 70px;
+        height: 70px;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) and (orientation: portrait) {
+  .message {
+    &__avatar {
+      width: 30%;
+      margin: 0;
+
+      img {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  }
+}
+
 @media screen and (min-width: 1280px) {
-  .message .last-message {
-    width: 250px;
+  .message {
+    &__avatar {
+      margin: 0 1vmin;
+
+      img {
+        width: 75px;
+        height: 75px;
+      }
+    }
+
+    .last-message {
+      width: 250px;
+    }
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .message {
+    &__avatar {
+      margin: 0;
+    }
+
+    .last-message {
+      width: 250px;
+    }
   }
 }

@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { getUser } from '../controllers/users.controller';
+import { getUser } from '../controllers/access.controller';
 import { authenticateToken } from "../middlewares/jwt.middleware";
 import { getUserFriendsWithMessages } from "../controllers/access.controller";
 

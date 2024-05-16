@@ -8,7 +8,7 @@ import { User } from '../typescript/interfaces';
 
 export class StoreService {
 
-  private activeChatIDSubject = new BehaviorSubject<string>('');
+  private activeChatIDSubject = new BehaviorSubject<string>(this.checkActiveChatID());
   private loggedUserSubject = new BehaviorSubject<User | null>(this.getLoggedUserFromLocalStorage());
   private requestCounterSubject = new BehaviorSubject<number>(0);
 
@@ -23,7 +23,12 @@ export class StoreService {
   updateCounter(newCount: number) {
     this.requestCounterSubject.next(newCount);
   }
-
+  private checkActiveChatID(): string {
+    const loggedUser = this.getLoggedUserFromLocalStorage();
+    if (loggedUser) {
+      return loggedUser.friends[0].id;
+    } else return 'no-messages';
+  }
   setLoggedUser(user: User) {
     localStorage.setItem('loggedUser', JSON.stringify(user));
     this.loggedUserSubject.next(user);

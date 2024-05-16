@@ -6,7 +6,7 @@ import { map, Observable, Subscription } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from "../../features/navbar/navbar.component";
 import { Device } from '../../typescript/enums';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { StoreService } from '../../services/store.service';
 import { Friend, MessageRow, User } from '../../typescript/interfaces';
 import { environment } from '../../app.environment';
@@ -40,6 +40,7 @@ export class PanelComponent implements OnInit {
   messageRows: MessageRow[] = [];
   activeChatID = "";
   yourID = "";
+  componentFirstInit = true;
 
   constructor(private router: Router, private storeService: StoreService, private toastr: ToastrService) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
@@ -72,31 +73,43 @@ export class PanelComponent implements OnInit {
         return response.json();
       })
       .then(data => {
-        if (!data[0].lastMessage) {
+        if (data.length === 0) {
           this.storeService.updateChatID('no-messages');
           return;
         }
-        this.messageRows = data;
-        this.storeService.updateChatID(data[0].id);
+        this.messageRows = data.map((messageRow: MessageRow) => ({
+          ...messageRow,
+          lastMessage: {
+            ...messageRow.lastMessage,
+            date: messageRow.lastMessage.date
+          }
+        }));
         this.sortMessages();
+        this.storeService.updateChatID(data[0].id);
       })
       .catch(error => {
         this.toastr.error('An Error Occured while retrieving your messages!', 'Messages Error');
         console.error('Messages Error:', error);
       })
   }
+
   sortMessages() {
     this.messageRows.sort((a, b) => {
-      const timeA = a.lastMessage.date.split(':');
-      const timeB = b.lastMessage.date.split(':');
-      const minutesA = parseInt(timeA[0], 10) * 60 + parseInt(timeA[1], 10);
-      const minutesB = parseInt(timeB[0], 10) * 60 + parseInt(timeB[1], 10);
-
-      return minutesB - minutesA;
+      if (!a.lastMessage || !a.lastMessage.date || !b.lastMessage || !b.lastMessage.date) return 0;
+      const dateA = a.lastMessage.date instanceof Date ? a.lastMessage.date : new Date(a.lastMessage.date);
+      const dateB = b.lastMessage.date instanceof Date ? b.lastMessage.date : new Date(b.lastMessage.date);
+      const timeA = dateA.getTime();
+      const timeB = dateB.getTime();
+      return timeB - timeA;
     });
   }
+
   showMessages(id: string) {
+    console.log(id)
+    if (id === this.activeChatID && this.device === Device.DESKTOP && !this.componentFirstInit) return;
     this.storeService.updateChatID(id);
+    this.router.navigate(['/access/chat/', id]);
+    this.componentFirstInit = false;
   }
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {

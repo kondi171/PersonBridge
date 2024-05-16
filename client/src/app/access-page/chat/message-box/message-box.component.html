@@ -7,7 +7,7 @@
     <div class="name">{{ message.sender === 'Self' ? loggedUser?.name : friendData.settings.nickname }}</div>
     <div class="message__wrapper">
       <span class="content">{{ message.content }}</span>
-      <div class="date">{{ message.date }}</div>
+      <div class="date">{{ formattedDate }}</div>
     </div>
   </div>
 </div>

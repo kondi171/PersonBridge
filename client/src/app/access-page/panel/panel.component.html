@@ -21,7 +21,7 @@
     <div *ngIf="messageRows.length === 0" class="no-messages">
       There is no messages yet!
     </div>
-    <div (click)="showMessages(messageRow.id)" class="message" *ngFor="let messageRow of messageRows">
+    <div class="message" *ngFor="let messageRow of messageRows" (click)="showMessages(messageRow.id)">
       <app-message-row [person]="messageRow" />
     </div>
   </div>

@@ -1,6 +1,6 @@
 export type Message = {
     content: string,
-    date: string,
+    date: Date,
     sender: string
 }
 

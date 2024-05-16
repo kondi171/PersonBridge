@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCog, faUsers, faComments, faSearch, faBrain } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { User } from '../../typescript/interfaces';
+import { environment } from '../../app.environment';
 
 @Component({
   selector: 'app-navbar',
@@ -16,7 +17,7 @@ import { User } from '../../typescript/interfaces';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent implements OnDestroy {
+export class NavbarComponent implements OnInit, OnDestroy {
   @Input() device = Device.DESKTOP;
   Device = Device;
   requestSubscription: Subscription;
@@ -31,7 +32,7 @@ export class NavbarComponent implements OnDestroy {
     chatbots: faBrain,
     settings: faCog,
   }
-
+  yourID = '';
   constructor(private storeService: StoreService, private router: Router) {
     this.requestSubscription = this.storeService.counter$.subscribe(counter => {
       this.requestsCounter = counter;
@@ -39,6 +40,20 @@ export class NavbarComponent implements OnDestroy {
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.chatID = chatID;
     });
+    const loggedUser = this.storeService.getLoggedUser();
+    if (loggedUser) this.yourID = loggedUser._id;
+  }
+  ngOnInit(): void {
+    fetch(`${environment.apiURL}/people/requests/${this.yourID}`, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.storeService.updateCounter(data.length)
+      })
+      .catch(error => {
+        console.error('Avatar upload error:', error);
+      })
   }
 
   ngOnDestroy(): void {
