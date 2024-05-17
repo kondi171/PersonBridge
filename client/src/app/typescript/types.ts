@@ -3,7 +3,8 @@ import { MessageSender, UserStatus } from "./enums"
 export type Message = {
     content: string,
     date: Date,
-    sender: MessageSender
+    sender: MessageSender,
+    read: boolean
 }
 
 export type FullName = {

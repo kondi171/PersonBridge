@@ -7,9 +7,19 @@
   position: relative;
   width: 100%;
 
-  &.read {
-    .message__person {
-      color: red;
+  &.unread {
+    .icon {
+      color: $primaryColor;
+      width: 10px;
+    }
+
+    .last-message {
+      color: $bgColor;
+      text-shadow: 1px 1px 1px $primaryColor,
+        -1px -1px 1px $primaryColor,
+        1px -1px 1px $primaryColor,
+        -1px 1px 1px $primaryColor;
+      font-family: $decorativeFont;
     }
   }
 
@@ -78,6 +88,8 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    // display: flex;
+    // justify-content: space-between;
   }
 
   .date {

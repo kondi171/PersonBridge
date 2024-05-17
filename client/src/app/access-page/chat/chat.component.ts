@@ -119,7 +119,6 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
         this.friendChatData = data.friend;
         const timestamp = new Date().getTime();
         this.friendChatData.avatar = this.ensureFullURL(data.friend.avatar) + `?${timestamp}`;
-
         this.cdr.detectChanges();
         if (this.initialized) {
           this.scrollToBottom();
@@ -127,6 +126,25 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while fetching friend!', 'Data Retrieve Error');
+        console.error('Data Retrieve Error:', error);
+      });
+    this.markAsRead();
+  }
+
+  markAsRead() {
+    fetch(`${environment.apiURL}/chat/mark`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ yourID: this.yourID, friendID: this.chatID })
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+      })
+      .catch(error => {
+        this.toastr.error('An Error Occured while marking message!', 'Message Error');
         console.error('Data Retrieve Error:', error);
       });
   }

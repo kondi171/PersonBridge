@@ -85,6 +85,10 @@ export class PanelComponent implements OnInit {
             date: messageRow.lastMessage.date
           }
         }));
+        // this.messageRows.forEach(messageRow => {
+        //   console.log(messageRow.lastMessage);
+        // })
+        console.log(data)
         this.sortMessages();
         this.storeService.updateChatID(data[0].id);
       })

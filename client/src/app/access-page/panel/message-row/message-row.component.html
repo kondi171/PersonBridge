@@ -1,4 +1,4 @@
-<div class="message" [ngClass]="{ 'read' : read}">
+<div class="message" [ngClass]="{ 'unread' : !person.lastMessage.read}">
   <div class="message">
     <div class="message__avatar">
       <img [src]="person.avatar" [alt]="person.id">
@@ -18,7 +18,9 @@
         <div class="date">{{formattedDate}}</div>
       </div>
       <div class="last-message">
-        {{ person.lastMessage.content }}
+        {{ person.lastMessage.sender ?  person.name + ': ' + person.lastMessage.content : 'You: ' + person.lastMessage.content }}
+        <!-- <fa-icon *ngIf="!person.lastMessage.read" class="fa icon" [icon]="icons.newMessage" /> -->
+        <!-- <fa-icon *ngIf="person.lastMessage.sender === MessageSender.YOU" class="fa icon" [icon]="icons.sentMessage" /> -->
       </div>
     </div>
   </div>

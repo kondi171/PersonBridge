@@ -61,7 +61,8 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
         const newMessage = {
             content: message,
             date: new Date(),
-            sender: MessageSender.YOU
+            sender: MessageSender.YOU,
+            read: true
         };
         friend.messages.push(newMessage);
         await user.save();
@@ -76,7 +77,8 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
                 const messageForFriend = {
                     content: message,
                     date: new Date(),
-                    sender: MessageSender.FRIEND
+                    sender: MessageSender.FRIEND,
+                    read: false
                 };
                 userInFriend.messages.push(messageForFriend);
                 await friendDocument.save();
@@ -88,5 +90,42 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
     } catch (error) {
         console.error("Error sending message: ", error);
         res.status(500).json({ message: "Error sending message" });
+    }
+};
+
+export const markMessagesAsRead = async (req: Request, res: Response): Promise<void> => {
+    const { yourID, friendID } = req.body;
+
+    if (!yourID || !friendID) {
+        res.status(400).json({ message: "User ID and Friend ID are required" });
+        return;
+    }
+
+    try {
+        const user = await userModel.findById(yourID);
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        const friend = user.friends.find(f => f.id === friendID);
+
+        if (!friend) {
+            res.status(404).json({ message: "Friend not found in user's friend list" });
+            return;
+        }
+
+        // Oznacz wszystkie wiadomości jako przeczytane
+        friend.messages.forEach(message => {
+            message.read = true;
+        });
+
+        await user.save();
+
+        res.status(200).json({ message: "All messages marked as read" });
+    } catch (error) {
+        console.error("Error marking messages as read: ", error);
+        res.status(500).json({ message: "Error marking messages as read" });
     }
 };

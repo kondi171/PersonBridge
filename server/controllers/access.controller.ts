@@ -34,8 +34,8 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
 
         const friends = await userModel.find({
             '_id': { $in: friendsIDs }
-        }).select('name lastname avatar status');
-
+        });
+        console.log(friends)
         const results = friends.map(friend => {
             const friendData = friendsData.find(f => f.id === friend._id.toString());
             const lastMessage = friendData && friendData.messages.length > 0
@@ -50,7 +50,7 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
                 status: friend.status,
                 lastMessage: lastMessage
             };
-        }).filter(friend => friend.lastMessage !== null); // Filtrujemy użytkowników, którzy mają lastMessage różne od null
+        }).filter(friend => friend.lastMessage !== null);
 
         res.json(results);
     } catch (error) {

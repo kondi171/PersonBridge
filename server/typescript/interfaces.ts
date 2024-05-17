@@ -1,28 +1,5 @@
 import { Document } from "mongoose";
-import { Biometrics, Message } from "./types";
-import { UserStatus } from "./enums";
-
-// export interface User {
-//     _id: string,
-//     name: string,
-//     lastname: string,
-//     mail: string,
-//     password: string,
-//     avatar: string,
-//     status: string,
-//     biometrics: {
-//         fingerprint: string,
-//         voice: string,
-//         face: string,
-//     },
-//     friends: Friend[],
-//     requests: {
-//         received: string[],
-//         sent: string[]
-//     },
-//     blocked: string[],
-//     chatbots: []
-// }
+import { Biometrics } from "./types";
 
 export interface UserDocument extends Document {
     name: string;
@@ -42,15 +19,34 @@ export interface UserDocument extends Document {
 }
 
 export interface Friend {
-    id: string,
+    id: string;
     settings: {
-        nickname: string,
-        PIN: number,
-    },
+        nickname: string;
+        PIN: number;
+    };
     accessibility: {
-        mute: boolean,
-        ignore: boolean,
-        block: boolean
-    },
-    messages: Message[]
+        mute: boolean;
+        ignore: boolean;
+        block: boolean;
+    };
+    messages: Message[];
+}
+
+export interface Message {
+    content: string;
+    date: Date;
+    sender: MessageSender;
+    read: boolean;
+}
+
+export enum UserStatus {
+    ONLINE,
+    OFFLINE,
+    AWAY
+}
+
+export enum MessageSender {
+    YOU,
+    FRIEND,
+    SYSTEM
 }

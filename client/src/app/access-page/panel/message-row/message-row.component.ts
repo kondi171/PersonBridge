@@ -2,13 +2,15 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MessageRow } from '../../../typescript/types';
-import { UserStatus } from '../../../typescript/enums';
+import { MessageSender, UserStatus } from '../../../typescript/enums';
 import { environment } from '../../../app.environment';
+import { faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-message-row',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   providers: [DatePipe],
   templateUrl: './message-row.component.html',
   styleUrl: './message-row.component.scss'
@@ -16,10 +18,14 @@ import { environment } from '../../../app.environment';
 export class MessageRowComponent implements OnInit {
   @Input() person!: MessageRow;
   UserStatus = UserStatus;
+  MessageSender = MessageSender;
   read = false;
   formattedDate: string = '';
   constructor(private datePipe: DatePipe) { }
-
+  icons = {
+    newMessage: faExclamation,
+    sentMessage: faCheck,
+  }
   ngOnInit() {
     const timestamp = new Date().getTime();
     this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
