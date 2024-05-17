@@ -7,6 +7,15 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  // overflow: hidden;
+  // overflow-y: auto;
+  // -ms-overflow-style: none;
+  // scrollbar-width: none;
+
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .header {
     position: relative;
@@ -59,7 +68,10 @@
       .identifier {
         color: $textColor;
         font-size: 6vmin;
-        width: 100%;
+        width: 60vw;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
 
       .status {
@@ -153,11 +165,11 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 2vmin;
     background-color: $blackColor;
     border-top: .3vmin solid $primaryColor;
     box-shadow: 0 0 2vmin .2vmin $primaryColor;
     padding: 2vmin 0;
+    overflow: hidden;
 
     .input-container {
       position: relative;
@@ -171,11 +183,23 @@
       &__input {
         @extend %input;
         padding-right: 10vw;
-        padding-block: 3vmin;
+        padding-block: 2vmin;
         color: $primaryColor;
         background-color: $bgColor;
-        font-size: 3.5vmin;
-        height: 5vmax;
+        font-size: 3.3vmin;
+        height: 4vmax;
+        width: 100%;
+        resize: none;
+        overflow: hidden;
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+
+        &::-webkit-scrollbar {
+          display: none;
+
+        }
 
         &::placeholder {
           color: $primaryColor;
@@ -205,18 +229,20 @@
         right: 6vw;
         font-size: 6vmin;
         color: $primaryColor;
-        transition-duration: .4s
+        transition-duration: .4s;
       }
     }
 
+
     &__btn {
       @include btn($bgColor, $primaryColor, $secondaryColor);
-      margin: 0 2vmin;
+      margin: 2vmin 4vmin 2vmin 2vmin;
       padding-block: 2.5vmin;
-      height: 5vmax;
+      height: 4vmax;
       display: flex;
       justify-content: center;
       align-items: center;
+      // width: 40%;
 
       .icon {
         margin-left: 2vmin;
@@ -228,13 +254,13 @@
 @media screen and (orientation: landscape) {
   .chat {
     .type-message {
+      height: 7vmax;
+
       .input-container {
-        // height: 5vmax;
 
         &__input {
           padding-right: 7vw;
           width: 100%;
-          // height: 5vmax;
         }
 
         &__icon {
@@ -244,7 +270,43 @@
 
       &__btn {
         width: 20%;
-        // height: 5vmax;
+
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 540px) and (min-height: 720px) {
+  .chat {
+    .type-message {
+      .input-container {
+
+        &__input {
+          height: 6vmax;
+        }
+      }
+
+      &__btn {
+        height: 6vmax;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 720px) and (min-height: 540px) {
+  .chat {
+    .type-message {
+      height: 9vmax;
+
+      .input-container {
+
+        &__input {
+          height: 6vmax;
+        }
+      }
+
+      &__btn {
+        height: 6vmax;
       }
     }
   }
@@ -299,6 +361,19 @@
         font-size: 4vmin;
       }
     }
+
+    .type-message {
+      .input-container {
+
+        &__input {
+          height: 4vmax;
+        }
+      }
+
+      &__btn {
+        height: 4vmax;
+      }
+    }
   }
 }
 
@@ -314,6 +389,25 @@
       }
 
       .info {
+
+        .identifier {
+          font-size: 5vmin;
+          width: 45vw;
+        }
+
+        .status {
+          margin-top: -1vmin;
+
+          &__dot {
+            min-width: 2vmin;
+            min-height: 2vmin;
+          }
+
+          &__info {
+            font-size: 3vmin;
+          }
+        }
+
         .icons {
           width: 40%;
 
@@ -362,24 +456,6 @@
         }
       }
 
-      .info {
-        .identifier {
-          font-size: 5vmin;
-        }
-
-        .status {
-          margin-top: -1vmin;
-
-          &__dot {
-            min-width: 2vmin;
-            min-height: 2vmin;
-          }
-
-          &__info {
-            font-size: 3vmin;
-          }
-        }
-      }
     }
 
     .messages {
@@ -421,7 +497,7 @@
 
       &__btn {
         height: 6vh;
-        font-size: 3vmin;
+        font-size: 2vmin;
         padding-block: 1.5vmin;
         border-radius: 5vmin;
         border: none;

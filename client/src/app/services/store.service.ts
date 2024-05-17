@@ -24,11 +24,11 @@ export class StoreService {
     this.requestCounterSubject.next(newCount);
   }
   private checkActiveChatID(): string {
-    // const loggedUser = this.getLoggedUserFromLocalStorage();
-    // if (loggedUser) {
-    //   return loggedUser.friends[0].id;
-    // } else return 'no-messages';
-    return 'no-messages';
+    const loggedUser = this.getLoggedUserFromLocalStorage();
+    if (loggedUser) {
+      return loggedUser.friends[0].id;
+    } else return 'no-messages';
+    // return 'no-messages';
   }
   setLoggedUser(user: User) {
     localStorage.setItem('loggedUser', JSON.stringify(user));

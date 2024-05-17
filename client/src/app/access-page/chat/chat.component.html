@@ -1,14 +1,17 @@
 <section class="chat" *ngIf="!noMessages; else noMessagesTemplate">
   <header class="header">
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
-      <fa-icon class="fa" [icon]="icons.back" />
+      <fa-icon class="fa" [icon]="icons.back"></fa-icon>
     </a>
     <div class="avatar">
       <img [src]="friendChatData.avatar" alt="Avatar">
     </div>
     <div class="info">
       <div class="identifier">
-        {{friendChatData.name}} {{friendChatData.lastname}}
+        <span *ngIf="friendChatData.settings.nickname === friendChatData.name">{{friendChatData.name}}
+          {{friendChatData.lastname}}</span>
+        <span
+          *ngIf="friendChatData.settings.nickname !== friendChatData.name">{{friendChatData.settings.nickname}}</span>
       </div>
       <div class="status">
         <div class="status__dot"
@@ -18,21 +21,20 @@
           [ngClass]="{'status__info--online': friendChatData.status === UserStatus.ONLINE, 'status__info--offline': friendChatData.status === UserStatus.OFFLINE}">
           {{ friendChatData.status }}
         </div>
-
       </div>
       <div class="icons">
-        <div class="icon-wrapper">
-          <fa-icon class="fa icon" [icon]="icons.audio" />
+        <div (click)="handleAudioCall()" class="icon-wrapper">
+          <fa-icon class="fa icon" [icon]="icons.audio"></fa-icon>
           <span class="text">Audio Call</span>
         </div>
-        <div class="icon-wrapper">
-          <fa-icon class="fa icon" [icon]="icons.video" />
+        <div (click)="handleVideoCall()" class="icon-wrapper">
+          <fa-icon class="fa icon" [icon]="icons.video"></fa-icon>
           <span class="text">Video Call</span>
         </div>
-        <a [routerLink]="['/access/chat', friendChatData.id, 'settings']" class="icon-wrapper">
-          <fa-icon class="fa icon" [icon]="icons.settings" />
+        <div (click)="navigateToSettings()" class="icon-wrapper">
+          <fa-icon class="fa icon" [icon]="icons.settings"></fa-icon>
           <span class="text">Settings</span>
-        </a>
+        </div>
       </div>
     </div>
   </header>
@@ -40,21 +42,29 @@
     <div *ngIf="messages.length === 0" class="start-chat">
       Send a message to start chatting.
     </div>
-    <div class="message" *ngFor="let message of messages">
-      <app-message-box [friendData]="friendChatData" [message]="message" />
+    <div *ngIf="friendChatData.settings.PIN !== 0 && !accessGranted" class="pin">
+      <app-pin [correctPIN]="friendChatData.settings.PIN" [yourID]="yourID" (accessGranted)="onAccessGranted($event)" />
+    </div>
+    <div *ngIf="friendChatData.settings.PIN === 0 || accessGranted">
+      <div class="message" *ngFor="let message of messages">
+        <app-message-box [friendData]="friendChatData" [message]="message"></app-message-box>
+      </div>
     </div>
   </div>
-  <div class="type-message">
+  <form class="type-message" (ngSubmit)="sendMessage()">
     <div class="input-container">
-      <input [(ngModel)]="messageContent" type="text" class="input-container__input" placeholder="Type your message...">
-      <fa-icon class="input-container__icon" [icon]="icons.emoticons" />
+      <textarea [(ngModel)]="messageContent" name="messageContent" class="input-container__input"
+        placeholder="Type your message..." (keydown)="handleKeyDown($event)"></textarea>
+      <fa-icon class="input-container__icon" [icon]="icons.emoticons"></fa-icon>
     </div>
-    <button (click)="sendMessage()" class="type-message__btn">
+    <button type="submit" class="type-message__btn">
       Send
       <fa-icon class="fa icon" [icon]="icons.send"></fa-icon>
     </button>
-  </div>
+  </form>
+
+
 </section>
 <ng-template #noMessagesTemplate>
-  <app-no-messages />
+  <app-no-messages></app-no-messages>
 </ng-template>

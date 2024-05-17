@@ -40,6 +40,10 @@
   &__person {
     color: $primaryColor;
     font-size: 6vmin;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 60vw;
   }
 
   &__status {
@@ -88,8 +92,6 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    // display: flex;
-    // justify-content: space-between;
   }
 
   .date {
@@ -143,12 +145,6 @@
     justify-content: stretch;
     position: relative;
 
-    &.read {
-      .message__person {
-        color: red;
-      }
-    }
-
     &__avatar {
       width: 100% / 3;
 
@@ -160,7 +156,7 @@
     }
 
     &__person {
-
+      width: 85px;
       font-size: 2.5vmin;
     }
 
@@ -196,6 +192,10 @@
 
 @media screen and (min-width: 1024px) and (orientation: landscape) {
   .message {
+    &__person {
+      width: 150px;
+    }
+
     &__avatar {
       width: 30%;
       margin: 0;
@@ -210,6 +210,7 @@
 
 @media screen and (min-width: 1024px) and (orientation: portrait) {
   .message {
+
     &__avatar {
       width: 30%;
       margin: 0;
@@ -224,6 +225,10 @@
 
 @media screen and (min-width: 1280px) {
   .message {
+    &__person {
+      width: 220px;
+    }
+
     &__avatar {
       margin: 0 1vmin;
 
@@ -241,6 +246,10 @@
 
 @media screen and (min-width: 1300px) {
   .message {
+    &__person {
+      width: 300px;
+    }
+
     &__avatar {
       margin: 0;
     }

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import userModel from "../models/users.model";
 import { MessageSender } from "../typescript/enums";
+import bcrypt from 'bcrypt';
 
 export const getUserChat = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID } = req.params;
@@ -47,7 +48,8 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
     if (!yourID || !friendID || !message) {
         res.status(400).json({ message: "Message, User and Friend IDs are required" });
         return;
-    } try {
+    }
+    try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
@@ -58,6 +60,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
             res.status(404).json({ message: "Friend not found in user's friend list" });
             return;
         }
+
         const newMessage = {
             content: message,
             date: new Date(),
@@ -65,7 +68,9 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
             read: true
         };
         friend.messages.push(newMessage);
-        await user.save();
+
+        await userModel.findByIdAndUpdate(yourID, { friends: user.friends });
+
         const friendDocument = await userModel.findById(friendID);
         if (!friendDocument) {
             res.status(404).json({ message: "Friend user not found" });
@@ -81,9 +86,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
                     read: false
                 };
                 userInFriend.messages.push(messageForFriend);
-                await friendDocument.save();
-            } else {
-                console.log("Friend is ignoring messages from the user.");
+                await userModel.findByIdAndUpdate(friendID, { friends: friendDocument.friends });
             }
         }
         res.status(200).json({ message: "Message sent successfully" });
@@ -127,5 +130,41 @@ export const markMessagesAsRead = async (req: Request, res: Response): Promise<v
     } catch (error) {
         console.error("Error marking messages as read: ", error);
         res.status(500).json({ message: "Error marking messages as read" });
+    }
+};
+
+export const forgetPIN = async (req: Request, res: Response): Promise<void> => {
+    const { yourID, password } = req.body;
+
+    if (!yourID) {
+        res.status(400).json({ message: "User ID is required" });
+        return;
+    }
+    if (!password) {
+        res.status(400).json({ message: "Password is required" });
+        return;
+    }
+
+    try {
+        // Znajdź użytkownika
+        const user = await userModel.findById(yourID);
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        // Sprawdź hasło użytkownika
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            res.json({ success: false, message: 'Invalid password' });
+            return;
+        }
+
+        // Jeżeli hasło się zgadza, zwróć true
+        res.json({ success: true });
+
+    } catch (error) {
+        console.error('Error verifying password:', error);
+        res.status(500).json({ message: 'An error occurred', error });
     }
 };

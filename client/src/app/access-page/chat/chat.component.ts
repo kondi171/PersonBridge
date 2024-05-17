@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEllipsisV, faVideoCamera, faPhone, faSmile, faChevronLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { MessageBoxComponent } from './message-box/message-box.component';
@@ -14,11 +15,12 @@ import { ToastrService } from 'ngx-toastr';
 import { MessageSender, UserStatus } from '../../typescript/enums';
 import { Message } from '../../typescript/types';
 import { FriendChatData, User } from '../../typescript/interfaces';
+import { PINComponent } from './pin/pin.component';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, MessageBoxComponent, NoMessagesComponent],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, MessageBoxComponent, NoMessagesComponent, PINComponent],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
@@ -31,6 +33,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
   chatID = "";
   noMessages: boolean = true;
   messageContent = "";
+  accessGranted = false;
   icons = {
     audio: faPhone,
     video: faVideoCamera,
@@ -62,7 +65,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
   messages: Message[] = [];
   private initialized = false;
 
-  constructor(private storeService: StoreService, private toastr: ToastrService, private cdr: ChangeDetectorRef) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser?._id) {
@@ -117,6 +120,8 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
           }));
         }
         this.friendChatData = data.friend;
+        if (this.friendChatData.settings.PIN === 0) this.accessGranted = true;
+        else this.accessGranted = false
         const timestamp = new Date().getTime();
         this.friendChatData.avatar = this.ensureFullURL(data.friend.avatar) + `?${timestamp}`;
         this.cdr.detectChanges();
@@ -141,7 +146,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        // console.log(data)
       })
       .catch(error => {
         this.toastr.error('An Error Occured while marking message!', 'Message Error');
@@ -149,19 +154,38 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       });
   }
 
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      if (event.shiftKey) return;
+      else {
+        event.preventDefault();
+        this.sendMessage();
+      }
+    }
+  }
+
   sendMessage() {
-    if (this.messageContent === '') return;
+    if (!this.accessGranted) {
+      this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
+      return;
+    }
+
+    if (this.messageContent.trim() === '') return;
+
     if (this.friendChatData.accessibility.block) {
       this.toastr.error('Friend is blocked!', `${this.friendChatData.name} ${this.friendChatData.lastname}`);
       return;
     }
+
     if (this.friendChatData.blocked.includes(this.yourID)) {
       this.toastr.error('Friend is blocking you!', `${this.friendChatData.name} ${this.friendChatData.lastname}`);
       return;
     }
+
     if (this.friendChatData.accessibility.ignore) {
-      this.toastr.warning("The message has been sent, but you will not receive a reply.'", `You ignore ${this.friendChatData.name} ${this.friendChatData.lastname}`);
+      this.toastr.warning("The message has been sent, but you will not receive a reply.", `You ignore ${this.friendChatData.name} ${this.friendChatData.lastname}`);
     }
+
     fetch(`${environment.apiURL}/chat/message`, {
       method: 'POST',
       headers: {
@@ -185,6 +209,32 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       });
   }
 
+  onAccessGranted(granted: boolean) {
+    this.accessGranted = granted;
+    this.cdr.detectChanges();
+  }
+
+  navigateToSettings() {
+    if (this.accessGranted) {
+      this.router.navigate(['/access/chat', this.friendChatData.id, 'settings']);
+    } else {
+      this.toastr.error('You need to enter the correct PIN to access settings!', 'Access Denied');
+    }
+  }
+  handleAudioCall() {
+    if (this.accessGranted) {
+      // Audio Call
+    } else {
+      this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
+    }
+  }
+  handleVideoCall() {
+    if (this.accessGranted) {
+      // Video Call
+    } else {
+      this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
+    }
+  }
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;

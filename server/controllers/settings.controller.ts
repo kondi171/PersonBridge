@@ -204,23 +204,17 @@ export const deleteMessages = async (req: Request, res: Response): Promise<void>
     if (!password) {
         res.status(400).send({ error: 'Password is required!' });
         return;
-    }
-
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).send({ error: 'User not found!' });
             return;
         }
-
-        // Sprawdzenie hasła
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             res.send({ error: 'Invalid password!' });
             return;
         }
-
-        // Usunięcie wiadomości dla każdego przyjaciela
         const result = await userModel.updateMany(
             { "_id": id, "friends": { $exists: true } },
             { "$set": { "friends.$[].messages": [] } }
@@ -234,7 +228,6 @@ export const deleteMessages = async (req: Request, res: Response): Promise<void>
 
 export const deleteAccount = async (req: Request, res: Response): Promise<void> => {
     const { id, password } = req.body;
-
     if (!id) {
         res.status(400).send({ error: 'ID is required!' });
         return;
@@ -251,15 +244,26 @@ export const deleteAccount = async (req: Request, res: Response): Promise<void> 
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            res.status(400).send({ error: 'Invalid password!' });
+            res.send({ error: 'Invalid password!' });
             return;
         }
+        const defaultAvatarPath = "resources/avatars/Blank-Avatar.jpg";
+        if (user.avatar && user.avatar !== defaultAvatarPath) {
+            const avatarPath = path.join(__dirname, '..', user.avatar);
+            try {
+                await fsPromises.unlink(avatarPath);
+            } catch (error) {
+                console.error(`Failed to delete avatar ${avatarPath}:`, error);
+            }
+        }
         const deletedUser = await userModel.findByIdAndDelete(id);
+        await userModel.updateMany(
+            { "friends.id": id },
+            { "$pull": { "friends": { "id": id } } }
+        );
         res.send(deletedUser);
     } catch (error) {
         console.error('Failed to delete account:', error);
         res.status(500).send({ error: 'Failed to delete account' });
     }
 };
-
-

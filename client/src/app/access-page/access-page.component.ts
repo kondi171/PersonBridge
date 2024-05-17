@@ -16,7 +16,7 @@ import { SomeonesAudioComponent } from './modals/someones-audio/someones-audio.c
 import { YourAudioComponent } from './modals/your-audio/your-audio.component';
 import { SomeonesVideoComponent } from './modals/someones-video/someones-video.component';
 import { YourVideoComponent } from './modals/your-video/your-video.component';
-import { PINComponent } from './modals/pin/pin.component';
+import { PINComponent } from './chat/pin/pin.component';
 import { StoreService } from '../services/store.service';
 import { LoaderComponent } from '../features/loader/loader.component';
 

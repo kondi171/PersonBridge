@@ -1,0 +1,55 @@
+@import './../../../../assets/scss/variables';
+@import './../../../../assets/scss/placeholders';
+@import './../../../../assets/scss/mixins';
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: 10vmin 10%;
+  background-color: $dynamicStateColor;
+  border-radius: 5vmin;
+  padding: 2vmin;
+
+  h3 {
+    text-align: center;
+    color: $textColor;
+    margin: 2vmin 0;
+  }
+
+  .password {
+    .input {
+      @extend %input;
+      font-size: 4vmin;
+      width: 80%;
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+  }
+
+  .pin-code {
+    @extend %pin-code;
+  }
+}
+
+button {
+  @include btn($bgColor, $primaryColor, $secondaryColor);
+  width: 60%;
+  margin: 5vmin 20%;
+}
+
+.forget {
+  text-align: center;
+  margin: 2vmin 0;
+  font-size: 4vmin;
+  font-weight: bold;
+  color: $primaryColor;
+  transition-duration: .4s;
+
+  &:hover {
+    cursor: pointer;
+    color: $secondaryColor;
+  }
+}

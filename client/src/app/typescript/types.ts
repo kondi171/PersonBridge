@@ -40,15 +40,6 @@ export type CardData = {
     avatar: string,
 }
 
-export type MessageRow = {
-    id: string,
-    name: string,
-    lastname: string,
-    avatar: string,
-    status: UserStatus,
-    lastMessage: Message
-}
-
 export type FriendAccessibility = {
     mute: boolean,
     ignore: boolean,
@@ -58,4 +49,14 @@ export type FriendAccessibility = {
 export type FriendSettings = {
     nickname: string,
     PIN: number,
+}
+
+export type MessageRow = {
+    id: string,
+    name: string,
+    lastname: string,
+    avatar: string,
+    status: UserStatus,
+    lastMessage: Message,
+    settings: FriendSettings
 }

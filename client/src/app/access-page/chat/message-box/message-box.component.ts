@@ -86,4 +86,8 @@ export class MessageBoxComponent implements OnInit {
     }
     return `${environment.serverURL}/${path}`;
   }
+
+  formatMessageContent(content: string): string {
+    return content.replace(/\n/g, '<br>');
+  }
 }

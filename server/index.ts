@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import session from "express-session";
 import MongoStore from "connect-mongo";
 
 import cluster from 'cluster';
@@ -62,17 +61,6 @@ app.use('/resources/avatars', express.static('resources/avatars', {
   setHeaders: function (res, path) {
     res.set('Cache-Control', 'no-cache');
   }
-}));
-
-// Session configuration
-app.use(session({
-  secret: '61dc8cfcaee2ff7da7203c4aec19d6c509f9fe16bb23d2b44ae1cced5591e767',
-  resave: false,
-  saveUninitialized: true,
-  store: MongoStore.create({
-    mongoUrl: `mongodb+srv://${username}:${password}@${clusterURL}.mongodb.net/${dbname}`
-  }),
-  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
 }));
 
 app.use(authenticationRoutes);

@@ -9,10 +9,11 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-delete-messages',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './delete-messages.component.html',
-  styleUrl: './delete-messages.component.scss'
+  templateUrl: './delete-messages-with-user.component.html',
+  styleUrl: './delete-messages-with-user.component.scss'
 })
-export class DeleteMessagesComponent {
+export class DeleteMessagesWithUserComponent {
+  @Input() friendID: string = '';
   yourID = "";
   password = "";
   constructor(private storeService: StoreService, private toastr: ToastrService) {
@@ -27,25 +28,26 @@ export class DeleteMessagesComponent {
       this.toastr.error('Password which you provided is empty!', 'Delete failed');
       return;
     }
-    fetch(`${environment.apiURL}/settings/messages`, {
+    fetch(`${environment.apiURL}/chat-settings/messages`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ id: this.yourID, password: this.password })
+      body: JSON.stringify({ yourID: this.yourID, friendID: this.friendID, password: this.password })
     })
       .then(response => response.json())
       .then(data => {
-        if (data.error) {
-          this.toastr.error(data.error, 'Deleting failed');
+        if (data.message === 'Invalid password') {
+          this.toastr.error(data.message, 'Deleting failed');
           return;
         }
         this.toastr.success(`Your messages was deleted!`, 'Delete was successful');
         this.password = '';
       })
       .catch(error => {
-        this.toastr.error('An Error Occured while deleting messages!', 'Deleting failed');
-        console.error('Delete Messages Error:', error);
+        this.toastr.error('An Error Occured while deleting messages!', 'Delete Error');
+        console.error('Delete Error:', error);
       });
   }
 }
+

@@ -1,5 +1,5 @@
 import { UserStatus } from "./enums"
-import { Message } from "./types"
+import { FriendSettings, Message } from "./types"
 
 export interface User {
     _id: string,
@@ -25,10 +25,7 @@ export interface User {
 
 export interface Friend {
     id: string,
-    settings: {
-        nickname: string,
-        PIN: number,
-    },
+    settings: FriendSettings,
     messages: Message[]
 }
 export interface FriendChatData {
@@ -42,10 +39,7 @@ export interface FriendChatData {
         ignore: false,
         block: false
     },
-    settings: {
-        nickname: '',
-        PIN: 0,
-    },
+    settings: FriendSettings,
     blocked: string[]
 }
 export interface FriendSettingsData {
@@ -55,13 +49,12 @@ export interface FriendSettingsData {
     mail: string,
     avatar: string,
     messagesCounter: number,
-    settings: {
-        nickname: string,
-        PIN: number,
-    },
+    settings: FriendSettings,
     accessibility: {
         mute: boolean,
         ignore: boolean,
         block: boolean
     },
 }
+
+

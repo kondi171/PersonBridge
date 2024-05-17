@@ -178,7 +178,7 @@ export const acceptRequest = async (req: Request, res: Response): Promise<void> 
                     friends: {
                         id: friendID,
                         settings: {
-                            nickname: yourName,
+                            nickname: friendName,
                         },
                         messages: []
                     }

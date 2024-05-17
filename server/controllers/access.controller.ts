@@ -18,6 +18,7 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
         res.status(400).json({ message: "User ID is required" });
         return;
     }
+
     try {
         const user = await userModel.findById(userId);
         if (!user) {
@@ -35,7 +36,7 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
         const friends = await userModel.find({
             '_id': { $in: friendsIDs }
         });
-        console.log(friends)
+
         const results = friends.map(friend => {
             const friendData = friendsData.find(f => f.id === friend._id.toString());
             const lastMessage = friendData && friendData.messages.length > 0
@@ -48,7 +49,8 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
                 lastname: friend.lastname,
                 avatar: friend.avatar,
                 status: friend.status,
-                lastMessage: lastMessage
+                lastMessage: lastMessage,
+                settings: friendData ? friendData.settings : null  // Add settings to the result
             };
         }).filter(friend => friend.lastMessage !== null);
 

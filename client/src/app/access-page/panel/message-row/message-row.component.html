@@ -5,7 +5,8 @@
     </div>
     <div class="info-wrapper">
       <div class="message__person">
-        {{ person.name }} {{ person.lastname}}
+        <span *ngIf="person.name === person.settings.nickname">{{ person.name }} {{ person.lastname}}</span>
+        <span *ngIf="person.name !== person.settings.nickname">{{ person.settings.nickname }}</span>
       </div>
       <div class="message__status" *ngIf="person.status === UserStatus.ONLINE">
         <div class="status__dot online-dot"></div>

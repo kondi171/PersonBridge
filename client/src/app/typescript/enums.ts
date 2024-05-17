@@ -23,6 +23,11 @@ export enum Position {
   FIXED
 }
 
+export enum Section {
+  SETTINGS,
+  CHAT_SETTINGS
+}
+
 export enum Modal {
   CHANGE_AVATAR,
   EDIT_NAME,
@@ -34,6 +39,7 @@ export enum Modal {
   SET_VOICE,
   DELETE_MESSAGES,
   DELETE_ACCOUNT,
+  REMOVE_FRIEND
 }
 
 export enum UserStatus {
