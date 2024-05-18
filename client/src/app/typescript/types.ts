@@ -1,4 +1,4 @@
-import { MessageSender, UserStatus } from "./enums"
+import { MessageSender } from "./enums"
 
 export type Message = {
     content: string,
@@ -51,13 +51,3 @@ export type FriendSettings = {
     PIN: number,
 }
 
-export type MessageRow = {
-    id: string,
-    name: string,
-    lastname: string,
-    avatar: string,
-    status: UserStatus,
-    lastMessage: Message,
-    settings: FriendSettings,
-    accessibility: FriendAccessibility
-}

@@ -1,4 +1,4 @@
-<div class="message" [ngClass]="{ 'unread' : !person.lastMessage.read}">
+<div class="message" [ngClass]="{ 'unread' : isUnread && !person.accessibility.mute }">
   <div class="message__avatar">
     <img [src]="person.avatar" [alt]="person.id">
   </div>
@@ -16,15 +16,17 @@
       <div class="status__info offline-info">Offline</div>
     </div>
     <div class="last-message">
-      {{ person.lastMessage.sender ?  person.name + ': ' + person.lastMessage.content : 'You: ' + person.lastMessage.content }}
+      <span *ngIf="isFriendLastMessage">{{ person.name }}: {{ person.lastMessage.friend.content }}</span>
+      <span *ngIf="!isFriendLastMessage">You: {{ person.lastMessage.you.content }}</span>
     </div>
     <div class="message__info">
       <div class="accessibility">
-        <fa-icon *ngIf="person.accessibility.mute" class="fa icon" [icon]="icons.mute" />
-        <fa-icon *ngIf="person.accessibility.ignore" class="fa icon" [icon]="icons.ignore" />
-        <fa-icon *ngIf="person.accessibility.block" class="fa icon" [icon]="icons.block" />
+        <fa-icon class="fa icon hidden" [icon]="icons.mute"></fa-icon>
+        <fa-icon *ngIf="person.accessibility.mute" class="fa icon" [icon]="icons.mute"></fa-icon>
+        <fa-icon *ngIf="person.accessibility.ignore" class="fa icon" [icon]="icons.ignore"></fa-icon>
+        <fa-icon *ngIf="person.accessibility.block" class="fa icon" [icon]="icons.block"></fa-icon>
       </div>
-      <div class="date">{{formattedDate}}</div>
+      <div class="date">{{ formattedDate }}</div>
       <div class="status">
         <fa-icon class="fa icon" [icon]="getIcon()"></fa-icon>
       </div>

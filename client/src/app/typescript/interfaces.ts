@@ -1,5 +1,5 @@
 import { UserStatus } from "./enums"
-import { FriendSettings, Message } from "./types"
+import { FriendAccessibility, FriendSettings, Message } from "./types"
 
 export interface User {
     _id: string,
@@ -57,4 +57,17 @@ export interface FriendSettingsData {
     },
 }
 
-
+export interface MessageRow {
+    id: string,
+    name: string,
+    lastname: string,
+    avatar: string,
+    status: UserStatus,
+    lastMessage: {
+        you: Message,
+        friend: Message
+    }
+    friendLastMessage: Message,
+    settings: FriendSettings,
+    accessibility: FriendAccessibility
+}

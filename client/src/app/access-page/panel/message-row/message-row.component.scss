@@ -110,6 +110,10 @@
 
       .icon {
         margin: .3vmin;
+
+        &.hidden {
+          visibility: hidden;
+        }
       }
     }
 

@@ -76,7 +76,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
             content: message,
             date: new Date(),
             sender: MessageSender.YOU,
-            read: true
+            read: false
         };
         friend.messages.push(newMessage);
 
@@ -117,32 +117,55 @@ export const markMessagesAsRead = async (req: Request, res: Response): Promise<v
 
     try {
         const user = await userModel.findById(yourID);
+        const friend = await userModel.findById(friendID);
 
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
 
-        const friend = user.friends.find(f => f.id === friendID);
-
         if (!friend) {
+            res.status(404).json({ message: "Friend not found" });
+            return;
+        }
+
+        const friendInUser = user.friends.find(f => f.id === friendID);
+        const userInFriend = friend.friends.find(f => f.id === yourID);
+
+        if (!friendInUser) {
             res.status(404).json({ message: "Friend not found in user's friend list" });
             return;
         }
 
-        // Oznacz wszystkie wiadomości jako przeczytane
-        friend.messages.forEach(message => {
-            message.read = true;
+        if (!userInFriend) {
+            res.status(404).json({ message: "User not found in friend's friend list" });
+            return;
+        }
+
+        // Oznacz wszystkie wiadomości wysłane przez przyjaciela jako przeczytane
+        friendInUser.messages.forEach(message => {
+            if (message.sender === MessageSender.FRIEND) {
+                message.read = true;
+            }
+        });
+
+        // Oznacz wszystkie wiadomości wysłane przez użytkownika jako przeczytane w dokumencie przyjaciela
+        userInFriend.messages.forEach(message => {
+            if (message.sender === MessageSender.YOU) {
+                message.read = true;
+            }
         });
 
         await user.save();
+        await friend.save();
 
-        res.status(200).json({ message: "All messages marked as read" });
+        res.status(200).json({ message: "All messages from friend marked as read" });
     } catch (error) {
         console.error("Error marking messages as read: ", error);
         res.status(500).json({ message: "Error marking messages as read" });
     }
 };
+
 
 export const forgetPIN = async (req: Request, res: Response): Promise<void> => {
     const { yourID, password } = req.body;

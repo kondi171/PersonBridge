@@ -33,6 +33,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
   chatID = "";
   noMessages: boolean = true;
   messageContent = "";
+  messageContents: { [key: string]: string } = {}; // Obiekt do przechowywania zawartości inputa dla każdego czatu
   accessGranted = false;
   limit = 20;
   offset = 0;
@@ -75,6 +76,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       }
     });
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
+      this.saveCurrentMessageContent(); // Zapisz aktualną zawartość inputa przed zmianą czatu
       this.chatID = chatID;
       if (this.chatID === 'no-messages') {
         this.noMessages = true;
@@ -83,6 +85,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
         this.accessGranted = false; // Resetowanie accessGranted przy zmianie chatID
         this.messages = []; // Resetowanie wiadomości przy zmianie chatID
         this.offset = 0; // Resetowanie offsetu przy zmianie chatID
+        this.messageContent = this.getMessageContent(); // Przywrócenie zawartości inputa dla aktualnego czatu
         this.getMessages(false, true); // Przewijanie tylko przy pierwszym ładowaniu wiadomości
       } else {
         this.noMessages = false;
@@ -109,6 +112,16 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     } catch (err) {
       console.error('Scroll to bottom failed:', err);
     }
+  }
+
+  private saveCurrentMessageContent() {
+    if (this.chatID) {
+      this.messageContents[this.chatID] = this.messageContent;
+    }
+  }
+
+  private getMessageContent(): string {
+    return this.messageContents[this.chatID] || '';
   }
 
   getMessages(loadMore = false, scrollDown = false) {

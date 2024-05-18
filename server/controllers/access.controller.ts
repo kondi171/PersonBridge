@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import userModel from "../models/users.model";
+import { MessageSender } from "../typescript/interfaces";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -39,8 +40,11 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
 
         const results = friends.map(friend => {
             const friendData = friendsData.find(f => f.id === friend._id.toString());
-            const lastMessage = friendData && friendData.messages.length > 0
-                ? friendData.messages[friendData.messages.length - 1]
+            const youLastMessage = friendData && friendData.messages.length > 0
+                ? friendData.messages.slice().reverse().find(message => message.sender === MessageSender.YOU)
+                : null;
+            const friendLastMessage = friendData && friendData.messages.length > 0
+                ? friendData.messages.slice().reverse().find(message => message.sender === MessageSender.FRIEND)
                 : null;
 
             return {
@@ -49,11 +53,14 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
                 lastname: friend.lastname,
                 avatar: friend.avatar,
                 status: friend.status,
-                lastMessage: lastMessage,
+                lastMessage: {
+                    you: youLastMessage || { content: '', date: null, sender: MessageSender.YOU, read: false },
+                    friend: friendLastMessage || { content: '', date: null, sender: MessageSender.FRIEND, read: false }
+                },
                 settings: friendData ? friendData.settings : null,
                 accessibility: friendData ? friendData.accessibility : null
             };
-        }).filter(friend => friend.lastMessage !== null);
+        }).filter(friend => friend.lastMessage.you.content !== '' || friend.lastMessage.friend.content !== '');
 
         res.json(results);
     } catch (error) {
