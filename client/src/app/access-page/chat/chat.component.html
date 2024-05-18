@@ -23,18 +23,19 @@
         </div>
       </div>
       <div class="icons">
-        <div (click)="handleAudioCall()" class="icon-wrapper">
+        <div class="icon-wrapper" (click)="handleAudioCall()">
           <fa-icon class="fa icon" [icon]="icons.audio"></fa-icon>
           <span class="text">Audio Call</span>
         </div>
-        <div (click)="handleVideoCall()" class="icon-wrapper">
+        <div class="icon-wrapper" (click)="handleVideoCall()">
           <fa-icon class="fa icon" [icon]="icons.video"></fa-icon>
           <span class="text">Video Call</span>
         </div>
-        <div (click)="navigateToSettings()" class="icon-wrapper">
+        <a [routerLink]="['/access/chat', friendChatData.id, 'settings']" class="icon-wrapper"
+          (click)="navigateToSettings()">
           <fa-icon class="fa icon" [icon]="icons.settings"></fa-icon>
           <span class="text">Settings</span>
-        </div>
+        </a>
       </div>
     </div>
   </header>
@@ -43,27 +44,27 @@
       Send a message to start chatting.
     </div>
     <div *ngIf="friendChatData.settings.PIN !== 0 && !accessGranted" class="pin">
-      <app-pin [correctPIN]="friendChatData.settings.PIN" [yourID]="yourID" (accessGranted)="onAccessGranted($event)" />
+      <app-pin [correctPIN]="friendChatData.settings.PIN" [yourID]="yourID" (accessGranted)="onAccessGranted($event)">
+      </app-pin>
     </div>
     <div *ngIf="friendChatData.settings.PIN === 0 || accessGranted">
+      <button *ngIf="messages.length >= 20" class="load-more-messages" (click)="loadMoreMessages()">Load More</button>
       <div class="message" *ngFor="let message of messages">
         <app-message-box [friendData]="friendChatData" [message]="message"></app-message-box>
       </div>
     </div>
   </div>
-  <form class="type-message" (ngSubmit)="sendMessage()">
+  <div class="type-message">
     <div class="input-container">
       <textarea [(ngModel)]="messageContent" name="messageContent" class="input-container__input"
         placeholder="Type your message..." (keydown)="handleKeyDown($event)"></textarea>
       <fa-icon class="input-container__icon" [icon]="icons.emoticons"></fa-icon>
     </div>
-    <button type="submit" class="type-message__btn">
+    <button (click)="sendMessage()" class="type-message__btn">
       Send
       <fa-icon class="fa icon" [icon]="icons.send"></fa-icon>
     </button>
-  </form>
-
-
+  </div>
 </section>
 <ng-template #noMessagesTemplate>
   <app-no-messages></app-no-messages>

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import userModel from "../models/users.model";
 
 export const findUsers = async (req: Request, res: Response): Promise<void> => {
-    const { yourID, searchInputValue } = req.body;
+    const { yourID, searchInputValue, limit = 20, offset = 0 } = req.body;
     if (!yourID) {
         res.status(400).json({ message: "Missing user ID" });
         return;
@@ -25,7 +25,9 @@ export const findUsers = async (req: Request, res: Response): Promise<void> => {
                     ]
                 }
             ]
-        }, { mail: 1, name: 1, lastname: 1, avatar: 1 });
+        }, { mail: 1, name: 1, lastname: 1, avatar: 1 })
+            .skip(offset)
+            .limit(limit);
 
         if (users.length === 0) {
             res.send({ message: "No users found!" });

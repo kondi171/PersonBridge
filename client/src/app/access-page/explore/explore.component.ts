@@ -19,7 +19,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PersonRowComponent, FooterComponent],
   templateUrl: './explore.component.html',
-  styleUrl: './explore.component.scss',
+  styleUrls: ['./explore.component.scss'],
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
@@ -44,6 +44,8 @@ export class ExploreComponent implements OnInit {
   showResults = true;
   showRequests = false;
   requestCounter: number = 0;
+  limit = 20;
+  offset = 0;
 
   constructor(private storeService: StoreService, private updateUser: UpdateUserService, private toastr: ToastrService) {
     const loggedUser = this.storeService.getLoggedUser();
@@ -83,7 +85,7 @@ export class ExploreComponent implements OnInit {
       });
   }
 
-  handleFindPeople() {
+  handleFindPeople(loadMore = false) {
     if (this.searchInputValue.length === 0) {
       this.toastr.error('Search input is empty!', 'Search failed');
       return;
@@ -93,7 +95,7 @@ export class ExploreComponent implements OnInit {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ yourID: this.yourID, searchInputValue: this.searchInputValue })
+      body: JSON.stringify({ yourID: this.yourID, searchInputValue: this.searchInputValue, limit: this.limit, offset: this.offset })
     })
       .then(response => {
         if (!response.ok) {
@@ -102,8 +104,19 @@ export class ExploreComponent implements OnInit {
         return response.json();
       })
       .then(data => {
-        if (data.message === 'No users found!') this.results = [];
-        else this.results = data;
+        if (data.message === 'No users found!') {
+          if (loadMore) {
+            this.toastr.info('No more users to load.', 'Info');
+          } else {
+            this.results = [];
+          }
+        } else {
+          this.results = loadMore ? [...this.results, ...data] : data;
+          this.offset += this.limit; // Zwiększ offset tylko jeśli załadowano więcej użytkowników
+          if (loadMore) {
+            this.toastr.success('Loaded more users.', 'Success');
+          }
+        }
         return data;
       })
       .catch(error => {
@@ -111,8 +124,12 @@ export class ExploreComponent implements OnInit {
         throw error;
       });
   }
+
+  loadMoreResults() {
+    this.handleFindPeople(true);
+  }
+
   updateRequestCounter(newCounter: number) {
     this.requestCounter = newCounter;
   }
-
 }

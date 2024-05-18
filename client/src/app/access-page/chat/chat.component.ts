@@ -34,6 +34,8 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
   noMessages: boolean = true;
   messageContent = "";
   accessGranted = false;
+  limit = 20;
+  offset = 0;
   icons = {
     audio: faPhone,
     video: faVideoCamera,
@@ -74,11 +76,17 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     });
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.chatID = chatID;
-      if (this.chatID === 'no-messages') this.noMessages = true;
-      else if (this.chatID !== '') {
+      if (this.chatID === 'no-messages') {
+        this.noMessages = true;
+      } else if (this.chatID !== '') {
         this.noMessages = false;
-        this.getMessages();
-      } else this.noMessages = false;
+        this.accessGranted = false; // Resetowanie accessGranted przy zmianie chatID
+        this.messages = []; // Resetowanie wiadomości przy zmianie chatID
+        this.offset = 0; // Resetowanie offsetu przy zmianie chatID
+        this.getMessages(false, true); // Przewijanie tylko przy pierwszym ładowaniu wiadomości
+      } else {
+        this.noMessages = false;
+      }
     });
   }
 
@@ -89,7 +97,6 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initialized = true;
-    this.scrollToBottom();
   }
 
   private scrollToBottom(): void {
@@ -104,8 +111,8 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  getMessages() {
-    fetch(`${environment.apiURL}/chat/${this.yourID}/${this.chatID}`, {
+  getMessages(loadMore = false, scrollDown = false) {
+    fetch(`${environment.apiURL}/chat/${this.yourID}/${this.chatID}?limit=${this.limit}&offset=${this.offset}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -114,18 +121,28 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       .then(response => response.json())
       .then(data => {
         if (data.messages.length !== 0) {
-          this.messages = data.messages.map((message: Message) => ({
+          const formattedMessages = data.messages.map((message: Message) => ({
             ...message,
-            date: new Date(message.date),
+            date: new Date(message.date), // Konwertuj date na obiekt Date
           }));
+          this.messages = loadMore ? [...formattedMessages, ...this.messages] : formattedMessages;
+          this.offset += this.limit; // Zwiększ offset tylko jeśli załadowano więcej wiadomości
+          if (loadMore) {
+            this.toastr.success('Loaded more messages.', 'Success');
+          }
+        } else {
+          if (loadMore) {
+            this.toastr.info('No more messages to load.', 'Info');
+          }
         }
         this.friendChatData = data.friend;
-        if (this.friendChatData.settings.PIN === 0) this.accessGranted = true;
-        else this.accessGranted = false
+        if (this.friendChatData.settings.PIN === 0) {
+          this.accessGranted = true;
+        }
         const timestamp = new Date().getTime();
         this.friendChatData.avatar = this.ensureFullURL(data.friend.avatar) + `?${timestamp}`;
         this.cdr.detectChanges();
-        if (this.initialized) {
+        if (scrollDown && this.initialized) {
           this.scrollToBottom();
         }
       })
@@ -201,7 +218,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       })
       .then(() => {
         this.messageContent = '';
-        this.getMessages();
+        this.getMessages(false, true); // Przewijanie tylko przy pierwszym ładowaniu wiadomości
       })
       .catch(error => {
         this.toastr.error('An Error Occured while sending message!', 'Message Error');
@@ -221,6 +238,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       this.toastr.error('You need to enter the correct PIN to access settings!', 'Access Denied');
     }
   }
+
   handleAudioCall() {
     if (this.accessGranted) {
       // Audio Call
@@ -228,6 +246,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
     }
   }
+
   handleVideoCall() {
     if (this.accessGranted) {
       // Video Call
@@ -235,6 +254,11 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
     }
   }
+
+  loadMoreMessages() {
+    this.getMessages(true, false);
+  }
+
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;

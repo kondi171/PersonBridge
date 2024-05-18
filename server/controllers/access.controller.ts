@@ -50,7 +50,8 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
                 avatar: friend.avatar,
                 status: friend.status,
                 lastMessage: lastMessage,
-                settings: friendData ? friendData.settings : null  // Add settings to the result
+                settings: friendData ? friendData.settings : null,
+                accessibility: friendData ? friendData.accessibility : null
             };
         }).filter(friend => friend.lastMessage !== null);
 

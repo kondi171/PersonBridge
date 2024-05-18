@@ -1,27 +1,33 @@
 <div class="message" [ngClass]="{ 'unread' : !person.lastMessage.read}">
-  <div class="message">
-    <div class="message__avatar">
-      <img [src]="person.avatar" [alt]="person.id">
+  <div class="message__avatar">
+    <img [src]="person.avatar" [alt]="person.id">
+  </div>
+  <div class="message__user">
+    <div class="person">
+      <span *ngIf="person.name === person.settings.nickname">{{ person.name }} {{ person.lastname}}</span>
+      <span *ngIf="person.name !== person.settings.nickname">{{ person.settings.nickname }}</span>
     </div>
-    <div class="info-wrapper">
-      <div class="message__person">
-        <span *ngIf="person.name === person.settings.nickname">{{ person.name }} {{ person.lastname}}</span>
-        <span *ngIf="person.name !== person.settings.nickname">{{ person.settings.nickname }}</span>
+    <div class="status" *ngIf="person.status === UserStatus.ONLINE">
+      <div class="status__dot online-dot"></div>
+      <div class="status__info online-info">Online</div>
+    </div>
+    <div class="status" *ngIf="person.status === UserStatus.OFFLINE">
+      <div class="status__dot offline-dot"></div>
+      <div class="status__info offline-info">Offline</div>
+    </div>
+    <div class="last-message">
+      {{ person.lastMessage.sender ?  person.name + ': ' + person.lastMessage.content : 'You: ' + person.lastMessage.content }}
+    </div>
+    <div class="message__info">
+      <div class="accessibility">
+        <fa-icon *ngIf="person.accessibility.mute" class="fa icon" [icon]="icons.mute" />
+        <fa-icon *ngIf="person.accessibility.ignore" class="fa icon" [icon]="icons.ignore" />
+        <fa-icon *ngIf="person.accessibility.block" class="fa icon" [icon]="icons.block" />
       </div>
-      <div class="message__status" *ngIf="person.status === UserStatus.ONLINE">
-        <div class="status__dot online-dot"></div>
-        <div class="status__info online-info">Online</div>
-        <div class="date">{{formattedDate}}</div>
-      </div>
-      <div class="message__status" *ngIf="person.status === UserStatus.OFFLINE">
-        <div class="status__dot offline-dot"></div>
-        <div class="status__info offline-info">Offline</div>
-        <div class="date">{{formattedDate}}</div>
-      </div>
-      <div class="last-message">
-        {{ person.lastMessage.sender ?  person.name + ': ' + person.lastMessage.content : 'You: ' + person.lastMessage.content }}
-        <!-- <fa-icon *ngIf="!person.lastMessage.read" class="fa icon" [icon]="icons.newMessage" /> -->
-        <!-- <fa-icon *ngIf="person.lastMessage.sender === MessageSender.YOU" class="fa icon" [icon]="icons.sentMessage" /> -->
+      <div class="date">{{formattedDate}}</div>
+      <div class="status">
+        <fa-icon class="fa icon" [icon]="getIcon()"></fa-icon>
       </div>
     </div>
   </div>
+</div>

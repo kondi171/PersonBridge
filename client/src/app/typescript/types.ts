@@ -58,5 +58,6 @@ export type MessageRow = {
     avatar: string,
     status: UserStatus,
     lastMessage: Message,
-    settings: FriendSettings
+    settings: FriendSettings,
+    accessibility: FriendAccessibility
 }

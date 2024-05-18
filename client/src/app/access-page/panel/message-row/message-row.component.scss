@@ -10,7 +10,6 @@
   &.unread {
     .icon {
       color: $primaryColor;
-      width: 10px;
     }
 
     .last-message {
@@ -37,22 +36,27 @@
     }
   }
 
-  &__person {
-    color: $primaryColor;
-    font-size: 6vmin;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 60vw;
-  }
-
-  &__status {
+  &__user {
     display: flex;
-    align-items: center;
-    font-size: 4vmin;
-    margin: 1vmin 0;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+
+    .person {
+      color: $primaryColor;
+      font-size: 6vmin;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 52vw;
+    }
 
     .status {
+      display: flex;
+      align-items: center;
+      font-size: 4vmin;
+      margin: 1vmin 0;
+
       &__dot {
         min-width: 4vmin;
         min-height: 4vmin;
@@ -62,43 +66,64 @@
       &__info {
         margin-left: 2vmin;
       }
+
+      .online-dot {
+        background-color: $onlineColor;
+      }
+
+      .online-info {
+        color: $onlineColor;
+      }
+
+      .offline-dot {
+        background-color: $offlineColor;
+      }
+
+      .offline-info {
+        color: $offlineColor;
+      }
+    }
+
+    .last-message {
+      color: $textColor;
+      width: 60vw;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 
-  .online-dot {
-    background-color: $onlineColor;
-  }
-
-  .online-info {
-    color: $onlineColor;
-  }
-
-  .offline-dot {
-    background-color: $offlineColor;
-  }
-
-  .offline-info {
-    color: $offlineColor;
-  }
-
-  .info-wrapper {
+  &__info {
+    position: absolute;
     display: flex;
     flex-direction: column;
-  }
-
-  .last-message {
-    color: $textColor;
-    width: 60vw;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .date {
-    color: lighten($bgColor, 20%);
-    align-content: flex-end;
-    position: absolute;
+    align-items: flex-end;
+    justify-content: center;
     right: 0;
+
+    .accessibility {
+      color: $primaryColor;
+      margin: 1vmin 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .icon {
+        margin: .3vmin;
+      }
+    }
+
+    .date {
+      color: lighten($bgColor, 20%);
+      align-content: flex-end;
+      margin: 1vmin 0 1.5vmin 0;
+    }
+
+    .status {
+      margin: 1vmin 0;
+      color: lighten($bgColor, 20%);
+      align-content: flex-end;
+    }
   }
 }
 
@@ -126,12 +151,17 @@
       }
     }
 
-    .last-message {
+    &__user .last-message {
       font-size: 4vmin;
     }
 
-    .date {
-      font-size: 4vmin;
+    &__info {
+
+      .date,
+      .accessibility,
+      .status {
+        font-size: 4vmin;
+      }
     }
   }
 }
@@ -155,12 +185,14 @@
       }
     }
 
-    &__person {
-      width: 85px;
-      font-size: 2.5vmin;
-    }
+    &__user {
+      padding-left: 2vmin;
+      border-left: .3vmin solid $primaryColor;
 
-    &__status {
+      .person {
+        width: 85px;
+        font-size: 2.5vmin;
+      }
 
       .status {
         &__dot {
@@ -172,30 +204,29 @@
           font-size: 2vmin;
         }
       }
+
+      .last-message {
+        font-size: 2vmin;
+        width: 150px;
+      }
     }
 
-    .info-wrapper {
-      padding-left: 2vmin;
-      border-left: .3vmin solid $primaryColor;
-    }
+    &__info {
+      .date {
+        font-size: 2vmin;
+      }
 
-    .last-message {
-      font-size: 2vmin;
-      width: 150px;
-    }
-
-    .date {
-      font-size: 2vmin;
+      .accessibility,
+      .status {
+        font-size: 2vmin;
+        margin: 0;
+      }
     }
   }
 }
 
 @media screen and (min-width: 1024px) and (orientation: landscape) {
   .message {
-    &__person {
-      width: 150px;
-    }
-
     &__avatar {
       width: 30%;
       margin: 0;
@@ -205,12 +236,15 @@
         height: 70px;
       }
     }
+
+    &__user .person {
+      width: 150px;
+    }
   }
 }
 
 @media screen and (min-width: 1024px) and (orientation: portrait) {
   .message {
-
     &__avatar {
       width: 30%;
       margin: 0;
@@ -225,10 +259,6 @@
 
 @media screen and (min-width: 1280px) {
   .message {
-    &__person {
-      width: 220px;
-    }
-
     &__avatar {
       margin: 0 1vmin;
 
@@ -238,24 +268,33 @@
       }
     }
 
-    .last-message {
-      width: 250px;
+    &__user {
+      .person {
+        width: 200px;
+      }
+
+      .last-message {
+        width: 250px;
+      }
     }
   }
 }
 
 @media screen and (min-width: 1300px) {
   .message {
-    &__person {
-      width: 300px;
-    }
-
     &__avatar {
+      width: 25%;
       margin: 0;
     }
 
-    .last-message {
-      width: 250px;
+    &__user {
+      .person {
+        width: 300px;
+      }
+
+      .last-message {
+        width: 250px;
+      }
     }
   }
 }

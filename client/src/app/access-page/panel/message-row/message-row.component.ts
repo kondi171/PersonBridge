@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MessageRow } from '../../../typescript/types';
 import { MessageSender, UserStatus } from '../../../typescript/enums';
 import { environment } from '../../../app.environment';
-import { faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faBellSlash, faCheck, faCheckDouble, faCommentSlash, faExclamation, faLock, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
@@ -13,7 +13,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [CommonModule, RouterModule, FontAwesomeModule],
   providers: [DatePipe],
   templateUrl: './message-row.component.html',
-  styleUrl: './message-row.component.scss'
+  styleUrls: ['./message-row.component.scss']
 })
 export class MessageRowComponent implements OnInit {
   @Input() person!: MessageRow;
@@ -25,6 +25,11 @@ export class MessageRowComponent implements OnInit {
   icons = {
     newMessage: faExclamation,
     sentMessage: faCheck,
+    readMessage: faCheckDouble,
+    oldMessage: faSquareCheck,
+    mute: faBellSlash,
+    ignore: faCommentSlash,
+    block: faLock,
   }
   ngOnInit() {
     const timestamp = new Date().getTime();
@@ -50,7 +55,13 @@ export class MessageRowComponent implements OnInit {
     else if (isCurrentYear) this.formattedDate = `${this.datePipe.transform(date, 'd MMMM')}`;
     else this.formattedDate = `${this.datePipe.transform(date, 'd MMMM yyyy')}`;
   }
-
+  getIcon(): any {
+    if (this.person.lastMessage.sender === MessageSender.YOU) {
+      return this.person.lastMessage.read ? this.icons.readMessage : this.icons.sentMessage;
+    } else if (this.person.lastMessage.sender === MessageSender.FRIEND) {
+      return this.person.lastMessage.read ? this.icons.oldMessage : this.icons.newMessage;
+    }
+  }
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
@@ -58,4 +69,3 @@ export class MessageRowComponent implements OnInit {
     return `${environment.serverURL}/${path}`;
   }
 }
-

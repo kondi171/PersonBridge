@@ -5,26 +5,36 @@ import bcrypt from 'bcrypt';
 
 export const getUserChat = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID } = req.params;
+    const limit = parseInt(req.query.limit as string, 10) || 20; // Domyślnie 20 wiadomości
+    const offset = parseInt(req.query.offset as string, 10) || 0;
 
     if (!yourID || !friendID) {
         res.status(400).json({ message: "Both User and Friend IDs are required" });
         return;
-    } try {
+    }
+
+    try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
+
         const friendRelation = user.friends.find(friend => friend.id === friendID);
         if (!friendRelation) {
             res.status(404).json({ message: "Friend not found" });
             return;
         }
+
         const friendData = await userModel.findById(friendID).select('name lastname avatar status blocked');
         if (!friendData) {
             res.status(404).json({ message: "Friend data not found" });
             return;
         }
+
+        // Paginacja wiadomości
+        const messages = friendRelation.messages.slice(offset, offset + limit);
+
         res.json({
             friend: {
                 id: friendData._id,
@@ -36,12 +46,13 @@ export const getUserChat = async (req: Request, res: Response): Promise<void> =>
                 settings: friendRelation.settings,
                 blocked: friendData.blocked
             },
-            messages: friendRelation.messages
+            messages: messages
         });
     } catch (error) {
         res.status(500).send(error);
     }
 };
+
 
 export const sendMessage = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID, message } = req.body;

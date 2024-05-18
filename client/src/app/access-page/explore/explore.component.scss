@@ -115,8 +115,20 @@
         font-size: 6vmin;
         border-bottom: none;
       }
-    }
 
+      .load-more-messages {
+        @include btn($bgColor, $primaryColor, $secondaryColor);
+        width: 20%;
+        font-size: 2vmin;
+        margin: 5vmin auto;
+      }
+
+      .comma {
+        width: 20%;
+        font-size: 2vmin;
+        margin: 2vmin auto;
+      }
+    }
   }
 
   .request {

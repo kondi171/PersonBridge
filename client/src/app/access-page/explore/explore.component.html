@@ -1,10 +1,10 @@
 <section class="explore">
   <h2 class="heading">
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
-      <fa-icon class="fa" [icon]="icons.back" />
+      <fa-icon class="fa" [icon]="icons.back"></fa-icon>
     </a>
     <span>Explore</span>
-    <fa-icon class="fa icon" [icon]="icons.section" />
+    <fa-icon class="fa icon" [icon]="icons.section"></fa-icon>
   </h2>
 
   <div class="find" *ngIf="showResults" [@fadeIn]>
@@ -13,7 +13,7 @@
       <div class="input-container">
         <input [(ngModel)]="searchInputValue" type="search" class="input-container__input"
           placeholder="Search for a person...">
-        <fa-icon class="input-container__icon" [icon]="icons.search" />
+        <fa-icon class="input-container__icon" [icon]="icons.search"></fa-icon>
       </div>
       <button (click)="handleFindPeople()" class="searchbar__btn">Search</button>
     </div>
@@ -24,9 +24,10 @@
         No results found!
       </div>
       <div *ngIf="results.length > 0" class="result">
-        <app-person-row *ngFor="let result of results" [person]="result" />
+        <app-person-row *ngFor="let result of results" [person]="result"></app-person-row>
       </div>
-
+      <button *ngIf="results.length >= 1" (click)="loadMoreResults()" class="load-more-messages">Load More</button>
+      <div class="comma"></div>
     </div>
   </div>
   <div class="request" *ngIf="showRequests" [@fadeIn]>
