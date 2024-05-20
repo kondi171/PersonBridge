@@ -28,20 +28,18 @@ export interface Friend {
     settings: FriendSettings,
     messages: Message[]
 }
+
 export interface FriendChatData {
     id: string,
     name: string,
     lastname: string,
     avatar: string,
     status: string,
-    accessibility: {
-        mute: false,
-        ignore: false,
-        block: false
-    },
+    accessibility: FriendAccessibility,
     settings: FriendSettings,
     blocked: string[]
 }
+
 export interface FriendSettingsData {
     id: string,
     name: string,
@@ -50,11 +48,7 @@ export interface FriendSettingsData {
     avatar: string,
     messagesCounter: number,
     settings: FriendSettings,
-    accessibility: {
-        mute: boolean,
-        ignore: boolean,
-        block: boolean
-    },
+    accessibility: FriendAccessibility
 }
 
 export interface MessageRow {

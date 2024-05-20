@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import userModel from "../models/users.model";
+import userModel from "../models/user.model";
 import bcrypt from 'bcrypt';
 import { promises as fsPromises } from 'fs';
 import path from 'path';
@@ -41,8 +41,7 @@ export const editName = async (req: Request, res: Response): Promise<void> => {
     if (!password) {
         res.status(400).send({ error: 'Password is required!' });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).send({ error: 'User not found!' });
@@ -82,8 +81,7 @@ export const editLastname = async (req: Request, res: Response): Promise<void> =
     if (!password) {
         res.status(400).send({ error: 'Password is required!' });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).send({ error: 'User not found!' });
@@ -122,8 +120,7 @@ export const editMail = async (req: Request, res: Response): Promise<void> => {
     if (!password) {
         res.status(400).send({ error: 'Password is required!' });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).send({ error: 'User not found!' });
@@ -163,9 +160,7 @@ export const editPassword = async (req: Request, res: Response): Promise<void> =
     if (!oldPassword) {
         res.status(400).send({ error: 'Old Password is required!' });
         return;
-    }
-
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).send({ error: 'User not found!' });
@@ -228,6 +223,7 @@ export const deleteMessages = async (req: Request, res: Response): Promise<void>
 
 export const deleteAccount = async (req: Request, res: Response): Promise<void> => {
     const { id, password } = req.body;
+
     if (!id) {
         res.status(400).send({ error: 'ID is required!' });
         return;
@@ -235,8 +231,7 @@ export const deleteAccount = async (req: Request, res: Response): Promise<void> 
     if (!password) {
         res.status(400).send({ error: 'Password is required!' });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).send({ error: 'User not found!' });

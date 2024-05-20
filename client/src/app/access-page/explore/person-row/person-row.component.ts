@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCircleCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
-import { SearchResult } from '../../../typescript/types';
+import { UserInfo } from '../../../typescript/types';
 import { environment } from '../../../app.environment';
 import { StoreService } from '../../../services/store.service';
 import { UpdateUserService } from '../../../services/update-user.service';
@@ -17,8 +17,8 @@ import { FullName } from '../../../typescript/types';
   styleUrl: './person-row.component.scss'
 })
 export class PersonRowComponent implements OnInit {
-  @Input() person: SearchResult = {
-    _id: '',
+  @Input() person: UserInfo = {
+    id: '',
     name: '',
     lastname: '',
     mail: '',
@@ -46,15 +46,16 @@ export class PersonRowComponent implements OnInit {
   }
 
   handleSendRequest(fullname: FullName) {
-    this.yourRequests.push(this.person._id);
+    this.yourRequests.push(this.person.id);
     this.requestCounter++;
+    console.log(this.person.id);
     this.requestCounterChange.emit(this.requestCounter);
     fetch(`${environment.apiURL}/explore/request`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ yourID: this.yourID, personID: this.person._id })
+      body: JSON.stringify({ yourID: this.yourID, personID: this.person.id })
     })
       .then(response => {
         if (!response.ok) {
@@ -78,7 +79,7 @@ export class PersonRowComponent implements OnInit {
       });
   }
   handleCancelRequest(fullname: FullName) {
-    const indexToRemove = this.yourRequests.indexOf(this.person._id);
+    const indexToRemove = this.yourRequests.indexOf(this.person.id);
     this.requestCounter--;
     this.requestCounterChange.emit(this.requestCounter);
     if (indexToRemove !== -1) {
@@ -89,7 +90,7 @@ export class PersonRowComponent implements OnInit {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ yourID: this.yourID, personID: this.person._id })
+      body: JSON.stringify({ yourID: this.yourID, personID: this.person.id })
     })
       .then(response => {
         if (!response.ok) {

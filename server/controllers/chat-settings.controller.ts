@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import userModel from "../models/users.model";
+import userModel from "../models/user.model";
 import { MessageSender } from "../typescript/enums";
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 export const getFriendSettings = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID } = req.params;
@@ -27,7 +28,7 @@ export const getFriendSettings = async (req: Request, res: Response): Promise<vo
         }
         res.json({
             friend: {
-                id: friendData._id,
+                _id: friendData._id,
                 name: friendData.name,
                 lastname: friendData.lastname,
                 mail: friendData.mail,
@@ -115,20 +116,25 @@ export const setBlock = async (req: Request, res: Response): Promise<void> => {
         }
         friend.accessibility.block = !friend.accessibility.block;
         const messageContent = friend.accessibility.block ? "blocked" : "unblocked";
+        const messageID: string = uuidv4();
         friend.messages.push({
+            id: messageID,
             content: `You ${messageContent} ${friend.settings.nickname}`,
             date: new Date(),
             sender: MessageSender.SYSTEM,
-            read: false
+            read: false,
+            reactions: []
         });
 
         const userMessage = friendUser.friends.find((f: any) => f.id === yourID);
         if (userMessage) {
             userMessage.messages.push({
+                id: messageID,
                 content: `${user.name} ${messageContent} you`,
                 date: new Date(),
                 sender: MessageSender.SYSTEM,
-                read: false
+                read: false,
+                reactions: []
             });
         }
 
@@ -137,7 +143,7 @@ export const setBlock = async (req: Request, res: Response): Promise<void> => {
                 user.blocked.push(friendID);
             }
         } else {
-            user.blocked = user.blocked.filter((id: string) => id !== friendID);
+            user.blocked = user.blocked.filter((_id: string) => _id !== friendID);
         }
         await user.save();
         await friendUser.save();
@@ -158,8 +164,7 @@ export const deleteMessages = async (req: Request, res: Response): Promise<void>
     if (!password) {
         res.status(400).json({ message: "Password is required" });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
@@ -194,35 +199,28 @@ export const removeFriend = async (req: Request, res: Response): Promise<void> =
     if (!password) {
         res.status(400).json({ message: "Password is required" });
         return;
-    }
-
-    try {
-        // Znajdź użytkownika, który chce usunąć przyjaciela
+    } try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
 
-        // Sprawdź hasło użytkownika
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             res.json({ message: 'Invalid password' });
             return;
         }
 
-        // Znajdź użytkownika friendID
         const friendUser = await userModel.findById(friendID);
         if (!friendUser) {
             res.status(404).json({ message: "Friend not found" });
             return;
         }
 
-        // Usuń yourID z tablicy friends użytkownika friendID
         friendUser.friends = friendUser.friends.filter(f => f.id !== yourID);
         await friendUser.save();
 
-        // Usuń friendID z tablicy friends użytkownika yourID
         user.friends = user.friends.filter(f => f.id !== friendID);
         await user.save();
 
@@ -243,28 +241,22 @@ export const setPIN = async (req: Request, res: Response): Promise<void> => {
     if (!PIN) {
         res.status(400).json({ message: "PIN is required" });
         return;
-    }
-
-    try {
-        // Znajdź użytkownika
+    } try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
 
-        // Znajdź przyjaciela w tablicy friends
         const friend = user.friends.find(f => f.id === friendID);
         if (!friend) {
             res.status(404).json({ message: "Friend not found in user's friend list" });
             return;
         }
 
-        // Ustaw PIN
         friend.settings = friend.settings || {};
         friend.settings.PIN = PIN;
 
-        // Zapisz zmiany
         await user.save();
 
         res.json({ message: 'PIN set successfully', friend });
@@ -280,28 +272,23 @@ export const removePIN = async (req: Request, res: Response): Promise<void> => {
     if (!yourID || !friendID) {
         res.status(400).json({ message: "User ID and Friend ID are required" });
         return;
-    }
+    } try {
 
-    try {
-        // Znajdź użytkownika
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
 
-        // Znajdź przyjaciela w tablicy friends
         const friend = user.friends.find(f => f.id === friendID);
         if (!friend) {
             res.status(404).json({ message: "Friend not found in user's friend list" });
             return;
         }
 
-        // Usuń PIN, ustawiając na 0
         friend.settings = friend.settings || {};
         friend.settings.PIN = 0;
 
-        // Zapisz zmiany
         await user.save();
 
         res.json({ message: 'PIN removed successfully', friend });
@@ -321,28 +308,23 @@ export const setNickname = async (req: Request, res: Response): Promise<void> =>
     if (!nickname) {
         res.status(400).json({ message: "Nickname is required" });
         return;
-    }
+    } try {
 
-    try {
-        // Znajdź użytkownika
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
 
-        // Znajdź przyjaciela w tablicy friends
         const friend = user.friends.find(f => f.id === friendID);
         if (!friend) {
             res.status(404).json({ message: "Friend not found in user's friend list" });
             return;
         }
 
-        // Ustaw nickname
         friend.settings = friend.settings || {};
         friend.settings.nickname = nickname;
 
-        // Zapisz zmiany
         await user.save();
 
         res.json({ message: 'Nickname set successfully', friend });

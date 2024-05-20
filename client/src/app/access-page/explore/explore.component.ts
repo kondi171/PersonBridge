@@ -7,7 +7,7 @@ import { PersonRowComponent } from './person-row/person-row.component';
 import { Position } from '../../typescript/enums';
 import { environment } from '../../app.environment';
 import { FormsModule } from '@angular/forms';
-import { SearchResult } from '../../typescript/types';
+import { UserInfo } from '../../typescript/types';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
 import { UpdateUserService } from '../../services/update-user.service';
@@ -38,8 +38,8 @@ export class ExploreComponent implements OnInit {
     back: faChevronLeft,
     request: faUserPlus
   }
-  results: SearchResult[] = [];
-  requests: SearchResult[] = [];
+  results: UserInfo[] = [];
+  requests: UserInfo[] = [];
   yourID: string = '' as string;
   showResults = true;
   showRequests = false;
@@ -104,7 +104,10 @@ export class ExploreComponent implements OnInit {
         return response.json();
       })
       .then(data => {
+        // console.log('elo')
+        console.log(data)
         if (data.message === 'No users found!') {
+          this.toastr.error('No users found!', 'Find Error');
           if (loadMore) {
             this.toastr.info('No more users to load.', 'Info');
           } else {
@@ -112,7 +115,7 @@ export class ExploreComponent implements OnInit {
           }
         } else {
           this.results = loadMore ? [...this.results, ...data] : data;
-          this.offset += this.limit; // Zwiększ offset tylko jeśli załadowano więcej użytkowników
+          this.offset += this.limit;
           if (loadMore) {
             this.toastr.success('Loaded more users.', 'Success');
           }

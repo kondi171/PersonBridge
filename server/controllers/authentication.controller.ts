@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import userModel from "../models/users.model";
+import userModel from "../models/user.model";
 import bcrypt from 'bcrypt';
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CardType } from '../../../typescript/enums';
 import { CommonModule } from '@angular/common';
-import { CardData } from '../../../typescript/types';
+import { UserInfo } from '../../../typescript/types';
 import { StoreService } from '../../../services/store.service';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../app.environment';
@@ -24,7 +24,7 @@ import { Router } from '@angular/router';
 })
 export class CardComponent implements OnInit, OnDestroy {
   @Input() type: CardType = CardType.ONLINE;
-  @Input() person: CardData = {
+  @Input() person: UserInfo = {
     id: "",
     name: "",
     lastname: "",
@@ -84,6 +84,7 @@ export class CardComponent implements OnInit, OnDestroy {
 
   acceptRequest() {
     this.fadeOut = false;
+    console.log(this.person.id)
     setTimeout(() => {
       fetch(`${environment.apiURL}/people/request`, {
         method: 'PUT',

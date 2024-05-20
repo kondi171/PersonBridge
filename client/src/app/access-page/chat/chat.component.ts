@@ -136,7 +136,6 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data.messages)
         if (data.messages.length !== 0) {
           const formattedMessages = data.messages.map((message: Message) => ({
             ...message,

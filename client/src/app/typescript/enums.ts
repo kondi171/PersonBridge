@@ -23,9 +23,15 @@ export enum Position {
   FIXED
 }
 
-export enum Section {
-  SETTINGS,
-  CHAT_SETTINGS
+export enum UserStatus {
+  ONLINE = 'Online',
+  OFFLINE = 'Offline'
+}
+
+export enum MessageSender {
+  YOU,
+  FRIEND,
+  SYSTEM
 }
 
 export enum Modal {
@@ -40,15 +46,4 @@ export enum Modal {
   DELETE_MESSAGES,
   DELETE_ACCOUNT,
   REMOVE_FRIEND
-}
-
-export enum UserStatus {
-  ONLINE = 'Online',
-  OFFLINE = 'Offline'
-}
-
-export enum MessageSender {
-  YOU,
-  FRIEND,
-  SYSTEM
 }

@@ -1,6 +1,6 @@
 import { Server as SocketIOServer } from "socket.io";
 import { createServer } from "http";
-import userModel from "../models/users.model";
+import userModel from "../models/user.model";
 
 export default function startSocketServer(app: any) {
     const server = createServer(app);

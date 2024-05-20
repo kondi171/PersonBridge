@@ -24,19 +24,11 @@ export type RegisterData = {
     password: string
 }
 
-export type SearchResult = {
-    _id: string,
-    mail: string,
-    name: string,
-    lastname: string,
-    avatar: string,
-}
-
-export type CardData = {
+export type UserInfo = {
     id: string,
+    mail: string,
     name: string,
     lastname: string,
-    mail: string,
     avatar: string,
 }
 

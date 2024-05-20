@@ -1,19 +1,17 @@
 import { Request, Response } from "express";
-import userModel from "../models/users.model";
+import userModel from "../models/user.model";
 import { MessageSender } from "../typescript/enums";
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 export const getUserChat = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID } = req.params;
-    const limit = parseInt(req.query.limit as string, 10) || 20; // Domyślnie 20 wiadomości
+    const limit = parseInt(req.query.limit as string, 10) || 20;
     const offset = parseInt(req.query.offset as string, 10) || 0;
-
     if (!yourID || !friendID) {
         res.status(400).json({ message: "Both User and Friend IDs are required" });
         return;
-    }
-
-    try {
+    } try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
@@ -32,7 +30,6 @@ export const getUserChat = async (req: Request, res: Response): Promise<void> =>
             return;
         }
 
-        // Paginacja wiadomości
         const messages = friendRelation.messages.slice(offset, offset + limit);
 
         res.json({
@@ -59,8 +56,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
     if (!yourID || !friendID || !message) {
         res.status(400).json({ message: "Message, User and Friend IDs are required" });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
@@ -72,11 +68,14 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
             return;
         }
 
+        const messageID: string = uuidv4();
         const newMessage = {
+            id: messageID,
             content: message,
             date: new Date(),
             sender: MessageSender.YOU,
-            read: false
+            read: false,
+            reactions: []
         };
         friend.messages.push(newMessage);
 
@@ -91,10 +90,12 @@ export const sendMessage = async (req: Request, res: Response): Promise<void> =>
         if (userInFriend) {
             if (!userInFriend.accessibility.ignore) {
                 const messageForFriend = {
+                    id: messageID,
                     content: message,
                     date: new Date(),
                     sender: MessageSender.FRIEND,
-                    read: false
+                    read: false,
+                    reactions: []
                 };
                 userInFriend.messages.push(messageForFriend);
                 await userModel.findByIdAndUpdate(friendID, { friends: friendDocument.friends });
@@ -113,9 +114,7 @@ export const markMessagesAsRead = async (req: Request, res: Response): Promise<v
     if (!yourID || !friendID) {
         res.status(400).json({ message: "User ID and Friend ID are required" });
         return;
-    }
-
-    try {
+    } try {
         const user = await userModel.findById(yourID);
         const friend = await userModel.findById(friendID);
 
@@ -141,21 +140,17 @@ export const markMessagesAsRead = async (req: Request, res: Response): Promise<v
             res.status(404).json({ message: "User not found in friend's friend list" });
             return;
         }
-
-        // Oznacz wszystkie wiadomości wysłane przez przyjaciela jako przeczytane
         friendInUser.messages.forEach(message => {
             if (message.sender === MessageSender.FRIEND) {
                 message.read = true;
             }
         });
 
-        // Oznacz wszystkie wiadomości wysłane przez użytkownika jako przeczytane w dokumencie przyjaciela
         userInFriend.messages.forEach(message => {
             if (message.sender === MessageSender.YOU) {
                 message.read = true;
             }
         });
-
         await user.save();
         await friend.save();
 
@@ -177,24 +172,20 @@ export const forgetPIN = async (req: Request, res: Response): Promise<void> => {
     if (!password) {
         res.status(400).json({ message: "Password is required" });
         return;
-    }
+    } try {
 
-    try {
-        // Znajdź użytkownika
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
         }
 
-        // Sprawdź hasło użytkownika
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             res.json({ success: false, message: 'Invalid password' });
             return;
         }
 
-        // Jeżeli hasło się zgadza, zwróć true
         res.json({ success: true });
 
     } catch (error) {

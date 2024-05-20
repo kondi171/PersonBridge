@@ -26,7 +26,8 @@ export class StoreService {
   private checkActiveChatID(): string {
     const loggedUser = this.getLoggedUserFromLocalStorage();
     if (loggedUser) {
-      return loggedUser.friends[0].id;
+      if (loggedUser.friends.length === 0) return 'no-messages'
+      else return loggedUser.friends[0].id;
     } else return 'no-messages';
     // return 'no-messages';
   }

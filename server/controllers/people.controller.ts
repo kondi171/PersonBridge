@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import userModel from "../models/users.model";
+import userModel from "../models/user.model";
 import { UserStatus } from "../typescript/enums";
 
 export const getOnline = async (req: Request, res: Response): Promise<void> => {
@@ -7,8 +7,7 @@ export const getOnline = async (req: Request, res: Response): Promise<void> => {
     if (!id) {
         res.status(400).json({ message: "Invalid or missing user ID." });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).json({ message: "User not found." });
@@ -47,8 +46,7 @@ export const getOffline = async (req: Request, res: Response): Promise<void> => 
     if (!id) {
         res.status(400).json({ message: "Invalid or missing user ID." });
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).json({ message: "User not found." });

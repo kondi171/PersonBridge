@@ -3,7 +3,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBellSlash, faCommentSlash, faLock, faKey, faA, faComments, faUserMinus, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../../../features/footer/footer.component';
 import { RouterModule } from '@angular/router';
-import { Modal, Position, Section } from '../../../typescript/enums';
+import { Modal, Position } from '../../../typescript/enums';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../../services/store.service';
 import { environment } from '../../../app.environment';
@@ -63,7 +63,6 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
   isModalVisible = false;
   modalContent = Modal.DELETE_MESSAGES;
   ModalContent = Modal;
-  section = Section.CHAT_SETTINGS;
 
   constructor(private storeService: StoreService, private toastr: ToastrService) {
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {

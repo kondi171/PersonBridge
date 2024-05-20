@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
-import userModel from "../models/users.model";
+import userModel from "../models/user.model";
 
 export const findUsers = async (req: Request, res: Response): Promise<void> => {
     const { yourID, searchInputValue, limit = 20, offset = 0 } = req.body;
     if (!yourID) {
         res.status(400).json({ message: "Missing user ID" });
         return;
-    }
-    try {
+    } try {
         const currentUser = await userModel.findById(yourID, 'friends');
         if (!currentUser) {
             res.status(404).json({ message: "User not found" });
@@ -28,11 +27,17 @@ export const findUsers = async (req: Request, res: Response): Promise<void> => {
         }, { mail: 1, name: 1, lastname: 1, avatar: 1 })
             .skip(offset)
             .limit(limit);
-
-        if (users.length === 0) {
+        const formattedUsers = users.map(user => ({
+            id: user._id,
+            mail: user.mail,
+            name: user.name,
+            lastname: user.lastname,
+            avatar: user.avatar
+        }));
+        if (formattedUsers.length === 0) {
             res.send({ message: "No users found!" });
         } else {
-            res.send(users);
+            res.send(formattedUsers);
         }
     } catch (error) {
         console.error('Error during findUsers operation:', error);
@@ -42,19 +47,27 @@ export const findUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const getRequests = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
-    if (!id) return;
-    try {
-        const user = await userModel.find({
+    if (!id) {
+        res.status(400).json({ message: "Missing user ID" });
+        return;
+    } try {
+        const users = await userModel.find({
             "requests.received": id
         },
             { mail: 1, name: 1, lastname: 1, avatar: 1 });
 
-        if (!user) {
+        if (!users) {
             res.status(404).json({ message: "User not found" });
             return;
         }
-
-        res.json(user);
+        const formattedUsers = users.map(user => ({
+            id: user._id,
+            mail: user.mail,
+            name: user.name,
+            lastname: user.lastname,
+            avatar: user.avatar
+        }));
+        res.json(formattedUsers);
     } catch (error) {
         console.error("Error while finding user:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -63,8 +76,11 @@ export const getRequests = async (req: Request, res: Response): Promise<void> =>
 
 export const sendRequest = async (req: Request, res: Response): Promise<void> => {
     const { yourID, personID } = req.body;
-    if (!yourID) return;
-    try {
+    console.log(yourID, personID)
+    if (!yourID && !personID) {
+        res.status(400).json({ message: "Missing user ID or Friend ID" });
+        return;
+    } try {
         await userModel.findByIdAndUpdate(
             personID,
             { $push: { "requests.received": yourID } },
@@ -85,8 +101,10 @@ export const sendRequest = async (req: Request, res: Response): Promise<void> =>
 
 export const cancelRequest = async (req: Request, res: Response): Promise<void> => {
     const { yourID, personID } = req.body;
-    if (!yourID) return;
-    try {
+    if (!yourID && !personID) {
+        res.status(400).json({ message: "Missing user ID or Friend ID" });
+        return;
+    } try {
         await userModel.findByIdAndUpdate(
             personID,
             { $pull: { "requests.received": yourID } },

@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { StoreService } from '../../../../services/store.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../app.environment';
-import { Section } from '../../../../typescript/enums';
 import { FormsModule } from '@angular/forms';
 
 @Component({

@@ -88,7 +88,6 @@ export class PanelComponent implements OnInit, OnDestroy {
         }));
         this.sortMessages();
         this.storeService.updateChatID(data[0].id);
-        console.log(this.messageRows)
       })
       .catch(error => {
         this.toastr.error('An Error Occured while retrieving your messages!', 'Messages Error');

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import userModel from "../models/users.model";
-import { MessageSender } from "../typescript/interfaces";
+import userModel from "../models/user.model";
+import { MessageSender } from "../typescript/enums";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -18,9 +18,7 @@ export const getUserFriendsWithMessages = async (req: Request, res: Response): P
     if (!userId) {
         res.status(400).json({ message: "User ID is required" });
         return;
-    }
-
-    try {
+    } try {
         const user = await userModel.findById(userId);
         if (!user) {
             res.status(404).json({ message: "User not found." });

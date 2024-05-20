@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { environment } from '../../app.environment';
 import { StoreService } from '../../services/store.service';
 import { CommonModule } from '@angular/common';
-import { CardData } from '../../typescript/types';
+import { UserInfo } from '../../typescript/types';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -42,10 +42,10 @@ export class PeopleComponent implements OnInit {
   }
 
   yourID = "";
-  online: CardData[] = [];
-  offline: CardData[] = [];
-  blocked: CardData[] = [];
-  requests: CardData[] = [];
+  online: UserInfo[] = [];
+  offline: UserInfo[] = [];
+  blocked: UserInfo[] = [];
+  requests: UserInfo[] = [];
   totalFriends: number = 0;
 
   constructor(private storeService: StoreService) {
@@ -106,7 +106,7 @@ export class PeopleComponent implements OnInit {
       .then(response => response.json())
       .then(data => {
         this.requests = data;
-
+        console.log(data)
       })
       .catch(error => {
         console.error('Avatar upload error:', error);
