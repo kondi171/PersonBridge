@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -16,16 +16,18 @@ import { MessageSender, UserStatus } from '../../typescript/enums';
 import { Message } from '../../typescript/types';
 import { FriendChatData, User } from '../../typescript/interfaces';
 import { PINComponent } from './pin/pin.component';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, MessageBoxComponent, NoMessagesComponent, PINComponent],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PickerComponent, MessageBoxComponent, NoMessagesComponent, PINComponent],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnDestroy, AfterViewInit {
   @ViewChild('messagesContainer') private messageContainer!: ElementRef;
+  @ViewChild('emojiPicker') emojiPicker!: ElementRef;
 
   UserStatus = UserStatus;
   loggedUserSubscription: Subscription;
@@ -37,6 +39,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
   accessGranted = false;
   limit = 20;
   offset = 0;
+  showEmojiPicker = false; // Nowa zmienna do kontrolowania widoczności kontenera z emotikonami
   icons = {
     audio: faPhone,
     video: faVideoCamera,
@@ -51,7 +54,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     name: "",
     lastname: "",
     avatar: "",
-    status: "",
+    status: UserStatus.OFFLINE,
     accessibility: {
       mute: false,
       ignore: false,
@@ -133,6 +136,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     })
       .then(response => response.json())
       .then(data => {
+        console.log(data.messages)
         if (data.messages.length !== 0) {
           const formattedMessages = data.messages.map((message: Message) => ({
             ...message,
@@ -148,6 +152,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
             this.toastr.info('No more messages to load.', 'Info');
           }
         }
+        // console.log(this.messages)
         this.friendChatData = data.friend;
         if (this.friendChatData.settings.PIN === 0) {
           this.accessGranted = true;
@@ -239,6 +244,15 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       });
   }
 
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: Event) {
+    const targetElement = event.target as HTMLElement;
+    if (this.showEmojiPicker && !targetElement.closest('.input-container__icon') && !targetElement.closest('emoji-mart')) {
+      this.showEmojiPicker = false;
+      this.cdr.detectChanges();
+    }
+  }
+
   onAccessGranted(granted: boolean) {
     this.accessGranted = granted;
     this.cdr.detectChanges();
@@ -272,10 +286,47 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
     this.getMessages(true, false);
   }
 
+  handleAddReaction(messageID: string, emoticon: string) {
+    const reaction = {
+      userID: this.yourID,
+      emoticon: emoticon
+    };
+
+    fetch(`${environment.apiURL}/chat/reaction`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ yourID: this.yourID, friendID: this.friendChatData.id, messageID, reaction })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Reaction didn't send!");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        this.getMessages(false, false); // Odświeżenie wiadomości po dodaniu reakcji
+      })
+      .catch(error => {
+        this.toastr.error('An Error Occured while reacting to a message!', 'Message Error');
+        console.error("Reaction didn't send!:", error);
+      });
+  }
+
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
     return `${environment.serverURL}/${path}`;
+  }
+
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  addEmoji(event: any) {
+    const text = `${this.messageContent}${event.emoji.native}`;
+    this.messageContent = text;
   }
 }
