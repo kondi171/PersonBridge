@@ -6,5 +6,5 @@ export const MessageSchema: Schema = new Schema({
     date: { type: Date, required: true },
     sender: { type: Number, required: true },
     read: { type: Boolean, default: false },
-    reactions: [{ userID: String, emoticons: String }]
+    reactions: [{ userID: String, emoticon: String }]
 });

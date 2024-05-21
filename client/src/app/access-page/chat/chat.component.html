@@ -52,11 +52,6 @@
       <div class="message" *ngFor="let message of messages">
         <app-message-box [friendData]="friendChatData" [message]="message">
         </app-message-box>
-        <div class="reactions">
-          <!-- <button (click)="handleAddReaction(message._id, '👍')">👍</button> -->
-          <!-- <button (click)="handleAddReaction(message.id, '❤️')">❤️</button> -->
-          <!-- <button (click)="handleAddReaction(message.id, '😂')">😂</button> -->
-        </div>
       </div>
     </div>
   </div>

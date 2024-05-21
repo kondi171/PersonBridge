@@ -1,184 +1,317 @@
 @import './../../../../assets/scss/variables.scss';
 
-.blocked-message {
+.system-message {
   text-align: center;
   color: lighten($bgColor, 20%);
-  margin: 2vmin 0;
+  margin: 4vmin 0;
 }
 
-.message-box {
+.reactions {
+  position: absolute;
+  bottom: -45px;
+  left: 25%;
+  background-color: $bgColor;
+  border-radius: 5vmin;
+  padding: 1vmin;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
-  margin: 4vmin 2vmin;
 
-  &.is-you {
-    justify-content: flex-end;
-    flex-direction: row-reverse;
+  span {
+    transition-duration: .4s;
+    border-radius: 50%;
+    padding: 1vmin;
 
-    .avatar {
-      img {
-        border: .7vmin solid $secondaryColor;
-      }
-    }
-
-    .message {
-
-      &__wrapper {
-        justify-content: flex-end;
-
-        .date {
-          order: 1;
-          margin-right: 4vmin;
-          margin-left: 0;
-        }
-
-        .content {
-          order: 2;
-          background-color: $secondaryColor !important;
-          color: $textColor;
-          margin-right: 3vmin;
-        }
-      }
-
-      .name {
-        text-align: right;
-        margin-right: 5vmin;
-      }
+    &:hover {
+      cursor: pointer;
+      background-color: $secondaryColor;
     }
   }
+}
+
+.message-box.is-friend {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 5vmax 2vmin;
 
   .avatar {
-    align-self: flex-end;
+    width: 50px;
+    height: 50px;
+    margin-right: 3vmin;
 
     img {
-      width: 10vmin;
-      height: 10vmin;
-      border-radius: 5vmin;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
       border: .7vmin solid $primaryColor;
     }
   }
 
   .message {
-    margin-left: 3vmin;
-    width: 100%;
-    // width: 80%;
-
-    .message__wrapper {
-      display: flex;
-
-      .date {
-        display: flex;
-        align-items: center;
-        color: lighten($bgColor, 20%);
-        margin-left: 4vmin;
-        max-width: 80%;
-      }
-
-      .content {
-        display: inline-block;
-        background-color: $primaryColor;
-        border-radius: 2vmin;
-        padding: 2vmin;
-        max-width: 80%;
-      }
-    }
+    position: relative;
 
     .name {
-      margin-bottom: 2vmin;
       color: $textColor;
-      margin-left: 1vmin;
+      margin: 1vmin;
+    }
+
+    .content-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .content {
+        border-radius: 2vmin;
+        background-color: $primaryColor;
+        padding: 2vmin;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        max-width: 60vw;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .date {
+        margin: 2vmin;
+        color: lighten($bgColor, 20%);
+      }
+
+      .given-reactions {
+        position: absolute;
+        bottom: -25px;
+        right: 8vmin;
+        background-color: $bgColor;
+        opacity: .9;
+        border-radius: 2vmin;
+        padding: 1vmin;
+        display: inline-flex;
+
+        &__counter {
+          margin-right: 1vmin;
+          color: $textColor;
+        }
+
+        &__emoticons {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: center;
+          align-items: center;
+        }
+      }
     }
   }
 }
 
-.no-messages {
-  color: red;
+
+
+.message-box.is-you {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 5vmax 2vmin;
+
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+    margin-left: 3vmin;
+    order: 2;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: .7vmin solid $secondaryColor;
+    }
+  }
+
+  .message {
+    position: relative;
+
+    .name {
+      text-align: right;
+      color: $textColor;
+      margin: 1vmin;
+    }
+
+    .content-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .content {
+        border-radius: 2vmin;
+        background-color: $secondaryColor;
+        color: $textColor;
+        padding: 2vmin;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        max-width: 60vw;
+        order: 2;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .date {
+        margin: 2vmin;
+        color: lighten($bgColor, 20%);
+        order: 1;
+      }
+
+      .given-reactions {
+        position: absolute;
+        bottom: -25px;
+        left: 8vmin;
+        background-color: $bgColor;
+        opacity: .9;
+        border-radius: 2vmin;
+        padding: 1vmin;
+        display: inline-flex;
+
+        &__counter {
+          margin-right: 1vmin;
+          color: $textColor;
+        }
+
+        &__emoticons {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
 }
 
 @media screen and (min-width: 768px) and (orientation: landscape) {
-  .blocked-message {
+  .system-message {
     font-size: 4vmin;
   }
 }
 
 @media screen and (min-width: 768px) {
-  .message-box {
-    .message {
-      .message__wrapper {
-        .date {
-          font-size: 4vmin;
-        }
-
-        .content {
-          font-size: 4vmin;
-        }
+  .message-box.is-you {
+    .avatar {
+      img {
+        border: .3vmin solid $secondaryColor;
       }
+    }
 
+    .message {
       .name {
         font-size: 4vmin;
+      }
+
+      .content-wrapper {
+        .content {
+          font-size: 3vmin;
+        }
+
+        .date {
+          font-size: 3vmin;
+        }
+      }
+    }
+  }
+
+  .message-box.is-friend {
+    .avatar {
+      img {
+        border: .3vmin solid $secondaryColor;
+      }
+    }
+
+    .message {
+      .name {
+        font-size: 4vmin;
+      }
+
+      .content-wrapper {
+        .content {
+          font-size: 3vmin;
+        }
+
+        .date {
+          font-size: 3vmin;
+        }
       }
     }
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .blocked-message {
+  .system-message {
     font-size: 2vmin;
   }
 
-  .message-box {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 4vmin 2vmin;
-
-    &.is-you {
-      justify-content: flex-end;
-      flex-direction: row-reverse;
-
-      .avatar {
-        img {
-          width: 5vmin;
-          height: 5vmin;
-          border: .3vmin solid $secondaryColor;
-        }
-      }
-
-      .message {
-
-        &__wrapper {
-          justify-content: flex-end;
-        }
-      }
-    }
-
+  .message-box.is-friend {
     .avatar {
-
       img {
-        width: 5vmin;
-        height: 5vmin;
-        border-radius: 2.5vmin;
-        border: .3vmin solid $primaryColor;
+        border-width: .3vmin;
       }
     }
 
     .message {
-      .message__wrapper {
+      .name {
+        font-size: 2.5vmin;
+      }
+
+      .content-wrapper {
+        .content {
+          font-size: 2vmin;
+          max-width: 45vw;
+          padding: 1.5vmin;
+        }
 
         .date {
           font-size: 2vmin;
         }
 
-        .content {
-          font-size: 2vmin;
-          padding: 1.3vmin;
-
+        .given-reactions {
+          bottom: -25px;
+          right: 7vmin;
         }
       }
+    }
+  }
 
+
+  .message-box.is-you {
+    .avatar {
+      img {
+        border-width: .3vmin;
+      }
+    }
+
+    .message {
       .name {
-        font-size: 2vmin;
+        font-size: 2.5vmin;
+      }
+
+      .content-wrapper {
+        .content {
+          font-size: 2vmin;
+          max-width: 45vw;
+
+          padding: 1.5vmin;
+        }
+
+        .date {
+          font-size: 2vmin;
+        }
+
+        .given-reactions {
+          bottom: -25px;
+          left: 7vmin;
+        }
       }
     }
   }

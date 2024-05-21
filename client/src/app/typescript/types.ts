@@ -1,12 +1,5 @@
 import { MessageSender } from "./enums"
 
-export type Message = {
-    content: string,
-    date: Date,
-    sender: MessageSender,
-    read: boolean
-}
-
 export type FullName = {
     name: string,
     lastname: string
@@ -43,3 +36,7 @@ export type FriendSettings = {
     PIN: number,
 }
 
+export type MessageReaction = {
+    userID: string,
+    emoticon: string
+}

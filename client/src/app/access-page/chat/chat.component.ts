@@ -13,8 +13,7 @@ import { Subscription } from 'rxjs';
 import { NoMessagesComponent } from './no-messages/no-messages.component';
 import { ToastrService } from 'ngx-toastr';
 import { MessageSender, UserStatus } from '../../typescript/enums';
-import { Message } from '../../typescript/types';
-import { FriendChatData, User } from '../../typescript/interfaces';
+import { FriendChatData, User, Message } from '../../typescript/interfaces';
 import { PINComponent } from './pin/pin.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
@@ -70,6 +69,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
   loggedUser: User | null = null;
   messages: Message[] = [];
   private initialized = false;
+  visibleReactions: { [key: string]: boolean } = {}; // Nowa zmienna do śledzenia widoczności reakcji dla każdej wiadomości
 
   constructor(private storeService: StoreService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
@@ -235,7 +235,7 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
       })
       .then(() => {
         this.messageContent = '';
-        this.getMessages(false, true); // Przewijanie tylko przy pierwszym ładowaniu wiadomości
+        this.getMessages(false, true);
       })
       .catch(error => {
         this.toastr.error('An Error Occured while sending message!', 'Message Error');
@@ -283,34 +283,6 @@ export class ChatComponent implements OnDestroy, AfterViewInit {
 
   loadMoreMessages() {
     this.getMessages(true, false);
-  }
-
-  handleAddReaction(messageID: string, emoticon: string) {
-    const reaction = {
-      userID: this.yourID,
-      emoticon: emoticon
-    };
-
-    fetch(`${environment.apiURL}/chat/reaction`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.friendChatData.id, messageID, reaction })
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Reaction didn't send!");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        this.getMessages(false, false); // Odświeżenie wiadomości po dodaniu reakcji
-      })
-      .catch(error => {
-        this.toastr.error('An Error Occured while reacting to a message!', 'Message Error');
-        console.error("Reaction didn't send!:", error);
-      });
   }
 
   ensureFullURL(path: string): string {

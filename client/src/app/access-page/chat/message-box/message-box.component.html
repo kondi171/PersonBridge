@@ -1,5 +1,6 @@
 <ng-container *ngIf="message.sender !== MessageSender.SYSTEM; else systemMessage">
-  <div class="message-box" [ngClass]="{'is-you': message.sender === MessageSender.YOU}">
+  <div class="message-box"
+    [ngClass]="{'is-you': message.sender === MessageSender.YOU, 'is-friend': message.sender === MessageSender.FRIEND}">
     <div class="avatar">
       <img [src]="message.sender === MessageSender.YOU ? loggedUser?.avatar : friendData.avatar"
         [alt]="message.sender === MessageSender.YOU ? loggedUser?.name : friendData.settings.nickname">
@@ -7,8 +8,22 @@
     <div class="message">
       <div class="name">{{ message.sender === MessageSender.YOU ? loggedUser?.name : friendData.settings.nickname }}
       </div>
-      <div class="message__wrapper">
-        <span class="content" [innerHTML]="formatMessageContent(message.content)"></span>
+      <div class="content-wrapper">
+        <div class="content" (click)="toggleReactionsVisibility()" [innerHTML]="formatMessageContent(message.content)">
+        </div>
+        <div class="given-reactions" *ngIf="message.reactions.length > 0">
+          <span class="given-reactions__counter" *ngIf="message.reactions.length > 1">
+            {{ message.reactions.length }}</span>
+          <span class="given-reactions__emoticons"
+            *ngFor="let reaction of message.reactions">{{ reaction.emoticon }}</span>
+        </div>
+        <div class="reactions" *ngIf="visibleReactions">
+          <span (click)="handleAddReaction('👍')">👍</span>
+          <span (click)="handleAddReaction('❤️')">❤️</span>
+          <span (click)="handleAddReaction('😂')">😂</span>
+          <span (click)="handleAddReaction('😠')">😠</span>
+          <span (click)="handleAddReaction('😲')">😲</span>
+        </div>
         <div class="date">{{ formattedDate }}</div>
       </div>
     </div>
@@ -16,5 +31,5 @@
 </ng-container>
 
 <ng-template #systemMessage>
-  <div class="blocked-message">{{message.content}}</div>
+  <div class="system-message">{{message.content}}</div>
 </ng-template>

@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ElementRef, HostListener } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../../services/store.service';
-import { FriendChatData, User } from '../../../typescript/interfaces';
+import { FriendChatData, User, Message } from '../../../typescript/interfaces';
 import { environment } from '../../../app.environment';
 import { MessageSender } from '../../../typescript/enums';
 
@@ -14,16 +14,15 @@ import { MessageSender } from '../../../typescript/enums';
   templateUrl: './message-box.component.html',
   styleUrls: ['./message-box.component.scss']
 })
-export class MessageBoxComponent implements OnInit {
-  @Input() message: {
-    content: string;
-    date: Date;
-    sender: MessageSender;
-  } = {
-      content: '',
-      date: new Date(),
-      sender: MessageSender.YOU
-    };
+export class MessageBoxComponent implements OnInit, OnDestroy {
+  @Input() message: Message = {
+    id: '',
+    content: '',
+    date: new Date(),
+    sender: MessageSender.YOU,
+    read: false,
+    reactions: []
+  };
 
   @Input() friendData: FriendChatData = {
     id: '',
@@ -47,8 +46,9 @@ export class MessageBoxComponent implements OnInit {
   loggedUserSubscription: Subscription;
   loggedUser: User | null = null;
   formattedDate: string = '';
+  visibleReactions: boolean = false; // Zmienna do kontrolowania widoczności sekcji reakcji
 
-  constructor(private datePipe: DatePipe, private storeService: StoreService) {
+  constructor(private datePipe: DatePipe, private storeService: StoreService, private elementRef: ElementRef) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser?.avatar) {
@@ -60,6 +60,11 @@ export class MessageBoxComponent implements OnInit {
 
   ngOnInit(): void {
     this.formatDate(this.message.date);
+    console.log(this.message)
+  }
+
+  ngOnDestroy(): void {
+    this.loggedUserSubscription.unsubscribe();
   }
 
   formatDate(date: Date): void {
@@ -89,5 +94,44 @@ export class MessageBoxComponent implements OnInit {
 
   formatMessageContent(content: string): string {
     return content.replace(/\n/g, '<br>');
+  }
+
+  toggleReactionsVisibility(): void {
+    this.visibleReactions = !this.visibleReactions;
+  }
+
+  handleAddReaction(emoticon: string): void {
+    const reaction = {
+      userID: this.loggedUser?._id || '',
+      emoticon: emoticon
+    };
+    fetch(`${environment.apiURL}/chat/reaction`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ yourID: this.loggedUser?._id, friendID: this.friendData.id, messageID: this.message.id, reaction })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Reaction didn't send!");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Tu można dodać logikę odświeżania wiadomości lub inne działania po udanej reakcji
+      })
+      .catch(error => {
+        console.error("Reaction didn't send!:", error);
+      });
+    this.visibleReactions = !this.visibleReactions;
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: Event): void {
+    const targetElement = event.target as HTMLElement;
+    if (this.visibleReactions && !this.elementRef.nativeElement.contains(targetElement)) {
+      this.visibleReactions = false;
+    }
   }
 }
