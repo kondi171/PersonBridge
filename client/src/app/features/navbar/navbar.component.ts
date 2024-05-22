@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCog, faUsers, faComments, faSearch, faBrain } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faUsers, faComments, faSearch, faBrain, faPhone } from '@fortawesome/free-solid-svg-icons';
 import { Device } from '../../typescript/enums';
 import { StoreService } from '../../services/store.service';
 import { ActivatedRoute } from '@angular/router';
@@ -30,6 +30,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     friends: faUsers,
     explore: faSearch,
     chatbots: faBrain,
+    calls: faPhone,
     settings: faCog,
   }
   yourID = '';

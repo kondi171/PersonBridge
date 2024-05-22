@@ -19,6 +19,8 @@ import { YourVideoComponent } from './modals/your-video/your-video.component';
 import { PINComponent } from './chat/pin/pin.component';
 import { StoreService } from '../services/store.service';
 import { LoaderComponent } from '../features/loader/loader.component';
+import { faBrain, faPhone, faSearch, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-access-page',
@@ -26,6 +28,7 @@ import { LoaderComponent } from '../features/loader/loader.component';
   imports: [
     CommonModule,
     RouterModule,
+    FontAwesomeModule,
     MessageRowComponent,
     NavbarComponent,
     PanelComponent,
@@ -49,7 +52,12 @@ export class AccessPageComponent implements OnInit {
   isModalVisible = true;
   device = Device.DESKTOP;
   isLoaderVisible = false;
-
+  icons = {
+    people: faUsers,
+    explore: faSearch,
+    calls: faPhone,
+    chatbots: faBrain,
+  }
   constructor(private router: Router, private storeService: StoreService) { }
 
   ngOnInit(): void {

@@ -1,5 +1,9 @@
 <nav [class]="device === Device.DESKTOP ? 'sidebar--desktop' : 'sidebar--mobile'" class="sidebar">
   <div class="items">
+    <a routerLink="/access" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="item">
+      <img src="./../../../assets/img/PersonBridge-logo.png" alt="PersonBridge brand" />
+      <div class="text">Home</div>
+    </a>
     <a [routerLink]="['/access/chat', chatID]" [ngClass]="{'active': isChatActive}" class="item">
       <fa-icon class="fa icon" [icon]="icons.chats" />
       <div class="text">Chats</div>
@@ -12,6 +16,10 @@
     <a routerLink="/access/explore" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.explore" />
       <div class="text">Explore</div>
+    </a>
+    <a routerLink="/access/calls" routerLinkActive="active" class="item">
+      <fa-icon class="fa icon" [icon]="icons.calls" />
+      <div class="text">Calls</div>
     </a>
     <a routerLink="/access/chatbots" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.chatbots" />

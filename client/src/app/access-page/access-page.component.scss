@@ -12,9 +12,6 @@
   display: none;
 }
 
-// Dla tabletów (768px - 1023px)
-@media screen and (min-width: 768px) {}
-
 // Dla ekranów desktopowych (min-width: 1024px)
 @media screen and (min-width: 1024px) {
   .access-page {
@@ -29,7 +26,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 70vh;
+        height: 50vh;
 
         img {
           width: 80%;
@@ -47,6 +44,124 @@
           font-size: 4vmin;
           font-weight: bold;
           text-transform: uppercase;
+        }
+      }
+
+      .main-panel {
+        display: flex;
+        justify-content: center;
+        flex-wrap: no-wrap;
+        align-items: center;
+        margin: 2vmin 4vmin;
+
+        .book {
+          position: relative;
+          border-radius: 10px;
+          width: 12vw;
+          height: 25vh;
+          background-color: $supportColor;
+          -webkit-box-shadow: 1px 1px 12px #000;
+          box-shadow: 1px 1px 12px #000;
+          -webkit-transform: preserve-3d;
+          -ms-transform: preserve-3d;
+          transform: preserve-3d;
+          -webkit-perspective: 2000px;
+          perspective: 2000px;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          flex-wrap: nowrap;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          -webkit-box-pack: center;
+          -ms-flex-pack: center;
+          justify-content: center;
+          color: $primaryColor;
+          margin: 2vmin;
+
+          .cover {
+            top: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            cursor: pointer;
+            -webkit-transition: all 0.5s;
+            transition: all 0.5s;
+            -webkit-transform-origin: 0;
+            -ms-transform-origin: 0;
+            transform-origin: 0;
+            -webkit-box-shadow: 1px 1px 12px $supportColor;
+            box-shadow: 1px 1px 12px $supportColor;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            background-color: $secondaryColor;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: $decorativeFont;
+
+            .title {
+              color: $textColor;
+              font-size: 3vmin;
+            }
+
+            .icon {
+              font-size: 10vmin;
+              margin: 2vmin 0;
+              color: $textColor;
+            }
+          }
+
+          &:hover .cover {
+            -webkit-transition: all 0.5s;
+            transition: all 0.5s;
+            -webkit-transform: rotatey(-80deg);
+            -ms-transform: rotatey(-80deg);
+            transform: rotatey(-80deg);
+          }
+
+          .description {
+            padding: 1vmin 1vmin 1vmin 3vmin;
+            font-size: 1.2vmin;
+            text-align: justify;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .access-page {
+    .outlet {
+      .main-panel {
+        .book {
+          width: 12vw;
+          height: 30vh;
+
+          .cover {
+            .title {
+              color: $textColor;
+              font-size: 4vmin;
+            }
+          }
+
+          .description {
+            padding: 2vmin 2vmin 2vmin 4vmin;
+            font-size: 1.5vmin;
+            text-align: justify;
+          }
         }
       }
     }

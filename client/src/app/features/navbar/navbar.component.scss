@@ -27,9 +27,11 @@
         font-size: 3vmax;
         position: relative;
 
+        &:first-of-type,
         &:last-of-type {
           display: none;
         }
+
 
         &:hover {
           color: $primaryColor;
@@ -67,13 +69,13 @@
     }
 
     &--desktop {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: space-evenly;
+      display: block;
+      // display: flex;
+      // flex-direction: column;
+      // align-items: flex-start;
       width: 7vw;
       height: 100%;
-      padding: 1vmin;
+      // padding: 1vmin;
       background-color: lighten($blackColor, 15%);
       transition: ease-in-out .3s;
       overflow: hidden;
@@ -94,16 +96,18 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        margin-left: .3vw;
+        // margin-left: .3vw;
 
         .item {
           display: flex;
           align-items: center;
           margin: 4vmin 0;
           text-align: center;
-          height: 10%;
+          height: 3vh;
           text-decoration: none;
           position: relative;
+          padding-left: .9vw;
+          // width: 100%;
 
           .requests {
             position: absolute;
@@ -123,14 +127,45 @@
             transition-duration: .4s;
           }
 
+          &:first-of-type {
+            height: 12vmin;
+            border-bottom: .3vmin solid $primaryColor;
+            margin-top: 0;
+            margin-bottom: 12vmin;
+            background-color: $blackColor;
+            padding-right: 10vw;
+
+            img {
+              width: 5vmin;
+              height: 5vmin;
+              margin: 0 1vmin;
+              transform: scale(1.9);
+              transition: ease-in-out .2s;
+            }
+
+            &:hover img {
+              transform: scale(2);
+              filter: brightness(0) saturate(100%) invert(84%) sepia(75%) saturate(1053%) hue-rotate(323deg) brightness(106%) contrast(103%);
+            }
+          }
+
           &:last-of-type {
-            display: flex;
+            background-color: $blackColor;
+            margin-top: 12vmin;
+            padding-right: 10vw;
+            border-top: .3vmin solid $primaryColor;
+            height: 9vh;
           }
 
           &.active {
             .icon {
               transform: scale(1.1);
               color: $primaryColor;
+            }
+
+            img {
+              transform: scale(2);
+              filter: brightness(0) saturate(100%) invert(84%) sepia(75%) saturate(1053%) hue-rotate(323deg) brightness(106%) contrast(103%);
             }
 
             .text {
@@ -186,7 +221,6 @@
             color: $textColor;
             display: flex;
           }
-
         }
       }
     }
