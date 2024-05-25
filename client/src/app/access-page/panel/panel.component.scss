@@ -66,17 +66,37 @@
       .status {
         display: flex;
         align-items: center;
+        font-size: 4vmin;
+        margin: 1vmin 0;
 
         &__dot {
           min-width: 4vmin;
           min-height: 4vmin;
           border-radius: 50%;
-          background-color: #00ab17;
         }
 
         &__info {
-          color: #00ab17;
           margin-left: 2vmin;
+        }
+
+        .online-dot {
+          background-color: $onlineColor;
+        }
+
+        .online-info {
+          color: $onlineColor;
+        }
+
+        .offline-dot {
+          background-color: $offlineColor;
+        }
+
+        .offline-info {
+          color: $offlineColor;
+        }
+
+        .text {
+          display: none;
         }
       }
     }
@@ -217,12 +237,37 @@
         }
 
         .status {
+          position: relative;
+
+          &:hover {
+            cursor: pointer;
+
+            .text {
+              transform: scale(1);
+            }
+          }
+
           &__dot {
             min-width: 2vmin;
             min-height: 2vmin;
           }
 
           &__info {
+            font-size: 2vmin;
+          }
+
+          .text {
+            display: block;
+            position: absolute;
+            top: 4vmin;
+            left: 0vmin;
+            color: $textColor;
+            background-color: $secondaryColor;
+            padding: 1vmin;
+            border-radius: 2vmin;
+            z-index: 15;
+            transform: scale(0);
+            transition-duration: .4s;
             font-size: 2vmin;
           }
         }

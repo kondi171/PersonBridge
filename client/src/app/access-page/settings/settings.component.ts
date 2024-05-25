@@ -23,7 +23,6 @@ import { DeleteMessagesComponent } from './danger-zone/delete-messages/delete-me
 import { DeleteAccountComponent } from './danger-zone/delete-account/delete-account.component';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 
-
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -45,7 +44,7 @@ import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
     DeleteAccountComponent,
   ],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss'
+  styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnDestroy {
 
@@ -122,8 +121,11 @@ export class SettingsComponent implements OnDestroy {
   }
 
   logout() {
-    this.storeService.removeLoggedUser();
+    if (this.loggedUser) {
+      this.socketService.emitLogout();
+    }
     this.socketService.disconnect();
+    this.storeService.removeLoggedUser();
     this.router.navigate(['/login']);
     this.toastr.success('You have successfully logged out!', 'Logout Successful');
   }
@@ -131,8 +133,8 @@ export class SettingsComponent implements OnDestroy {
   deleteMessages() {
     this.isModalVisible = true;
     this.modalContent = Modal.DELETE_MESSAGES;
-
   }
+
   deleteAccount() {
     this.isModalVisible = true;
     this.modalContent = Modal.DELETE_ACCOUNT;

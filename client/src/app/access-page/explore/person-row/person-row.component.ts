@@ -48,7 +48,6 @@ export class PersonRowComponent implements OnInit {
   handleSendRequest(fullname: FullName) {
     this.yourRequests.push(this.person.id);
     this.requestCounter++;
-    console.log(this.person.id);
     this.requestCounterChange.emit(this.requestCounter);
     fetch(`${environment.apiURL}/explore/request`, {
       method: 'PUT',

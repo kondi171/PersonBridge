@@ -1,10 +1,7 @@
-// src/app/socket.service.ts
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
-import { environment } from '../app.environment';
-import { LoginData } from '../typescript/types';
 import { StoreService } from './store.service';
+import { environment } from '../app.environment';
 
 @Injectable({
     providedIn: 'root'
@@ -13,31 +10,37 @@ export class SocketService {
     private socket: Socket;
 
     constructor(private storeService: StoreService) {
-        this.socket = io(`${environment.serverURL}`);
+        this.socket = io(environment.serverURL, {
+            withCredentials: true,
+            autoConnect: false
+        });
+
+        // Listen for user status change events
+        this.socket.on('user-status-change', (data: { userID: string, status: string }) => {
+            console.log('statusChange')
+            const loggedUser = this.storeService.getLoggedUser();
+            if (loggedUser && loggedUser._id === data.userID) {
+                this.storeService.updateUserStatus(data.status);
+            }
+        });
     }
 
-    public connect() {
+    public connect(userID: string) {
+        this.socket.io.opts.query = { userID };
         this.socket.connect();
+        console.log(userID)
     }
 
     public disconnect() {
+        this.socket.emit('logout');
         this.socket.disconnect();
-    }
-
-    public onUserStatusChange(): Observable<any> {
-        return new Observable(observer => {
-            this.socket.on('user-status-change', (data) => {
-                observer.next(data);
-                console.log('user status change')
-            });
-        });
     }
 
     public emitLogin(userID: string) {
         this.socket.emit('login', userID);
     }
 
-    public emitLogout(userID: string) {
-        this.socket.emit('logout', userID);
+    public emitLogout() {
+        this.socket.emit('logout');
     }
 }

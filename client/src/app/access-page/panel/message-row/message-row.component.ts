@@ -50,7 +50,7 @@ export class MessageRowComponent implements OnInit, OnDestroy {
     this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
     this.formatDate(new Date(this.person.lastMessage.date));
     this.isUnread = !this.person.lastMessage.read && this.person.lastMessage.sender === this.person.id;
-    console.log(this.person)
+    // console.log(this.person)
   }
 
   ngOnDestroy() {

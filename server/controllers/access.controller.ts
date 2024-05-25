@@ -16,6 +16,24 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
         res.status(500).send(error);
     }
 };
+export const changeUserStatus = async (req: Request, res: Response): Promise<void> => {
+    const { yourID, status } = req.body;
+    if (!yourID || !status) {
+        res.status(400).send("Missing parameters");
+    } try {
+        const user = await userModel.findById(yourID);
+        if (user) {
+            user.status = status;
+            await user.save();
+            res.send({ status: user.status });
+        } else {
+            console.log("User not found");
+        }
+    } catch (error) {
+        console.error("Error updating user status:", error);
+    }
+};
+
 export const getUserFriendsAndGroupsWithMessages = async (req: Request, res: Response): Promise<void> => {
     const userId = req.params.id;
     if (!userId) {

@@ -1,16 +1,15 @@
-import { Component, NgModule } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEnvelope, faFingerprint, faMicrophone, faKey } from '@fortawesome/free-solid-svg-icons';
-import { BackgroundEffectComponent } from '../features/background-effect/background-effect.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StoreService } from '../services/store.service';
-import { environment } from '../app.environment';
 import { SocketService } from '../services/socket.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoginData } from '../typescript/types';
-
+import { environment } from '../app.environment';
+import { BackgroundEffectComponent } from '../features/background-effect/background-effect.component';
 
 @Component({
   selector: 'app-login-page',
@@ -19,7 +18,7 @@ import { LoginData } from '../typescript/types';
     FormsModule,
     CommonModule,
     FontAwesomeModule,
-    BackgroundEffectComponent,
+    BackgroundEffectComponent
   ],
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
@@ -41,8 +40,7 @@ export class LoginPageComponent {
     private storeService: StoreService,
     private socketService: SocketService,
     private toastr: ToastrService
-  ) {
-  }
+  ) { }
 
   switchToRegisterPage() {
     this.router.navigate(['/register']);
@@ -68,9 +66,9 @@ export class LoginPageComponent {
           this.toastr.error(data.message, 'Login Error');
           return;
         } else {
-          // this.storeService.setUserToken(data.token);
           this.storeService.setLoggedUser(data);
-          this.socketService.emitLogin(data._id)
+          this.socketService.connect(data._id);
+          this.socketService.emitLogin(data._id);
           this.router.navigate(['/access']);
           this.toastr.success('You have successfully logged in!', 'Login Successful');
         }

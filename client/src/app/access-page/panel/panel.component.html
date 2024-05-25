@@ -7,9 +7,15 @@
       <div class="identifier">
         {{loggedUser?.name}} {{loggedUser?.lastname}}
       </div>
-      <div class="status">
-        <div class="status__dot"></div>
-        <div class="status__info">Online</div>
+      <div class="status" *ngIf="loggedUser?.status === UserStatus.ONLINE" (click)="toggleStatus(UserStatus.OFFLINE)">
+        <div class="status__dot online-dot"></div>
+        <div class="status__info online-info">Online</div>
+        <div class="text">Change Status</div>
+      </div>
+      <div class="status" *ngIf="loggedUser?.status === UserStatus.OFFLINE" (click)="toggleStatus(UserStatus.ONLINE)">
+        <div class="status__dot offline-dot"></div>
+        <div class="status__info offline-info">Offline</div>
+        <div class="text">Change Status</div>
       </div>
     </div>
     <a routerLink="/access/settings" routerLinkActive="active" class="item" aria-label="Link to settings">
@@ -31,6 +37,7 @@
     <app-create-group />
   </app-modal>
   <footer class="footer">
+    <!-- <button (click)="changeStatus()">change</button> -->
     <ng-template [ngIf]="device === Device.DESKTOP">
       <div routerLink="/access" class="brand">
         <img class="img" src="./../../assets/img/PersonBridge-brand.png" alt="">

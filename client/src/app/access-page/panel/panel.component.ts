@@ -1,11 +1,10 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCirclePlus, faCog } from '@fortawesome/free-solid-svg-icons';
-import { MessageRowComponent } from './message-row/message-row.component';
 import { Subscription } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from "../../features/navbar/navbar.component";
-import { ChatType, Device } from '../../typescript/enums';
+import { ChatType, Device, UserStatus } from '../../typescript/enums';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
 import { User } from '../../typescript/interfaces';
@@ -14,6 +13,8 @@ import { environment } from '../../app.environment';
 import { ToastrService } from 'ngx-toastr';
 import { ModalComponent } from '../../features/modal-wrapper/modal-wrapper.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
+import { MessageRowComponent } from './message-row/message-row.component';
+import { UpdateUserService } from '../../services/update-user.service'; // Import the UpdateUserService
 
 @Component({
   selector: 'app-panel',
@@ -22,12 +23,12 @@ import { CreateGroupComponent } from './create-group/create-group.component';
   styleUrls: ['./panel.component.scss'],
   imports: [
     CommonModule,
-    MessageRowComponent,
     FontAwesomeModule,
     RouterModule,
     NavbarComponent,
     ModalComponent,
-    CreateGroupComponent
+    CreateGroupComponent,
+    MessageRowComponent
   ]
 })
 export class PanelComponent implements OnInit, OnDestroy {
@@ -50,8 +51,14 @@ export class PanelComponent implements OnInit, OnDestroy {
   yourID = "";
   componentFirstInit = true;
   isModalVisible = false;
+  UserStatus = UserStatus;
 
-  constructor(private router: Router, private storeService: StoreService, private toastr: ToastrService) {
+  constructor(
+    private router: Router,
+    private storeService: StoreService,
+    private toastr: ToastrService,
+    private updateUserService: UpdateUserService // Inject the UpdateUserService
+  ) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser?.avatar) {
@@ -61,6 +68,9 @@ export class PanelComponent implements OnInit, OnDestroy {
       }
       if (this.loggedUser?._id) {
         this.yourID = this.loggedUser._id;
+      }
+      if (this.loggedUser?.status) {
+        this.refreshUser(this.loggedUser._id); // Call the method to update the user
       }
     });
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
@@ -90,7 +100,6 @@ export class PanelComponent implements OnInit, OnDestroy {
           return;
         }
         this.messageRows = data;
-        console.log(this.messageRows)
         this.sortMessages();
         this.storeService.updateChatID(data[0].id);
       })
@@ -103,6 +112,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.loggedUserSubscription.unsubscribe();
     this.chatIDSubscription.unsubscribe();
+    this.chatTypeSubscription.unsubscribe();
   }
 
   sortMessages() {
@@ -121,19 +131,34 @@ export class PanelComponent implements OnInit, OnDestroy {
     if (id === this.activeChatID && this.device === Device.DESKTOP && !this.componentFirstInit && activePath === chatPath) {
       return;
     }
-    if (chatType === ChatType.USER_CHAT) {
-      console.log(chatType + 'USER_CHAT')
-    } else {
-      console.log(chatType + 'GROUP_CHAT')
-    }
     this.storeService.updateChatID(id);
     this.router.navigate(['/access/chat/', id]);
     this.componentFirstInit = false;
   }
 
+  toggleStatus(status: UserStatus) {
+    fetch(`${environment.apiURL}/access/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ yourID: this.yourID, status: status })
+    })
+      .then(() => {
+        if (status === UserStatus.ONLINE)
+          this.toastr.info('You have successfully changed your status!', 'You are Online');
+        else this.toastr.info('You have successfully changed your status!', 'You are Offline');
+      })
+      .catch(error => {
+        this.toastr.error('An Error Occured while changing status!', 'Status Change Error');
+        console.error('Login Error:', error);
+      });
+  }
+
   openModal() {
     this.isModalVisible = true;
   }
+
   closeModal() {
     this.isModalVisible = false;
   }
@@ -143,5 +168,14 @@ export class PanelComponent implements OnInit, OnDestroy {
       return path;
     }
     return `${environment.serverURL}/${path}`;
+  }
+
+  // Add this method to update the user
+  refreshUser(userID: string) {
+    this.updateUserService.updateUser(userID).then(updatedUser => {
+      this.storeService.setLoggedUser(updatedUser);
+    }).catch(error => {
+      console.error('Failed to update user:', error);
+    });
   }
 }

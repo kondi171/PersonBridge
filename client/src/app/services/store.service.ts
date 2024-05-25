@@ -48,7 +48,13 @@ export class StoreService {
     localStorage.setItem('loggedUser', JSON.stringify(user));
     this.loggedUserSubject.next(user);
   }
-
+  updateUserStatus(status: string) {
+    const user = this.loggedUserSubject.getValue();
+    if (user) {
+      user.status = status;
+      this.loggedUserSubject.next(user);
+    }
+  }
   updateAvatar(avatarUrl: string) {
     const currentUser = this.loggedUserSubject.value;
     if (currentUser) {

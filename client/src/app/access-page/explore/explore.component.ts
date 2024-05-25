@@ -104,8 +104,6 @@ export class ExploreComponent implements OnInit {
         return response.json();
       })
       .then(data => {
-        // console.log('elo')
-        console.log(data)
         if (data.message === 'No users found!') {
           this.toastr.error('No users found!', 'Find Error');
           if (loadMore) {
