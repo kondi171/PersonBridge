@@ -9,12 +9,28 @@
   @include card($offlineColor);
 }
 
-.card--blocked {
+.card--groups {
   @include card($supportColor);
+}
+
+.card--blocked {
+  @include card($blackColor);
 }
 
 .card--request {
   @include card($secondaryColor);
+}
+
+.participants {
+  display: block;
+  color: $textColor;
+  text-align: center;
+  font-size: 2vmin;
+  margin: 2vmin;
+
+  strong {
+    color: $primaryColor;
+  }
 }
 
 .request-card {

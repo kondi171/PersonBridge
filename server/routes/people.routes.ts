@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { getOnline, getOffline, getBlocked, unblock, getRequests, acceptRequest, ignoreRequest } from "../controllers/people.controller";
+import { getOnline, getOffline, getBlocked, unblock, getRequests, acceptRequest, ignoreRequest, getGroups } from "../controllers/people.controller";
 
 const router: Router = express.Router();
 
@@ -8,6 +8,8 @@ router.get('/v1/people/offline/:id', getOffline);
 
 router.get('/v1/people/blocked/:id', getBlocked);
 router.delete('/v1/people/blocked', unblock);
+
+router.get('/v1/people/groups/:id', getGroups);
 
 router.get('/v1/people/requests/:id', getRequests);
 router.put('/v1/people/request', acceptRequest);

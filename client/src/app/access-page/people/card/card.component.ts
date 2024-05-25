@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { CardType } from '../../../typescript/enums';
+import { CardType, ChatType } from '../../../typescript/enums';
 import { CommonModule } from '@angular/common';
-import { UserInfo } from '../../../typescript/types';
+import { GroupInfo, UserInfo } from '../../../typescript/types';
 import { StoreService } from '../../../services/store.service';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../app.environment';
@@ -31,7 +31,12 @@ export class CardComponent implements OnInit, OnDestroy {
     mail: "",
     avatar: "",
   };
-
+  @Input() group: GroupInfo = {
+    id: "",
+    name: "",
+    avatar: "",
+    participants: []
+  }
   @Output() requestHandled = new EventEmitter<string>();
   @Output() blockedHandled = new EventEmitter<string>();
 
@@ -58,6 +63,7 @@ export class CardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const timestamp = new Date().getTime();
     this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
+    this.group.avatar = this.ensureFullURL(this.group.avatar) + `?${timestamp}`;
   }
 
   unblock() {
@@ -84,7 +90,6 @@ export class CardComponent implements OnInit, OnDestroy {
 
   acceptRequest() {
     this.fadeOut = false;
-    console.log(this.person.id)
     setTimeout(() => {
       fetch(`${environment.apiURL}/people/request`, {
         method: 'PUT',
@@ -128,6 +133,12 @@ export class CardComponent implements OnInit, OnDestroy {
   }
   messageFriend(id: string) {
     this.storeService.updateChatID(id);
+    this.storeService.updateChatType(ChatType.USER_CHAT);
+    this.router.navigate([`/access/chat/${id}`]);
+  }
+  messageGroup(id: string) {
+    this.storeService.updateChatID(id);
+    this.storeService.updateChatType(ChatType.GROUP_CHAT);
     this.router.navigate([`/access/chat/${id}`]);
   }
   ensureFullURL(path: string): string {

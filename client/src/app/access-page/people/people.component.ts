@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { environment } from '../../app.environment';
 import { StoreService } from '../../services/store.service';
 import { CommonModule } from '@angular/common';
-import { UserInfo } from '../../typescript/types';
+import { GroupInfo, UserInfo } from '../../typescript/types';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -34,7 +34,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 })
 export class PeopleComponent implements OnInit {
   Position = Position;
-  cardType = CardType;
+  CardType = CardType;
   icons = {
     section: faUsers,
     back: faChevronLeft,
@@ -44,6 +44,7 @@ export class PeopleComponent implements OnInit {
   yourID = "";
   online: UserInfo[] = [];
   offline: UserInfo[] = [];
+  groups: GroupInfo[] = [];
   blocked: UserInfo[] = [];
   requests: UserInfo[] = [];
   totalFriends: number = 0;
@@ -58,8 +59,9 @@ export class PeopleComponent implements OnInit {
   ngOnInit(): void {
     this.showOnline();
     this.showOffline();
+    this.showGroups();
     this.showBlocked();
-    this.showRequest();
+    this.showRequests();
   }
   showOnline() {
     fetch(`${environment.apiURL}/people/online/${this.yourID}`, {
@@ -71,7 +73,7 @@ export class PeopleComponent implements OnInit {
         this.updateTotalFriends();
       })
       .catch(error => {
-        console.error('Avatar upload error:', error);
+        console.error('Online fetch error:', error);
       })
   }
   showOffline() {
@@ -84,7 +86,25 @@ export class PeopleComponent implements OnInit {
         this.updateTotalFriends();
       })
       .catch(error => {
-        console.error('Avatar upload error:', error);
+        console.error('Offline fetch error', error);
+      })
+  }
+  showGroups() {
+    fetch(`${environment.apiURL}/people/groups/${this.yourID}`, {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(data => {
+        const groupInfo = data.map((group: GroupInfo) => ({
+          id: group.id,
+          name: group.name,
+          avatar: group.avatar,
+          participants: group.participants
+        }));
+        this.groups = groupInfo;
+      })
+      .catch(error => {
+        console.error('Groups fetch error', error);
       })
   }
   showBlocked() {
@@ -96,20 +116,19 @@ export class PeopleComponent implements OnInit {
         this.blocked = data;
       })
       .catch(error => {
-        console.error('Avatar upload error:', error);
+        console.error('Blocked fetch error', error);
       })
   }
-  showRequest() {
+  showRequests() {
     fetch(`${environment.apiURL}/people/requests/${this.yourID}`, {
       method: 'GET',
     })
       .then(response => response.json())
       .then(data => {
         this.requests = data;
-        console.log(data)
       })
       .catch(error => {
-        console.error('Avatar upload error:', error);
+        console.error('Requests fetch error', error);
       })
   }
   handleRequest(requestID: string) {

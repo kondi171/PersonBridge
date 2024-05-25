@@ -1,5 +1,3 @@
-import { MessageSender } from "./enums"
-
 export type FullName = {
     name: string,
     lastname: string
@@ -39,4 +37,17 @@ export type FriendSettings = {
 export type MessageReaction = {
     userID: string,
     emoticon: string
+}
+
+export type GroupInfo = {
+    id: string
+    name: string,
+    avatar: string,
+    participants: string[]
+}
+
+export type Participant = {
+    id: string,
+    nickname: string,
+    avatar: string,
 }

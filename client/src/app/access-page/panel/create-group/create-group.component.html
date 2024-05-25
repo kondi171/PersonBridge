@@ -1,0 +1,41 @@
+<div class="create-group">
+  <h3 class="title">Create Group</h3>
+  <div class="avatar" (click)="fileInput.click()">
+    <img class="avatar__img" [src]="avatarPreview || '../../../../assets/img/Blank-Avatar.jpg'" alt="Avatar">
+    <span class="avatar__change">Change Avatar</span>
+  </div>
+  <input #fileInput type="file" name="file" (change)="uploadAvatar($event)"
+    accept="image/jpeg, image/png, image/gif, image/webp, image/svg+xml, image/avif" hidden>
+  <input class="group-name" [(ngModel)]="groupName" type="text" placeholder="Type group name...">
+  <div class="searchbar">
+    <div class="input-container">
+      <input [(ngModel)]="searchInputValue" (input)="filterFriends()" type="search" class="input-container__input"
+        placeholder="Search...">
+      <fa-icon class="input-container__icon" [icon]="icons.search"></fa-icon>
+    </div>
+  </div>
+  <h4>Participants:</h4>
+  <div *ngIf="filteredFriends.length > 0; else noFriends">
+    <div *ngFor="let friend of filteredFriends" class="result">
+      <div class="result__avatar">
+        <img [src]="ensureFullURL(friend.avatar)" alt="{{friend.name}} {{friend.lastname}}">
+      </div>
+      <div class="result__person">
+        <span class="name">
+          {{friend.name}} {{friend.lastname}}
+        </span>
+        <span class="mail">
+          {{friend.mail}}
+        </span>
+      </div>
+      <fa-icon *ngIf="!participants.includes(friend.id)" (click)="handleAddParticipant(friend.id)"
+        class="fa result__add" [icon]="icons.add"></fa-icon>
+      <fa-icon *ngIf="participants.includes(friend.id)" (click)="handleRemoveParticipant(friend.id)"
+        class="fa result__remove" [icon]="icons.remove"></fa-icon>
+    </div>
+  </div>
+  <ng-template #noFriends>
+    <span class="no-results">No friends found.</span>
+  </ng-template>
+  <button class="create-group-btn" (click)="handleCreateGroup()">Create Group</button>
+</div>

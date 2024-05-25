@@ -1,17 +1,19 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faCog } from '@fortawesome/free-solid-svg-icons';
 import { MessageRowComponent } from './message-row/message-row.component';
 import { Subscription } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from "../../features/navbar/navbar.component";
-import { Device } from '../../typescript/enums';
+import { ChatType, Device } from '../../typescript/enums';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
 import { User } from '../../typescript/interfaces';
 import { MessageRow } from '../../typescript/interfaces';
 import { environment } from '../../app.environment';
 import { ToastrService } from 'ngx-toastr';
+import { ModalComponent } from '../../features/modal-wrapper/modal-wrapper.component';
+import { CreateGroupComponent } from './create-group/create-group.component';
 
 @Component({
   selector: 'app-panel',
@@ -23,7 +25,9 @@ import { ToastrService } from 'ngx-toastr';
     MessageRowComponent,
     FontAwesomeModule,
     RouterModule,
-    NavbarComponent
+    NavbarComponent,
+    ModalComponent,
+    CreateGroupComponent
   ]
 })
 export class PanelComponent implements OnInit, OnDestroy {
@@ -31,17 +35,21 @@ export class PanelComponent implements OnInit, OnDestroy {
 
   loggedUserSubscription: Subscription;
   chatIDSubscription: Subscription;
+  chatTypeSubscription: Subscription;
 
   Device = Device;
   icons = {
-    cog: faCog
+    cog: faCog,
+    group: faCirclePlus
   };
 
   loggedUser: User | null = null;
   messageRows: MessageRow[] = [];
   activeChatID = "";
+  activeChatType = ChatType.USER_CHAT;
   yourID = "";
   componentFirstInit = true;
+  isModalVisible = false;
 
   constructor(private router: Router, private storeService: StoreService, private toastr: ToastrService) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
@@ -57,6 +65,9 @@ export class PanelComponent implements OnInit, OnDestroy {
     });
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.activeChatID = chatID;
+    });
+    this.chatTypeSubscription = this.storeService.chatType$.subscribe(chatType => {
+      this.activeChatType = chatType;
     });
   }
 
@@ -78,14 +89,8 @@ export class PanelComponent implements OnInit, OnDestroy {
           this.storeService.updateChatID('no-messages');
           return;
         }
-        this.messageRows = data.map((messageRow: MessageRow) => ({
-          ...messageRow,
-          lastMessage: {
-            you: messageRow.lastMessage.you,
-            friend: messageRow.lastMessage.friend,
-            date: messageRow.lastMessage.you?.date || messageRow.lastMessage.friend?.date
-          }
-        }));
+        this.messageRows = data;
+        console.log(this.messageRows)
         this.sortMessages();
         this.storeService.updateChatID(data[0].id);
       })
@@ -102,21 +107,13 @@ export class PanelComponent implements OnInit, OnDestroy {
 
   sortMessages() {
     this.messageRows.sort((a, b) => {
-      const dateAYou = a.lastMessage.you ? new Date(a.lastMessage.you.date) : new Date(0);
-      const dateAFriend = a.lastMessage.friend ? new Date(a.lastMessage.friend.date) : new Date(0);
-      const dateA = dateAYou > dateAFriend ? dateAYou : dateAFriend;
-
-      const dateBYou = b.lastMessage.you ? new Date(b.lastMessage.you.date) : new Date(0);
-      const dateBFriend = b.lastMessage.friend ? new Date(b.lastMessage.friend.date) : new Date(0);
-      const dateB = dateBYou > dateBFriend ? dateBYou : dateBFriend;
-
-      const timeA = dateA.getTime();
-      const timeB = dateB.getTime();
-      return timeB - timeA;
+      const dateA = a.lastMessage ? new Date(a.lastMessage.date) : new Date(0);
+      const dateB = b.lastMessage ? new Date(b.lastMessage.date) : new Date(0);
+      return dateB.getTime() - dateA.getTime();
     });
   }
 
-  showMessages(id: string) {
+  showMessages(id: string, chatType: ChatType) {
     const trimmedUrl = this.router.url.slice(13);
     const activePath = `${trimmedUrl}/settings`;
     const chatPath = `${id}/settings`;
@@ -124,10 +121,21 @@ export class PanelComponent implements OnInit, OnDestroy {
     if (id === this.activeChatID && this.device === Device.DESKTOP && !this.componentFirstInit && activePath === chatPath) {
       return;
     }
-
+    if (chatType === ChatType.USER_CHAT) {
+      console.log(chatType + 'USER_CHAT')
+    } else {
+      console.log(chatType + 'GROUP_CHAT')
+    }
     this.storeService.updateChatID(id);
     this.router.navigate(['/access/chat/', id]);
     this.componentFirstInit = false;
+  }
+
+  openModal() {
+    this.isModalVisible = true;
+  }
+  closeModal() {
+    this.isModalVisible = false;
   }
 
   ensureFullURL(path: string): string {

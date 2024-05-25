@@ -35,7 +35,7 @@ export class ChangeAvatarComponent {
         body: formData
       })
         .then(response => response.json())
-        .then(data => {
+        .then(() => {
           this.toastr.success('Avatar uploaded successfully!', 'Success');
           fetch(`${environment.apiURL}/access/user/${this.yourID}`, {
             method: 'GET',

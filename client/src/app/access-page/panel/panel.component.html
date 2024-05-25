@@ -21,10 +21,15 @@
     <div *ngIf="messageRows.length === 0" class="no-messages">
       There is no messages yet!
     </div>
-    <div class="message" *ngFor="let messageRow of messageRows" (click)="showMessages(messageRow.id)">
+    <div class="message" *ngFor="let messageRow of messageRows" (click)="showMessages(messageRow.id, messageRow.type)">
       <app-message-row [person]="messageRow" />
     </div>
   </div>
+  <fa-icon (click)="openModal()" class="fa create-group-icon" [icon]="icons.group"></fa-icon>
+  <span class="create-group-text">Create Group</span>
+  <app-modal [visible]="isModalVisible" (close)="isModalVisible = false">
+    <app-create-group />
+  </app-modal>
   <footer class="footer">
     <ng-template [ngIf]="device === Device.DESKTOP">
       <div routerLink="/access" class="brand">

@@ -6,9 +6,15 @@ export enum ActiveState {
   SETTINGS = '/access/settings'
 }
 
+export enum ChatType {
+  USER_CHAT,
+  GROUP_CHAT
+}
+
 export enum CardType {
   ONLINE,
   OFFLINE,
+  GROUPS,
   BLOCKED,
   REQUEST
 }
@@ -28,12 +34,6 @@ export enum UserStatus {
   OFFLINE = 'Offline'
 }
 
-export enum MessageSender {
-  YOU,
-  FRIEND,
-  SYSTEM
-}
-
 export enum Modal {
   CHANGE_AVATAR,
   EDIT_NAME,
@@ -45,5 +45,6 @@ export enum Modal {
   SET_VOICE,
   DELETE_MESSAGES,
   DELETE_ACCOUNT,
-  REMOVE_FRIEND
+  REMOVE_FRIEND,
+  CREATE_GROUP,
 }

@@ -17,26 +17,32 @@
     <div class="box" [@fadeInCard]>
       <h3><span class="online">On</span>line - <strong>{{online.length}}</strong></h3>
       <div class="users">
-        <app-card *ngFor="let on of online" [person]="on" [type]="cardType.ONLINE" />
+        <app-card *ngFor="let on of online" [person]="on" [type]="CardType.ONLINE" />
       </div>
     </div>
     <div class="box" [@fadeInCard]>
       <h3><span class="offline">Off</span>line - <strong>{{offline.length}}</strong></h3>
       <div class="users">
-        <app-card *ngFor="let off of offline" [person]="off" [type]="cardType.OFFLINE" />
+        <app-card *ngFor="let off of offline" [person]="off" [type]="CardType.OFFLINE" />
+      </div>
+    </div>
+    <div class="box" [@fadeInCard]>
+      <h3>Groups - <strong>{{groups.length}}</strong></h3>
+      <div class="users">
+        <app-card *ngFor="let group of groups" [group]="group" [type]="CardType.GROUPS" />
       </div>
     </div>
     <div class="box" [@fadeInCard]>
       <h3>Blocked - <strong>{{blocked.length}}</strong></h3>
       <div class="users">
-        <app-card *ngFor="let block of blocked" [person]="block" [type]="cardType.BLOCKED"
+        <app-card *ngFor="let block of blocked" [person]="block" [type]="CardType.BLOCKED"
           (blockedHandled)="handleBlocked($event)" />
       </div>
     </div>
     <div class="box" [@fadeInCard]>
       <h3>Reqests - <strong>{{requests.length}}</strong></h3>
       <div class="users">
-        <app-card *ngFor="let request of requests" [person]="request" [type]="cardType.REQUEST"
+        <app-card *ngFor="let request of requests" [person]="request" [type]="CardType.REQUEST"
           (requestHandled)="handleRequest($event)" />
       </div>
     </div>

@@ -7,8 +7,8 @@ import path from 'path';
 export const uploadAvatar = async (req: Request, res: Response): Promise<void> => {
     if (req.file && req.params.id) {
         const userID = req.params.id;
-        const filePath = `resources/avatars/${req.file.filename}`;
-        const avatarDirectory = path.join(__dirname, '..', 'resources/avatars');
+        const filePath = `resources/users/avatars/${req.file.filename}`;
+        const avatarDirectory = path.join(__dirname, '..', 'resources/users/avatars');
         const newAvatarPath = path.join(avatarDirectory, req.file.filename);
         try {
             const files = await fsPromises.readdir(avatarDirectory);
@@ -242,7 +242,7 @@ export const deleteAccount = async (req: Request, res: Response): Promise<void> 
             res.send({ error: 'Invalid password!' });
             return;
         }
-        const defaultAvatarPath = "resources/avatars/Blank-Avatar.jpg";
+        const defaultAvatarPath = "resources/users/avatars/Blank-Avatar.jpg";
         if (user.avatar && user.avatar !== defaultAvatarPath) {
             const avatarPath = path.join(__dirname, '..', user.avatar);
             try {

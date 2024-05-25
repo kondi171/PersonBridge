@@ -1,12 +1,12 @@
 export type Biometrics = {
-    fingerprint: string;
-    voice: string;
-    face: string;
+    fingerprint: string,
+    voice: string,
+    face: string
 }
 
 export type FriendRequests = {
-    received: string[];
-    sent: string[];
+    received: string[],
+    sent: string[]
 }
 
 export type MessageReaction = {
@@ -15,12 +15,17 @@ export type MessageReaction = {
 }
 
 export type FriendSettings = {
-    nickname: string;
-    PIN: number;
+    nickname: string,
+    PIN: number
 }
 
 export type FriendAccessibility = {
-    mute: boolean;
-    ignore: boolean;
-    block: boolean;
+    mute: boolean,
+    ignore: boolean,
+    block: boolean
 };
+
+export type Participant = {
+    id: string,
+    nickname: string
+}

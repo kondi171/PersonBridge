@@ -8,11 +8,14 @@
   display: none;
 }
 
+.main-panel {
+  display: none;
+}
+
 .no-display {
   display: none;
 }
 
-// Dla ekranów desktopowych (min-width: 1024px)
 @media screen and (min-width: 1024px) {
   .access-page {
     display: flex;

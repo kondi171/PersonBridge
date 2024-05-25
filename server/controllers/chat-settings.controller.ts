@@ -121,7 +121,7 @@ export const setBlock = async (req: Request, res: Response): Promise<void> => {
             id: messageID,
             content: `You ${messageContent} ${friend.settings.nickname}`,
             date: new Date(),
-            sender: MessageSender.SYSTEM,
+            sender: messageID,
             read: false,
             reactions: []
         });
@@ -132,7 +132,7 @@ export const setBlock = async (req: Request, res: Response): Promise<void> => {
                 id: messageID,
                 content: `${user.name} ${messageContent} you`,
                 date: new Date(),
-                sender: MessageSender.SYSTEM,
+                sender: messageID,
                 read: false,
                 reactions: []
             });

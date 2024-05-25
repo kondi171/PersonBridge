@@ -57,7 +57,12 @@ app.use(express.urlencoded({
   extended: true,
   limit: '50mb',
 }));
-app.use('/resources/avatars', express.static('resources/avatars', {
+app.use('/resources/users/avatars', express.static('resources/users/avatars', {
+  setHeaders: function (res, path) {
+    res.set('Cache-Control', 'no-cache');
+  }
+}));
+app.use('/resources/groups/avatars', express.static('resources/groups/avatars', {
   setHeaders: function (res, path) {
     res.set('Cache-Control', 'no-cache');
   }

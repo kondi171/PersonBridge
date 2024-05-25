@@ -2,9 +2,10 @@ import { Component, Input, OnInit, OnDestroy, ElementRef, HostListener } from '@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../../services/store.service';
-import { FriendChatData, User, Message } from '../../../typescript/interfaces';
+import { FriendChatData, User, Message, GroupChatData } from '../../../typescript/interfaces';
 import { environment } from '../../../app.environment';
-import { MessageSender } from '../../../typescript/enums';
+import { ChatType, UserStatus } from '../../../typescript/enums';
+import { Participant } from '../../../typescript/types';
 
 @Component({
   selector: 'app-message-box',
@@ -19,11 +20,25 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     id: '',
     content: '',
     date: new Date(),
-    sender: MessageSender.YOU,
+    sender: '',
     read: false,
     reactions: []
   };
-
+  @Input() chatType: ChatType = ChatType.USER_CHAT;
+  @Input() groupData: GroupChatData = {
+    id: '',
+    name: '',
+    avatar: '',
+    status: UserStatus.OFFLINE,
+    PIN: 0,
+    accessibility: {
+      mute: false,
+      ignore: false,
+    },
+    administrator: '',
+    participants: [],
+    messages: []
+  }
   @Input() friendData: FriendChatData = {
     id: '',
     name: '',
@@ -41,12 +56,16 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     },
     blocked: []
   };
-
-  MessageSender = MessageSender;
+  ChatType = ChatType;
   loggedUserSubscription: Subscription;
   loggedUser: User | null = null;
   formattedDate: string = '';
-  visibleReactions: boolean = false; // Zmienna do kontrolowania widoczności sekcji reakcji
+  visibleReactions: boolean = false;
+  activeUser: Participant = {
+    id: '',
+    nickname: '',
+    avatar: ''
+  }
 
   constructor(private datePipe: DatePipe, private storeService: StoreService, private elementRef: ElementRef) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
@@ -60,7 +79,7 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.formatDate(this.message.date);
-    console.log(this.message)
+    this.getSenderInfo();
   }
 
   ngOnDestroy(): void {
@@ -100,17 +119,31 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     this.visibleReactions = !this.visibleReactions;
   }
 
-  handleAddReaction(emoticon: string): void {
+  handleAddReaction(emoticon: string, isGroup: boolean = false): void {
     const reaction = {
       userID: this.loggedUser?._id || '',
       emoticon: emoticon
     };
+
+    const body: any = {
+      yourID: this.loggedUser?._id,
+      messageID: this.message.id,
+      reaction
+    };
+
+    if (isGroup) {
+      body.groupID = this.groupData.id;
+      body.participants = this.groupData.participants.map(participant => participant.id);
+    } else {
+      body.friendID = this.friendData.id;
+    }
+
     fetch(`${environment.apiURL}/chat/reaction`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ yourID: this.loggedUser?._id, friendID: this.friendData.id, messageID: this.message.id, reaction })
+      body: JSON.stringify(body)
     })
       .then(response => {
         if (!response.ok) {
@@ -119,7 +152,7 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
         return response.json();
       })
       .then((data) => {
-        // Tu można dodać logikę odświeżania wiadomości lub inne działania po udanej reakcji
+        // Logic to handle the response data if needed
       })
       .catch(error => {
         console.error("Reaction didn't send!:", error);
@@ -127,11 +160,20 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     this.visibleReactions = !this.visibleReactions;
   }
 
+
+
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event): void {
     const targetElement = event.target as HTMLElement;
     if (this.visibleReactions && !this.elementRef.nativeElement.contains(targetElement)) {
       this.visibleReactions = false;
+    }
+  }
+
+  getSenderInfo() {
+    if (this.chatType === ChatType.GROUP_CHAT) {
+      const user = this.groupData.participants.find(participant => participant.id === this.message.sender);
+      if (user) this.activeUser = user;
     }
   }
 }

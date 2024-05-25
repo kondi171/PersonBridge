@@ -1,16 +1,17 @@
 <div *ngIf="fadeOut" [@fadeOut] class="card" [ngClass]="{
   'card--online': type === CardType.ONLINE,
   'card--offline': type === CardType.OFFLINE,
+  'card--groups': type === CardType.GROUPS,
   'card--blocked': type === CardType.BLOCKED,
   'card--request': type === CardType.REQUEST
 }">
   <div class="card-border-top">
   </div>
-  <div class="img">
+  <div class="img" *ngIf="type !== CardType.GROUPS">
     <img [src]="person.avatar" [alt]="person.name">
   </div>
-  <span class="name">{{person.name}} {{person.lastname}}</span>
-  <p class="mail">{{person.mail}}</p>
+  <span *ngIf="type !== CardType.GROUPS" class="name">{{person.name}} {{person.lastname}}</span>
+  <p *ngIf="type !== CardType.GROUPS" class="mail">{{person.mail}}</p>
   <div class="message-card" *ngIf="type === CardType.ONLINE || type === CardType.OFFLINE">
     <button (click)="messageFriend(person.id)">Message</button>
   </div>
@@ -20,5 +21,15 @@
   <div class="request-card" *ngIf="type === CardType.REQUEST">
     <button (click)="acceptRequest()">Accept</button>
     <button (click)="ignoreRequest()">Ignore</button>
+  </div>
+  <span *ngIf="type === CardType.GROUPS" class="name">{{person.name}} {{person.lastname}}</span>
+  <div class="img" *ngIf="type === CardType.GROUPS">
+    <img [src]="group.avatar" [alt]="group.name">
+  </div>
+  <span *ngIf="type === CardType.GROUPS" class="name">{{group.name}} </span>
+  <span *ngIf="type === CardType.GROUPS" class="participants">Participants:
+    <strong>{{group.participants.length}}</strong></span>
+  <div class="message-card" *ngIf="type === CardType.GROUPS">
+    <button (click)="messageGroup(group.id)">Message</button>
   </div>
 </div>

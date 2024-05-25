@@ -78,7 +78,25 @@ export const getOffline = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ message: "An error occurred while retrieving offline friends.", error: error });
     }
 };
+export const getGroups = async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+    if (!id) {
+        res.status(400).json({ message: "Invalid or missing user ID." });
+        return;
+    }
+    try {
+        const user = await userModel.findById(id, 'groups');
+        if (!user || !user.groups) {
+            res.status(404).json({ message: "User not found or no groups found." });
+            return;
+        }
 
+        res.json(user.groups);
+    } catch (error) {
+        console.error('Error retrieving user groups:', error);
+        res.status(500).json({ message: 'Failed to retrieve user groups.' });
+    }
+};
 export const getBlocked = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
     if (!id) {
@@ -112,6 +130,7 @@ export const getBlocked = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ message: "An error occurred while retrieving blocked users.", error: error });
     }
 };
+
 export const unblock = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID } = req.body;
     if (!yourID || !friendID) {

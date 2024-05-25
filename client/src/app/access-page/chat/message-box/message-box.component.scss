@@ -41,6 +41,7 @@
     margin-right: 3vmin;
 
     img {
+      margin-top: 2vmin;
       width: 100%;
       height: 100%;
       border-radius: 50%;
@@ -122,6 +123,7 @@
     order: 2;
 
     img {
+      margin-top: 2vmin;
       width: 100%;
       height: 100%;
       border-radius: 50%;
@@ -225,7 +227,7 @@
   .message-box.is-friend {
     .avatar {
       img {
-        border: .3vmin solid $secondaryColor;
+        border: .3vmin solid $primaryColor;
       }
     }
 

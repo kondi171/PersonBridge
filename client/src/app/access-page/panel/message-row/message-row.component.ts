@@ -1,11 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MessageRow } from '../../../typescript/interfaces';
-import { MessageSender, UserStatus } from '../../../typescript/enums';
+import { ChatType, UserStatus } from '../../../typescript/enums';
 import { environment } from '../../../app.environment';
 import { faBellSlash, faCheck, faCheckDouble, faCircleCheck, faCircleExclamation, faCommentSlash, faExclamation, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Subscription } from 'rxjs';
+import { StoreService } from '../../../services/store.service';
 
 @Component({
   selector: 'app-message-row',
@@ -15,15 +17,22 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   templateUrl: './message-row.component.html',
   styleUrls: ['./message-row.component.scss']
 })
-export class MessageRowComponent implements OnInit {
+export class MessageRowComponent implements OnInit, OnDestroy {
   @Input() person!: MessageRow;
   UserStatus = UserStatus;
-  MessageSender = MessageSender;
   formattedDate: string = '';
-  isFriendLastMessage: boolean = false;
   isUnread: boolean = false;
+  loggedUserSubscription: Subscription;
+  yourID = "";
+  ChatType = ChatType;
 
-  constructor(private datePipe: DatePipe) { }
+  constructor(private storeService: StoreService, private datePipe: DatePipe) {
+    this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
+      if (user?._id) {
+        this.yourID = user._id;
+      }
+    });
+  }
 
   icons = {
     newMessage: faExclamation,
@@ -39,29 +48,13 @@ export class MessageRowComponent implements OnInit {
   ngOnInit() {
     const timestamp = new Date().getTime();
     this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
-    const lastMessageDate = this.getLastMessageDate();
-    this.formatDate(new Date(lastMessageDate));
-
-    this.isFriendLastMessage = this.checkIsFriendLastMessage();
-    this.isUnread = this.checkIsUnread();
+    this.formatDate(new Date(this.person.lastMessage.date));
+    this.isUnread = !this.person.lastMessage.read && this.person.lastMessage.sender === this.person.id;
+    console.log(this.person)
   }
 
-  getLastMessageDate(): Date {
-    const dateYou = this.person.lastMessage.you?.date ? new Date(this.person.lastMessage.you.date) : new Date(0);
-    const dateFriend = this.person.lastMessage.friend?.date ? new Date(this.person.lastMessage.friend.date) : new Date(0);
-    return dateYou > dateFriend ? dateYou : dateFriend;
-  }
-
-  checkIsFriendLastMessage(): boolean {
-    const dateYou = this.person.lastMessage.you?.date ? new Date(this.person.lastMessage.you.date) : new Date(0);
-    const dateFriend = this.person.lastMessage.friend?.date ? new Date(this.person.lastMessage.friend.date) : new Date(0);
-    return dateFriend > dateYou;
-  }
-
-  checkIsUnread(): boolean {
-    const dateYou = this.person.lastMessage.you?.date ? new Date(this.person.lastMessage.you.date) : new Date(0);
-    const dateFriend = this.person.lastMessage.friend?.date ? new Date(this.person.lastMessage.friend.date) : new Date(0);
-    return this.person.lastMessage.friend && !this.person.lastMessage.friend.read && dateFriend >= dateYou;
+  ngOnDestroy() {
+    this.loggedUserSubscription.unsubscribe();
   }
 
   formatDate(date: Date): void {
@@ -82,13 +75,10 @@ export class MessageRowComponent implements OnInit {
   }
 
   getIcon(): any {
-    const lastMessageYou = this.person.lastMessage.you;
-    const lastMessageFriend = this.person.lastMessage.friend;
-    if (lastMessageFriend && (!lastMessageYou || new Date(lastMessageFriend.date) > new Date(lastMessageYou.date))) {
-      return lastMessageFriend.read ? this.icons.oldMessage : this.icons.newMessage;
-    }
-    if (lastMessageYou) {
-      return lastMessageYou.read ? this.icons.readMessage : this.icons.sentMessage;
+    if (this.person.lastMessage.sender === this.person.id) {
+      return this.person.lastMessage.read ? this.icons.oldMessage : this.icons.newMessage;
+    } else if (this.person.lastMessage.sender === this.yourID) {
+      return this.person.lastMessage.read ? this.icons.readMessage : this.icons.sentMessage;
     }
     return this.icons.systemMessage;
   }

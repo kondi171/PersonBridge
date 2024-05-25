@@ -119,7 +119,6 @@
         -1px -1px 3px $primaryColor,
         1px -1px 3px $primaryColor,
         -1px 1px 3px $primaryColor;
-
     }
   }
 
@@ -148,6 +147,26 @@
         width: 100%;
       }
     }
+  }
+
+  .create-group-icon {
+    position: fixed;
+    bottom: 20vmin;
+    right: 4vmin;
+    font-size: 10vmin;
+    transition-duration: .4s;
+    color: $primaryColor;
+
+    &:hover {
+      cursor: pointer;
+      transform: rotate(90deg);
+      color: $secondaryColor;
+    }
+  }
+
+  .create-group-text {
+    transform: scale(0);
+
   }
 }
 
@@ -198,7 +217,6 @@
         }
 
         .status {
-
           &__dot {
             min-width: 2vmin;
             min-height: 2vmin;
@@ -206,7 +224,6 @@
 
           &__info {
             font-size: 2vmin;
-
           }
         }
       }
@@ -221,6 +238,30 @@
       .no-messages {
         font-size: 6vmin;
       }
+    }
+
+    .create-group-icon {
+      font-size: 7vmin;
+      right: auto;
+      left: 24vw;
+      bottom: 12vmin;
+    }
+
+    .create-group-text {
+      position: fixed;
+      transition-duration: .4s;
+      color: $textColor;
+      background-color: $secondaryColor;
+      padding: 1vmin;
+      border-radius: 2vmin;
+      z-index: 15;
+      bottom: 20vmin;
+      left: 22.8vw;
+      right: auto;
+    }
+
+    .create-group-icon:hover+.create-group-text {
+      transform: scale(1);
     }
 
     .footer {
