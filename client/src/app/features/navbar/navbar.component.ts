@@ -4,18 +4,17 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCog, faUsers, faComments, faSearch, faBrain, faPhone } from '@fortawesome/free-solid-svg-icons';
 import { Device } from '../../typescript/enums';
 import { StoreService } from '../../services/store.service';
-import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { User } from '../../typescript/interfaces';
 import { environment } from '../../app.environment';
+import { SocketService } from '../../services/socket.service'; // Import SocketService
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() device = Device.DESKTOP;
@@ -34,7 +33,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     settings: faCog,
   }
   yourID = '';
-  constructor(private storeService: StoreService, private router: Router) {
+
+  constructor(
+    private storeService: StoreService,
+    private router: Router,
+    private socketService: SocketService
+  ) {
     this.requestSubscription = this.storeService.counter$.subscribe(counter => {
       this.requestsCounter = counter;
     });
@@ -44,29 +48,44 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const loggedUser = this.storeService.getLoggedUser();
     if (loggedUser) this.yourID = loggedUser._id;
   }
+
   ngOnInit(): void {
+    if (this.yourID) {
+      this.socketService.onSendRequest(() => {
+        this.requestsCounter++;
+        this.storeService.updateCounter(this.requestsCounter);
+      });
+      this.socketService.onCancelRequest(() => {
+        this.requestsCounter--;
+        this.storeService.updateCounter(this.requestsCounter);
+      });
+    }
+
     fetch(`${environment.apiURL}/people/requests/${this.yourID}`, {
       method: 'GET',
     })
       .then(response => response.json())
       .then(data => {
-        this.storeService.updateCounter(data.length)
+        this.storeService.updateCounter(data.length);
       })
       .catch(error => {
-        console.error('Avatar upload error:', error);
-      })
+        console.error('Error fetching friend requests:', error);
+      });
   }
 
   ngOnDestroy(): void {
     if (this.chatIDSubscription) {
       this.chatIDSubscription.unsubscribe();
     }
+    if (this.requestSubscription) {
+      this.requestSubscription.unsubscribe();
+    }
+    this.socketService.disconnect();
   }
 
   get isChatActive(): boolean {
     const path = this.router.url;
-    const chat = path.slice(0, 13)
-    if (chat === '/access/chat/') return true;
-    else return false;
+    const chat = path.slice(0, 13);
+    return chat === '/access/chat/';
   }
 }

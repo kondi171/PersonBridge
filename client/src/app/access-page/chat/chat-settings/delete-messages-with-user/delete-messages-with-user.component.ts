@@ -3,6 +3,7 @@ import { StoreService } from '../../../../services/store.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../app.environment';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-delete-messages',
@@ -42,6 +43,7 @@ export class DeleteMessagesWithUserComponent {
         }
         this.toastr.success(`Your messages was deleted!`, 'Delete was successful');
         this.password = '';
+        this.storeService.forceRefreshMessages(true);
       })
       .catch(error => {
         this.toastr.error('An Error Occured while deleting messages!', 'Delete Error');

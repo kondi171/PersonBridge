@@ -31,8 +31,8 @@
     </div>
   </div>
   <div class="request" *ngIf="showRequests" [@fadeIn]>
-    <h3 class="request__count">{{requestCounter}} {{requestCounter === 1 ? 'requests' : ' request'}} sent</h3>
-    <app-person-row *ngFor="let result of requests" [person]="result" [requestCounter]="requestCounter"
+    <h3 class="request__count">{{requestCounter}} {{requestCounter === 1 ? 'request' : 'requests'}} sent</h3>
+    <app-person-row *ngFor="let request of requests" [person]="request" [requestCounter]="requestCounter"
       (requestCounterChange)="updateRequestCounter($event)">
     </app-person-row>
     <div *ngIf="requests.length === 0" class="no-result">
@@ -40,11 +40,11 @@
     </div>
   </div>
   <div class="select-content">
-    <div (click)="showResults = true; showRequests = false" [class.active]="showResults">
+    <div (click)="showResults = true; showRequests = false;" [class.active]="showResults">
       <fa-icon class="icon" [icon]="icons.search"></fa-icon>
       <span>Find</span>
     </div>
-    <div (click)="showResults = false; showRequests = true; handleSentRequest()" [class.active]="showRequests">
+    <div (click)="showResults = false; showRequests = true; handleGetSentRequest()" [class.active]="showRequests">
       <fa-icon class="icon" [icon]="icons.request"></fa-icon>
       <span>Requests</span>
     </div>

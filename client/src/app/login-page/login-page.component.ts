@@ -67,8 +67,6 @@ export class LoginPageComponent {
           return;
         } else {
           this.storeService.setLoggedUser(data);
-          this.socketService.connect(data._id);
-          this.socketService.emitLogin(data._id);
           this.router.navigate(['/access']);
           this.toastr.success('You have successfully logged in!', 'Login Successful');
         }

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { promises as fsPromises } from 'fs';
 import path from 'path';
 import { Participant } from "../typescript/types";
+import { getIo } from "../middlewares/websocket.middleware";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -16,23 +17,45 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
         res.status(500).send(error);
     }
 };
+
+export const getUserStatus = async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+    if (!id) return;
+    try {
+        const user = await userModel.findOne({ _id: id });
+        if (user) res.send({ status: user.status });
+    } catch (error) {
+        res.status(500).send(error);
+    }
+};
+
 export const changeUserStatus = async (req: Request, res: Response): Promise<void> => {
     const { yourID, status } = req.body;
     if (!yourID || !status) {
         res.status(400).send("Missing parameters");
-    } try {
+        return;
+    }
+    try {
         const user = await userModel.findById(yourID);
         if (user) {
             user.status = status;
+            const io = getIo();
+
+            user.friends.forEach(friend => io.to(friend.id.toString()).emit('statusChange', { from: yourID, status }));
+
             await user.save();
             res.send({ status: user.status });
         } else {
             console.log("User not found");
+            res.status(404).send("User not found");
         }
     } catch (error) {
         console.error("Error updating user status:", error);
+        res.status(500).send("Internal server error");
     }
 };
+
+
 
 export const getUserFriendsAndGroupsWithMessages = async (req: Request, res: Response): Promise<void> => {
     const userId = req.params.id;

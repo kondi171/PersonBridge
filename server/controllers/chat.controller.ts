@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import userModel from "../models/user.model";
-import { MessageSender, UserStatus } from "../typescript/enums";
+import { UserStatus } from "../typescript/enums";
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { Group, Message } from "../typescript/interfaces";
 import { Participant } from "../typescript/types";
+import { getIo } from "../middlewares/websocket.middleware";
 
 export const getUserChat = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID } = req.params;
@@ -51,6 +51,7 @@ export const getUserChat = async (req: Request, res: Response): Promise<void> =>
         res.status(500).send(error);
     }
 };
+
 export const getGroupChat = async (req: Request, res: Response): Promise<void> => {
     const { yourID, groupID } = req.params;
     const limit = parseInt(req.query.limit as string, 10) || 20;
@@ -160,6 +161,10 @@ export const sendMessageToUser = async (req: Request, res: Response): Promise<vo
                 await userModel.findByIdAndUpdate(friendID, { friends: friendDocument.friends });
             }
         }
+
+        const io = getIo();
+        io.to(friendID).emit('messageToUserSend', { from: yourID });
+
         res.status(200).json({ message: "Message sent successfully" });
     } catch (error) {
         console.error("Error sending message: ", error);
@@ -289,15 +294,15 @@ export const markMessagesAsRead = async (req: Request, res: Response): Promise<v
             await friend.save();
         }
 
+        const io = getIo();
+        io.to(friendID).emit('markMessageAsRead', { from: yourID });
+
         res.status(200).json({ message: "All messages from friend marked as read" });
     } catch (error) {
         console.error("Error marking messages as read: ", error);
         res.status(500).json({ message: "Error marking messages as read" });
     }
 };
-
-
-
 
 export const forgetPIN = async (req: Request, res: Response): Promise<void> => {
     const { yourID, password } = req.body;
@@ -331,8 +336,6 @@ export const forgetPIN = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
-
 export const addReaction = async (req: Request, res: Response): Promise<void> => {
     const { yourID, friendID, groupID, messageID, reaction, participants: participantIDs } = req.body;
 
@@ -349,8 +352,8 @@ export const addReaction = async (req: Request, res: Response): Promise<void> =>
             return;
         }
 
-        const updateReaction = (message: Message) => {
-            const existingReaction = message.reactions.find(r => r.userID === reaction.userID);
+        const updateReaction = (message: any) => {
+            const existingReaction = message.reactions.find((r: any) => r.userID === reaction.userID);
             if (existingReaction) {
                 existingReaction.emoticon = reaction.emoticon;
             } else {
@@ -366,16 +369,16 @@ export const addReaction = async (req: Request, res: Response): Promise<void> =>
                 return;
             }
 
-            const friendInUser = user.friends.find(f => f.id === friendID);
-            const messageInFriend = friendInUser?.messages.find(m => m.id === messageID);
+            const friendInUser = user.friends.find((f: any) => f.id === friendID);
+            const messageInFriend = friendInUser?.messages.find((m: any) => m.id === messageID);
 
             if (!messageInFriend) {
                 res.status(404).json({ message: "Message not found in friend's messages" });
                 return;
             }
 
-            const userInFriend = friend.friends.find(f => f.id === yourID);
-            const messageInUser = userInFriend?.messages.find(m => m.id === messageID);
+            const userInFriend = friend.friends.find((f: any) => f.id === yourID);
+            const messageInUser = userInFriend?.messages.find((m: any) => m.id === messageID);
 
             if (!messageInUser) {
                 res.status(404).json({ message: "Message not found in user's messages" });
@@ -385,8 +388,16 @@ export const addReaction = async (req: Request, res: Response): Promise<void> =>
             updateReaction(messageInFriend);
             updateReaction(messageInUser);
 
-            const systemMessageContentForFriend = `${user.name} reacted to ${friend.name}'s message with ${reaction.emoticon}`;
-            const systemMessageContentForUser = `${user.name} reacted to ${friend.name}'s message with ${reaction.emoticon}`;
+            let systemMessageContentForFriend: string;
+            let systemMessageContentForUser: string;
+
+            if (messageInFriend.sender === yourID) {
+                systemMessageContentForFriend = `${user.name} reacted to own message with ${reaction.emoticon}`;
+                systemMessageContentForUser = `${user.name} reacted to own message with ${reaction.emoticon}`;
+            } else {
+                systemMessageContentForFriend = `${user.name} reacted to ${friend.name}'s message with ${reaction.emoticon}`;
+                systemMessageContentForUser = `${user.name} reacted to ${friend.name}'s message with ${reaction.emoticon}`;
+            }
 
             const systemMessageIDForFriend: string = uuidv4();
             const systemMessageForFriend = {
@@ -425,22 +436,20 @@ export const addReaction = async (req: Request, res: Response): Promise<void> =>
                 return;
             }
 
-            const systemMessages = [];
             for (const participant of participants) {
-                const groupInParticipant = participant.groups.find(g => g.id === groupID);
+                const groupInParticipant = participant.groups.find((g: any) => g.id === groupID);
                 if (groupInParticipant) {
-                    const messagesToUpdate = groupInParticipant.messages.filter(m => m.id === messageID);
+                    const messagesToUpdate = groupInParticipant.messages.filter((m: any) => m.id === messageID);
 
                     if (messagesToUpdate.length === 0) {
-                        console.log(`Message not found in participant ${participant._id}'s group messages`);
                         res.status(404).json({ message: `Message not found in participant ${participant._id}'s group messages` });
                         return;
                     }
 
-                    messagesToUpdate.forEach(message => updateReaction(message));
+                    messagesToUpdate.forEach((message: any) => updateReaction(message));
 
                     const messageSender = messagesToUpdate[0].sender;
-                    const messageSenderParticipant = participants.find(p => p.id === messageSender);
+                    const messageSenderParticipant = participants.find((p: any) => p.id === messageSender);
                     const messageSenderName = messageSenderParticipant ? messageSenderParticipant.name : 'their own';
 
                     const systemMessageContent = `${user.name} reacted to ${messageSenderName}'s message with ${reaction.emoticon}`;
@@ -470,6 +479,7 @@ export const addReaction = async (req: Request, res: Response): Promise<void> =>
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
 
 
 // export const addReaction = async (req: Request, res: Response): Promise<void> => {

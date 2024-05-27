@@ -51,3 +51,5 @@ export type Participant = {
     nickname: string,
     avatar: string,
 }
+
+export type AccessibilityAction = 'mute' | 'ignore' | 'block';

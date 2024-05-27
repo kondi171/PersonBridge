@@ -51,6 +51,10 @@ export class EditMailComponent {
           this.toastr.error('Invalid password!', 'Editing failed');
           return;
         }
+        if (data.error === 'The specified mail is already taken!') {
+          this.toastr.error('The specified mail is already taken!', 'Editing failed');
+          return;
+        }
         this.storeService.setLoggedUser(data);
         this.toastr.success(`You changed your email from ${this.oldMail} to ${data.mail}`, 'Editing was successful');
         this.oldMail = data.mail;

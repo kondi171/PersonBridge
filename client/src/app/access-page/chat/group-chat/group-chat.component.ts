@@ -127,6 +127,9 @@ export class GroupChatComponent implements OnDestroy, AfterViewInit {
   getMessages(loadMore = false, scrollDown = false) {
     // console.log(this.activeChatType)
     // if (this.activeChatType === ChatType.USER_CHAT) return;
+    if (!loadMore) {
+      this.offset = 0;
+    }
     fetch(`${environment.apiURL}/chat/group/${this.yourID}/${this.chatID}?limit=${this.limit}&offset=${this.offset}`, {
       method: 'GET',
       headers: {
@@ -251,14 +254,6 @@ export class GroupChatComponent implements OnDestroy, AfterViewInit {
   loadMoreMessages() {
     this.getMessages(true, false);
   }
-
-  ensureFullURL(path: string): string {
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path;
-    }
-    return `${environment.serverURL}/${path}`;
-  }
-
   toggleEmojiPicker() {
     this.showEmojiPicker = !this.showEmojiPicker;
   }
@@ -266,5 +261,14 @@ export class GroupChatComponent implements OnDestroy, AfterViewInit {
   addEmoji(event: any) {
     const text = `${this.messageContent}${event.emoji.native}`;
     this.messageContent = text;
+  }
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
+  }
+  ensureFullURL(path: string): string {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    return `${environment.serverURL}/${path}`;
   }
 }

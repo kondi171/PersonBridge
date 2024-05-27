@@ -1,46 +1,79 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { StoreService } from './store.service';
 import { environment } from '../app.environment';
+import { StoreService } from './store.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SocketService {
-    private socket: Socket;
+    private socket: Socket | undefined;
 
-    constructor(private storeService: StoreService) {
+    constructor(private storeService: StoreService) { }
+
+    connect(userID: string) {
+        if (this.socket && this.socket.connected) {
+            console.log("Already connected");
+            return;
+        }
         this.socket = io(environment.serverURL, {
             withCredentials: true,
-            autoConnect: false
+            autoConnect: false,
+            query: { userID }
         });
-
-        // Listen for user status change events
-        this.socket.on('user-status-change', (data: { userID: string, status: string }) => {
-            console.log('statusChange')
-            const loggedUser = this.storeService.getLoggedUser();
-            if (loggedUser && loggedUser._id === data.userID) {
-                this.storeService.updateUserStatus(data.status);
-            }
-        });
-    }
-
-    public connect(userID: string) {
-        this.socket.io.opts.query = { userID };
         this.socket.connect();
-        console.log(userID)
+        this.socket.on('messageToUserSend', (data: any) => {
+            this.storeService.notifyNewMessage();
+        });
+        this.socket.on('markMessageAsRead', (data: any) => {
+        });
     }
 
-    public disconnect() {
-        this.socket.emit('logout');
-        this.socket.disconnect();
+    disconnect() {
+        if (this.socket) {
+            this.socket.disconnect();
+        }
     }
 
-    public emitLogin(userID: string) {
-        this.socket.emit('login', userID);
+    onStatusChange(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('statusChange', callback);
+        }
     }
 
-    public emitLogout() {
-        this.socket.emit('logout');
+    onSendRequest(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('sendRequest', callback);
+        }
+    }
+
+    onCancelRequest(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('cancelRequest', callback);
+        }
+    }
+
+    onAcceptRequest(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('acceptRequest', callback);
+        }
+    }
+
+    onIgnoreRequest(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('ignoreRequest', callback);
+        }
+    }
+
+    onMessageToUserSend(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('messageToUserSend', callback);
+        }
+    }
+
+    onMarkMessageAsRead(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('markMessageAsRead', callback);
+        }
     }
 }

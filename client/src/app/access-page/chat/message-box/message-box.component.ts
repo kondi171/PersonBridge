@@ -110,7 +110,9 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     }
     return `${environment.serverURL}/${path}`;
   }
-
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
+  }
   formatMessageContent(content: string): string {
     return content.replace(/\n/g, '<br>');
   }
@@ -176,4 +178,5 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
       if (user) this.activeUser = user;
     }
   }
+
 }

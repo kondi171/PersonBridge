@@ -45,6 +45,7 @@ export class RemoveFriendComponent {
         }
         this.toastr.success('You have successfully removed friend!', 'Remove Successful');
         this.password = '';
+        this.storeService.forceRefreshMessages(true);
         this.router.navigate(['/access']);
       })
       .catch(error => {

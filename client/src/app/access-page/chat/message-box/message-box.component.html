@@ -4,7 +4,8 @@
       [ngClass]="{'is-you': message.sender === loggedUser?._id, 'is-friend': message.sender === friendData.id}">
       <div class="avatar">
         <img [src]="message.sender === loggedUser?._id ? loggedUser?.avatar : friendData.avatar"
-          [alt]="message.sender === loggedUser?._id ? loggedUser?.name : friendData.settings.nickname">
+          [alt]="message.sender === loggedUser?._id ? loggedUser?.name : friendData.settings.nickname"
+          (error)="onImageError($event)">
       </div>
       <div class="message">
         <div class="name">
@@ -40,7 +41,7 @@
       [ngClass]="{'is-you': message.sender === loggedUser?._id, 'is-friend': message.sender === activeUser.id}">
       <div class="avatar">
         <img [src]="message.sender === activeUser.id ? ensureFullURL(activeUser.avatar) : loggedUser?.avatar"
-          [alt]="activeUser.nickname">
+          [alt]="activeUser.nickname" (error)="onImageError($event)">
       </div>
       <div class="message">
         <div class="name">

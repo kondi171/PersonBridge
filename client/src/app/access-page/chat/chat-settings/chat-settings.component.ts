@@ -3,12 +3,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBellSlash, faCommentSlash, faLock, faKey, faA, faComments, faUserMinus, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../../../features/footer/footer.component';
 import { RouterModule } from '@angular/router';
-import { Modal, Position } from '../../../typescript/enums';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../../services/store.service';
 import { environment } from '../../../app.environment';
 import { ToastrService } from 'ngx-toastr';
+import { Modal, Position } from '../../../typescript/enums';
 import { FriendSettingsData } from '../../../typescript/interfaces';
+import { AccessibilityAction } from '../../../typescript/types';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../../../features/modal-wrapper/modal-wrapper.component';
 import { DeleteMessagesWithUserComponent } from './delete-messages-with-user/delete-messages-with-user.component';
@@ -20,7 +21,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule, FooterComponent, RouterModule, ModalComponent, DeleteMessagesWithUserComponent, RemoveFriendComponent],
   templateUrl: './chat-settings.component.html',
-  styleUrl: './chat-settings.component.scss'
+  styleUrls: ['./chat-settings.component.scss']
 })
 export class ChatSettingsComponent implements OnInit, OnDestroy {
   Position = Position;
@@ -34,7 +35,7 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
     nickname: faA,
     remove: faUserMinus,
     back: faChevronLeft,
-  }
+  };
 
   chatIDSubscription: Subscription;
   loggedUserSubscription: Subscription;
@@ -56,7 +57,7 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
       ignore: false,
       block: false
     }
-  }
+  };
 
   nickname = '';
   PIN = ['', '', '', ''];
@@ -69,8 +70,8 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
       this.activeChatID = chatID;
     });
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
-      if (user) this.yourID = user?._id;
-    })
+      if (user) this.yourID = user._id;
+    });
   }
 
   ngOnInit(): void {
@@ -94,59 +95,28 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
           messagesCounter: data.messages.length,
           settings: settings,
           accessibility: accessibility
-        }
+        };
       })
       .catch(error => {
-        this.toastr.error('An Error Occured while fetching friend!', 'Data Retrieve Error');
+        this.toastr.error('An Error Occurred while fetching friend!', 'Data Retrieve Error');
         console.error('Data Retrieve Error:', error);
       });
   }
 
   handleMute() {
-    // Messages incoming but user is not informing about that. Friend can send a messages.
-    fetch(`${environment.apiURL}/chat-settings/mute`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.mute) this.toastr.warning('Friend was muted!', `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        else this.toastr.success('Friend was unmuted!', `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        this.friendInfo.accessibility.mute = !this.friendInfo.accessibility.mute;
-      })
-      .catch(error => {
-        this.toastr.error('An Error Occured while muting friend!', 'Accessibility Change Error');
-        console.error('Accessibility Change Error:', error);
-      });
+    this.updateAccessibility('mute', 'Friend was muted!', 'Friend was unmuted!');
   }
 
   handleIgnore() {
-    // Messages are not incoming. Friend can send a messages.
-    fetch(`${environment.apiURL}/chat-settings/ignore`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.ignore) this.toastr.warning('Friend was ignored!', `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        else this.toastr.success('Friend was unignored!', `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        this.friendInfo.accessibility.ignore = !this.friendInfo.accessibility.ignore;
-      })
-      .catch(error => {
-        this.toastr.error('An Error Occured while ignoring friend!', 'Accessibility Change Error');
-        console.error('Accessibility Change Error:', error);
-      });
+    this.updateAccessibility('ignore', 'Friend was ignored!', 'Friend was unignored!');
   }
 
   handleBlock() {
-    // Messages are not incoming. Both User and Friend cannot send a messages.
-    fetch(`${environment.apiURL}/chat-settings/block`, {
+    this.updateAccessibility('block', 'Friend was blocked!', 'Friend was unblocked!');
+  }
+
+  updateAccessibility(action: AccessibilityAction, successMessage: string, revertMessage: string) {
+    fetch(`${environment.apiURL}/chat-settings/${action}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -155,18 +125,20 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.block) this.toastr.warning('Friend was blocked!', `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        else this.toastr.success('Friend was unblocked!', `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        this.friendInfo.accessibility.block = !this.friendInfo.accessibility.block;
+        const isActionEnabled = data[action];
+        const message = isActionEnabled ? successMessage : revertMessage;
+        this.toastr.success(message, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+        this.friendInfo.accessibility[action] = isActionEnabled;
+        this.storeService.updateAccessibility(this.activeChatID, this.friendInfo.accessibility);
       })
       .catch(error => {
-        this.toastr.error('An Error Occured while blocking friend!', 'Accessibility Change Error');
+        this.toastr.error(`An Error Occurred while ${action} friend!`, 'Accessibility Change Error');
         console.error('Accessibility Change Error:', error);
       });
   }
 
   handleSetNickname() {
-    if (this.nickname === '') {
+    if (!this.nickname) {
       this.toastr.error('Nickname which you provided is empty!', 'Edit failed');
       return;
     }
@@ -186,12 +158,14 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
         if (data.message === "Nickname set successfully") {
           this.toastr.success(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
           this.nickname = '';
-        } else this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+        } else {
+          this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+        }
       })
       .catch(error => {
-        this.toastr.error('An Error Occured while editing nickname!', 'Nickname Change Error');
+        this.toastr.error('An Error Occurred while editing nickname!', 'Nickname Change Error');
         console.error('Nickname Change Error:', error);
-      })
+      });
   }
 
   validateInput(event: KeyboardEvent): void {
@@ -209,7 +183,7 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
 
   handleSetPIN() {
     const pinCode = this.PIN.join('');
-    if (pinCode === '') {
+    if (!pinCode) {
       this.toastr.error('PIN which you provided is empty!', 'Edit failed');
       return;
     }
@@ -217,8 +191,16 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
       this.toastr.error('PIN must contain exactly 4 digits!', 'Edit failed');
       return;
     }
+    this.updatePIN('PATCH', pinCode, 'PIN set successfully');
+  }
+
+  handleRemovePIN() {
+    this.updatePIN('DELETE', '', 'PIN removed successfully');
+  }
+
+  updatePIN(method: string, pinCode: string, successMessage: string) {
     fetch(`${environment.apiURL}/chat-settings/PIN`, {
-      method: 'PATCH',
+      method: method,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -226,55 +208,43 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.message === "PIN set successfully") {
+        if (data.message === successMessage) {
           this.toastr.success(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-          this.PIN = [];
-        } else this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+          this.PIN = ['', '', '', ''];
+        } else {
+          this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+        }
       })
       .catch(error => {
-        this.toastr.error('An Error Occured while editing PIN!', 'PIN Change Error');
+        this.toastr.error(`An Error Occurred while editing PIN!`, 'PIN Change Error');
         console.error('PIN Change Error:', error);
-      })
+      });
   }
-  handleRemovePIN() {
-    fetch(`${environment.apiURL}/chat-settings/PIN`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.message === "PIN removed successfully") {
-          this.toastr.success(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-          this.PIN = [];
-        } else this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-      })
-      .catch(error => {
-        this.toastr.error('An Error Occured while editing PIN!', 'PIN Change Error');
-        console.error('PIN Change Error:', error);
-      })
-  }
+
   handleDeleteMessages() {
-    this.modalContent = Modal.DELETE_MESSAGES;
-    this.isModalVisible = true;
+    this.openModal(Modal.DELETE_MESSAGES);
   }
 
   handleRemoveFriend() {
-    this.modalContent = Modal.REMOVE_FRIEND;
+    this.openModal(Modal.REMOVE_FRIEND);
+  }
+
+  openModal(content: Modal) {
+    this.modalContent = content;
     this.isModalVisible = true;
   }
 
-  openModal() {
-    this.isModalVisible = true;
-  }
   closeModal() {
     this.isModalVisible = false;
   }
+
   ngOnDestroy(): void {
     this.chatIDSubscription.unsubscribe();
     this.loggedUserSubscription.unsubscribe();
+  }
+
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
   }
 
   ensureFullURL(path: string): string {

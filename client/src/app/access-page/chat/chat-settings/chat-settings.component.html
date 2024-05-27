@@ -4,7 +4,7 @@
   </a>
   <div class="clip">
     <div class="avatar">
-      <img [src]="friendInfo.avatar" [alt]="friendInfo.name">
+      <img [src]="friendInfo.avatar" [alt]="friendInfo.name" (error)="onImageError($event)">
       <span class="total-messages">
         <fa-icon class="fa" [icon]="icons.messages" />
         {{friendInfo.messagesCounter}}

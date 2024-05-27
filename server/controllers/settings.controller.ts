@@ -130,6 +130,11 @@ export const editMail = async (req: Request, res: Response): Promise<void> => {
             res.status(400).send({ error: 'New mail is the same as the current one!' });
             return;
         }
+        const isMailTaken = await userModel.findOne({ mail: mail });
+        if (isMailTaken) {
+            res.status(400).send({ error: 'The specified mail is already taken!' });
+            return;
+        }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             res.status(400).send({ error: 'Invalid password!' });

@@ -5,17 +5,18 @@ import { CommonModule } from '@angular/common';
 import { UserInfo } from '../../../typescript/types';
 import { environment } from '../../../app.environment';
 import { StoreService } from '../../../services/store.service';
-import { UpdateUserService } from '../../../services/update-user.service';
 import { ToastrService } from 'ngx-toastr';
 import { FullName } from '../../../typescript/types';
+import { SocketService } from '../../../services/socket.service';
 
 @Component({
   selector: 'app-person-row',
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
   templateUrl: './person-row.component.html',
-  styleUrl: './person-row.component.scss'
+  styleUrls: ['./person-row.component.scss']
 })
+
 export class PersonRowComponent implements OnInit {
   @Input() person: UserInfo = {
     id: '',
@@ -30,19 +31,53 @@ export class PersonRowComponent implements OnInit {
     request: faPaperPlane,
     sent: faCircleCheck,
   }
-  yourRequests: string[] = [];
-  yourID: string = '';
 
-  constructor(private storeService: StoreService, private updateUser: UpdateUserService, private toastr: ToastrService) {
+  yourID: string = '';
+  yourRequests: string[] = [];
+
+  constructor(
+    private storeService: StoreService,
+    private socketService: SocketService,
+    private toastr: ToastrService
+  ) {
     const loggedUser = this.storeService.getLoggedUser();
     if (loggedUser) {
       this.yourID = loggedUser._id;
-      this.yourRequests = loggedUser.requests.sent;
     }
   }
+
   ngOnInit(): void {
+    this.getSentRequest();
     const timestamp = new Date().getTime();
     this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
+    this.socketService.onAcceptRequest(() => {
+      this.getSentRequest();
+    });
+    this.socketService.onIgnoreRequest(() => {
+      this.getSentRequest();
+    });
+  }
+
+  getSentRequest() {
+    fetch(`${environment.apiURL}/explore/requests/sent/${this.yourID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Internal Server Error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.yourRequests = data;
+      })
+      .catch(error => {
+        console.error('Internal Server Error:', error);
+        throw error;
+      });
   }
 
   handleSendRequest(fullname: FullName) {
@@ -60,14 +95,6 @@ export class PersonRowComponent implements OnInit {
         if (!response.ok) {
           throw new Error('Internal Server Error');
         }
-        this.updateUser.updateUser(this.yourID).then(data => {
-          this.storeService.setLoggedUser(data);
-          const loggedUser = this.storeService.getLoggedUser();
-          if (loggedUser) this.yourID = loggedUser._id;
-        }).catch(error => {
-          console.error('An Error Occured while user update:', error);
-          this.toastr.error('An Error Occured while user update!', 'Error');
-        });
         this.toastr.success('Request Sent!', `${fullname.name} ${fullname.lastname}`);
         return response.json();
       })
@@ -77,12 +104,14 @@ export class PersonRowComponent implements OnInit {
         throw error;
       });
   }
+
+
   handleCancelRequest(fullname: FullName) {
     const indexToRemove = this.yourRequests.indexOf(this.person.id);
-    this.requestCounter--;
-    this.requestCounterChange.emit(this.requestCounter);
     if (indexToRemove !== -1) {
       this.yourRequests.splice(indexToRemove, 1);
+      this.requestCounter--;
+      this.requestCounterChange.emit(this.requestCounter);
     }
     fetch(`${environment.apiURL}/explore/request`, {
       method: 'DELETE',
@@ -95,12 +124,7 @@ export class PersonRowComponent implements OnInit {
         if (!response.ok) {
           throw new Error('Internal Server Error');
         }
-        this.updateUser.updateUser(this.yourID).then(data => {
-          this.storeService.setLoggedUser(data);
-        }).catch(error => {
-          console.error('An Error Occured while user update:', error);
-          this.toastr.error('An Error Occured while user update!', 'Error');
-        });
+
         this.toastr.warning('Request Canceled!', `${fullname.name} ${fullname.lastname}`);
         return response.json();
       })
@@ -110,6 +134,7 @@ export class PersonRowComponent implements OnInit {
         throw error;
       });
   }
+
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import userModel from "../models/user.model";
 import { UserStatus } from "../typescript/enums";
+import { getIo } from "../middlewares/websocket.middleware";
 
 export const getOnline = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
@@ -224,6 +225,10 @@ export const acceptRequest = async (req: Request, res: Response): Promise<void> 
             res.status(404).json({ message: "User not found." });
             return;
         }
+
+        const io = getIo();
+        io.to(friendID).emit('acceptRequest', { from: yourID });
+
         res.status(200).json({ message: "Friend request accepted!" });
     } catch (error) {
         res.status(500).json({ message: "An error occurred while updating user data.", error: error });
@@ -235,7 +240,8 @@ export const ignoreRequest = async (req: Request, res: Response): Promise<void> 
     if (!yourID || !friendID) {
         res.status(400).json({ message: "Invalid or missing user ID." });
         return;
-    } try {
+    }
+    try {
         const updatedUser = await userModel.findByIdAndUpdate(
             yourID,
             { $pull: { "requests.received": friendID } },
@@ -250,6 +256,10 @@ export const ignoreRequest = async (req: Request, res: Response): Promise<void> 
             res.status(404).json({ message: "User not found." });
             return;
         }
+
+        const io = getIo();
+        io.to(friendID).emit('ignoreRequest', { from: yourID });
+
         res.status(200).json({ message: "Friend request ignored." });
     } catch (error) {
         console.error('Error during the ignoring request operation:', error);

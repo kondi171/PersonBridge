@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faMagnifyingGlass, faSearch, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../../features/footer/footer.component';
-import { PersonRowComponent } from './person-row/person-row.component';
 import { Position } from '../../typescript/enums';
 import { environment } from '../../app.environment';
 import { FormsModule } from '@angular/forms';
 import { UserInfo } from '../../typescript/types';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
-import { UpdateUserService } from '../../services/update-user.service';
 import { ToastrService } from 'ngx-toastr';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { PersonRowComponent } from './person-row/person-row.component';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-explore',
@@ -40,23 +40,31 @@ export class ExploreComponent implements OnInit {
   }
   results: UserInfo[] = [];
   requests: UserInfo[] = [];
-  yourID: string = '' as string;
+  yourID: string = '';
+  requestsIDs: string[] = [];
   showResults = true;
   showRequests = false;
   requestCounter: number = 0;
   limit = 20;
   offset = 0;
 
-  constructor(private storeService: StoreService, private updateUser: UpdateUserService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService) {
     const loggedUser = this.storeService.getLoggedUser();
-    if (loggedUser) this.yourID = loggedUser._id;
+    if (loggedUser) {
+      this.yourID = loggedUser._id;
+    }
   }
 
   ngOnInit(): void {
-    this.handleSentRequest();
+    this.socketService.onAcceptRequest(() => {
+      this.handleGetSentRequest();
+    });
+    this.socketService.onIgnoreRequest(() => {
+      this.handleGetSentRequest();
+    });
   }
 
-  handleSentRequest() {
+  handleGetSentRequest() {
     fetch(`${environment.apiURL}/explore/requests/${this.yourID}`, {
       method: 'GET',
       headers: {
@@ -72,12 +80,7 @@ export class ExploreComponent implements OnInit {
       .then(data => {
         this.requests = data;
         this.requestCounter = data.length;
-        this.updateUser.updateUser(this.yourID).then(data => {
-          this.storeService.setLoggedUser(data);
-        }).catch(error => {
-          console.error('An Error Occured while user update:', error);
-        });
-        return data;
+        this.clearResults();
       })
       .catch(error => {
         console.error('Internal Server Error:', error);
@@ -90,6 +93,11 @@ export class ExploreComponent implements OnInit {
       this.toastr.error('Search input is empty!', 'Search failed');
       return;
     }
+
+    if (!loadMore) {
+      this.offset = 0;
+    }
+
     fetch(`${environment.apiURL}/explore/find`, {
       method: 'POST',
       headers: {
@@ -105,10 +113,10 @@ export class ExploreComponent implements OnInit {
       })
       .then(data => {
         if (data.message === 'No users found!') {
-          this.toastr.error('No users found!', 'Find Error');
           if (loadMore) {
             this.toastr.info('No more users to load.', 'Info');
           } else {
+            this.toastr.error('No users found!', 'Find Error');
             this.results = [];
           }
         } else {
@@ -122,8 +130,12 @@ export class ExploreComponent implements OnInit {
       })
       .catch(error => {
         console.error('Internal Server Error:', error);
-        throw error;
+        this.toastr.error('Internal Server Error!', 'Error');
       });
+  }
+
+  clearResults() {
+    this.results = [];
   }
 
   loadMoreResults() {
@@ -134,3 +146,4 @@ export class ExploreComponent implements OnInit {
     this.requestCounter = newCounter;
   }
 }
+

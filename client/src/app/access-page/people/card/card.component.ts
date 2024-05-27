@@ -131,6 +131,7 @@ export class CardComponent implements OnInit, OnDestroy {
         })
     }, 400);
   }
+
   messageFriend(id: string) {
     this.storeService.updateChatID(id);
     this.storeService.updateChatType(ChatType.USER_CHAT);

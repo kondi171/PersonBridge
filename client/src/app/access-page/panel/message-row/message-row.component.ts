@@ -8,6 +8,7 @@ import { faBellSlash, faCheck, faCheckDouble, faCircleCheck, faCircleExclamation
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../../services/store.service';
+import { SocketService } from '../../../services/socket.service';
 
 @Component({
   selector: 'app-message-row',
@@ -23,13 +24,24 @@ export class MessageRowComponent implements OnInit, OnDestroy {
   formattedDate: string = '';
   isUnread: boolean = false;
   loggedUserSubscription: Subscription;
+  chatIDSubscription: Subscription;
   yourID = "";
+  chatID = "";
   ChatType = ChatType;
 
-  constructor(private storeService: StoreService, private datePipe: DatePipe) {
+  constructor(private storeService: StoreService, private socketService: SocketService, private datePipe: DatePipe) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       if (user?._id) {
         this.yourID = user._id;
+      }
+    });
+    this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
+      this.chatID = chatID;
+      if (this.person?.id) {
+        if (this.person.id === chatID) {
+          this.isUnread = false;
+          this.person.lastMessage.read = true;
+        }
       }
     });
   }
@@ -50,11 +62,24 @@ export class MessageRowComponent implements OnInit, OnDestroy {
     this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
     this.formatDate(new Date(this.person.lastMessage.date));
     this.isUnread = !this.person.lastMessage.read && this.person.lastMessage.sender === this.person.id;
-    // console.log(this.person)
+
+    this.socketService.onStatusChange(() => {
+      this.getUserStatus();
+    });
+    this.socketService.onMarkMessageAsRead((data) => {
+      this.handleMarkMessageAsRead(data);
+    });
+
+    this.storeService.accessibility$.subscribe(accessibility => {
+      if (accessibility[this.person.id]) {
+        this.person.accessibility = accessibility[this.person.id];
+      }
+    });
   }
 
   ngOnDestroy() {
     this.loggedUserSubscription.unsubscribe();
+    this.chatIDSubscription.unsubscribe();
   }
 
   formatDate(date: Date): void {
@@ -72,6 +97,24 @@ export class MessageRowComponent implements OnInit, OnDestroy {
     if (isToday) this.formattedDate = `${this.datePipe.transform(date, 'HH:mm')}`;
     else if (isCurrentYear) this.formattedDate = `${this.datePipe.transform(date, 'd MMMM')}`;
     else this.formattedDate = `${this.datePipe.transform(date, 'd MMMM yyyy')}`;
+  }
+
+  getUserStatus() {
+    fetch(`${environment.apiURL}/access/status/${this.person.id}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.person.status = data.status;
+      })
+  }
+
+  handleMarkMessageAsRead(data: any) {
+    if (this.person.id === data.from && this.person.lastMessage.sender === this.yourID) {
+      this.person.lastMessage.read = true;
+      this.isUnread = false;
+    }
   }
 
   getIcon(): any {

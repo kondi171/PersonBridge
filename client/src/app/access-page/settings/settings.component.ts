@@ -121,11 +121,8 @@ export class SettingsComponent implements OnDestroy {
   }
 
   logout() {
-    if (this.loggedUser) {
-      this.socketService.emitLogout();
-    }
-    this.socketService.disconnect();
     this.storeService.removeLoggedUser();
+    this.socketService.disconnect();
     this.router.navigate(['/login']);
     this.toastr.success('You have successfully logged out!', 'Logout Successful');
   }

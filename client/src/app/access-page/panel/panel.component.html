@@ -7,12 +7,12 @@
       <div class="identifier">
         {{loggedUser?.name}} {{loggedUser?.lastname}}
       </div>
-      <div class="status" *ngIf="loggedUser?.status === UserStatus.ONLINE" (click)="toggleStatus(UserStatus.OFFLINE)">
+      <div class="status" *ngIf="status === UserStatus.ONLINE" (click)="toggleStatus(UserStatus.OFFLINE)">
         <div class="status__dot online-dot"></div>
         <div class="status__info online-info">Online</div>
         <div class="text">Change Status</div>
       </div>
-      <div class="status" *ngIf="loggedUser?.status === UserStatus.OFFLINE" (click)="toggleStatus(UserStatus.ONLINE)">
+      <div class="status" *ngIf="status === UserStatus.OFFLINE" (click)="toggleStatus(UserStatus.ONLINE)">
         <div class="status__dot offline-dot"></div>
         <div class="status__info offline-info">Offline</div>
         <div class="text">Change Status</div>
@@ -27,7 +27,8 @@
     <div *ngIf="messageRows.length === 0" class="no-messages">
       There is no messages yet!
     </div>
-    <div class="message" *ngFor="let messageRow of messageRows" (click)="showMessages(messageRow.id, messageRow.type)">
+    <div @listAnimation class="message" *ngFor="let messageRow of messageRows"
+      (click)="showMessages(messageRow.id, messageRow.type)">
       <app-message-row [person]="messageRow" />
     </div>
   </div>

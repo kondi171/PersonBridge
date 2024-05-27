@@ -4,7 +4,7 @@
       <fa-icon class="fa" [icon]="icons.back"></fa-icon>
     </a>
     <div class="avatar">
-      <img [src]="groupChatData.avatar" alt="Avatar">
+      <img [src]="groupChatData.avatar" alt="Avatar" (error)="onImageError($event)">
     </div>
     <div class="info">
       <div class="identifier">

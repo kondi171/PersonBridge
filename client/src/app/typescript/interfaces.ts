@@ -16,8 +16,8 @@ export interface User {
     },
     friends: Friend[],
     requests: {
-        received: [],
-        sent: []
+        received: string[],
+        sent: string[]
     },
     blocked: [],
     chatbots: []

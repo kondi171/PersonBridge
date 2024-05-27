@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, HostListener } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -16,15 +16,28 @@ import { ChatType, UserStatus } from '../../../typescript/enums';
 import { FriendChatData, User, Message } from '../../../typescript/interfaces';
 import { PINComponent } from '../pin/pin.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { SocketService } from '../../../services/socket.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-user-chat',
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PickerComponent, MessageBoxComponent, NoMessagesComponent, PINComponent],
   templateUrl: './user-chat.component.html',
-  styleUrls: ['./user-chat.component.scss']
+  styleUrls: ['./user-chat.component.scss'],
+  animations: [
+    trigger('messageAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(20px)', opacity: 0 }),
+        animate('500ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({ transform: 'translateY(20px)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
-export class UserChatComponent implements OnDestroy, AfterViewInit {
+export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('messagesContainer') private messageContainer!: ElementRef;
   @ViewChild('emojiPicker') emojiPicker!: ElementRef;
 
@@ -74,7 +87,7 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
   private initialized = false;
   visibleReactions: { [key: string]: boolean } = {}; // Nowa zmienna do śledzenia widoczności reakcji dla każdej wiadomości
 
-  constructor(private storeService: StoreService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router) {
+  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser?._id) {
@@ -99,6 +112,18 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
     });
     this.chatTypeSubscription = this.storeService.chatType$.subscribe(chatType => {
       this.activeChatType = chatType;
+    });
+  }
+
+  ngOnInit(): void {
+    this.socketService.onStatusChange(() => {
+      this.getUserStatus();
+    });
+
+    this.socketService.onMessageToUserSend((data: any) => {
+      if (data.from === this.friendChatData.id) {
+        this.getMessages(false, true);
+      }
     });
   }
 
@@ -135,7 +160,9 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
   }
 
   getMessages(loadMore = false, scrollDown = false) {
-    // if(this.activeChatType === ChatType.GROUP_CHAT) return;
+    if (!loadMore) {
+      this.offset = 0;
+    }
     fetch(`${environment.apiURL}/chat/user/${this.yourID}/${this.chatID}?limit=${this.limit}&offset=${this.offset}`, {
       method: 'GET',
       headers: {
@@ -144,23 +171,23 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
     })
       .then(response => response.json())
       .then(data => {
-        // console.log(data)
         if (data.messages.length !== 0) {
           const formattedMessages = data.messages.map((message: Message) => ({
             ...message,
             date: new Date(message.date), // Konwertuj date na obiekt Date
           }));
-          this.messages = loadMore ? [...formattedMessages, ...this.messages] : formattedMessages;
-          this.offset += this.limit; // Zwiększ offset tylko jeśli załadowano więcej wiadomości
           if (loadMore) {
+            this.messages = [...formattedMessages, ...this.messages]; // Dodaj starsze wiadomości na początku
             this.toastr.success('Loaded more messages.', 'Success');
+          } else {
+            this.messages = formattedMessages.slice(-this.limit); // Załaduj tylko najnowsze 20 wiadomości
           }
+          this.offset += this.limit; // Zwiększ offset tylko jeśli załadowano więcej wiadomości
         } else {
           if (loadMore) {
             this.toastr.info('No more messages to load.', 'Info');
           }
         }
-        // console.log(this.messages)
         this.friendChatData = data.friend;
         if (this.friendChatData.settings.PIN === 0) {
           this.accessGranted = true;
@@ -176,10 +203,21 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
         this.toastr.error('An Error Occured while fetching friend!', 'Data Retrieve Error');
         console.error('Data Retrieve Error:', error);
       });
-    this.markAsRead();
+    this.markMessagesAsRead();
   }
 
-  markAsRead() {
+  getUserStatus() {
+    fetch(`${environment.apiURL}/access/status/${this.friendChatData.id}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.friendChatData.status = data.status;
+      })
+  }
+
+  markMessagesAsRead() {
     fetch(`${environment.apiURL}/chat/mark`, {
       method: 'POST',
       headers: {
@@ -187,10 +225,6 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
       },
       body: JSON.stringify({ yourID: this.yourID, friendID: this.chatID })
     })
-      .then(response => response.json())
-      .then(data => {
-        // console.log(data)
-      })
       .catch(error => {
         this.toastr.error('An Error Occured while marking message!', 'Message Error');
         console.error('Data Retrieve Error:', error);
@@ -245,6 +279,7 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
       .then(() => {
         this.messageContent = '';
         this.getMessages(false, true);
+        this.storeService.notifyNewMessage(); // Notify the panel component about the new message
       })
       .catch(error => {
         this.toastr.error('An Error Occured while sending message!', 'Message Error');
@@ -300,7 +335,9 @@ export class UserChatComponent implements OnDestroy, AfterViewInit {
     }
     return `${environment.serverURL}/${path}`;
   }
-
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
+  }
   toggleEmojiPicker() {
     this.showEmojiPicker = !this.showEmojiPicker;
   }

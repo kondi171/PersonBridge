@@ -3,60 +3,50 @@ import { createServer } from "http";
 import userModel from "../models/user.model";
 import { UserStatus } from "../typescript/enums";
 
+let io: SocketIOServer;
+
+export function getIo() {
+    if (!io) {
+        throw new Error("Socket.io not initialized");
+    }
+    return io;
+}
+
 export default function startSocketServer(app: any) {
     const server = createServer(app);
-    const io = new SocketIOServer(server, {
+    io = new SocketIOServer(server, {
         cors: {
             origin: "http://localhost:4200",
             credentials: true
         }
     });
 
-    const updateUserStatus = async (userID: string, status: UserStatus) => {
+    io.on("connection", async (socket) => {
+        const userID = socket.handshake.query.userID;
+        console.log(`User connected: ${userID}`);
+        if (userID)
+            socket.join(userID);  // Join the user to a room with their userID
         try {
-            if (!userID) {
-                throw new Error("Invalid userID");
-            }
             const user = await userModel.findById(userID);
             if (user) {
-                user.status = status;
+                user.status = UserStatus.ONLINE;
+                user.friends.forEach(friend => io.to(friend.id.toString()).emit('statusChange', { from: userID, status: UserStatus.ONLINE }));
                 await user.save();
-            } else {
-                console.log("User not found");
             }
         } catch (error) {
-            console.error("Error updating user status:", error);
+            console.error("Error updating user status to online:", error);
         }
-    };
-
-    io.on("connection", socket => {
-        socket.on("login", async (userID: string) => {
-            if (userID) {
-                socket.data.userID = userID; // Store userID in socket session
-                console.log(`${userID} logged in`);
-                await updateUserStatus(userID, UserStatus.ONLINE);
-            } else {
-                console.log("Invalid login attempt with empty userID");
-            }
-        });
-
-        socket.on("logout", async () => {
-            const userID = socket.data.userID;
-            if (userID) {
-                console.log(`${userID} logged out`);
-                await updateUserStatus(userID, UserStatus.OFFLINE);
-            } else {
-                console.log("Invalid logout attempt with empty userID");
-            }
-        });
-
         socket.on("disconnect", async () => {
-            const userID = socket.data.userID;
-            if (userID) {
-                console.log(`${userID} disconnected`);
-                await updateUserStatus(userID, UserStatus.OFFLINE);
-            } else {
-                console.log("Invalid disconnect attempt with empty userID");
+            console.log(`User disconnected: ${userID}`);
+            try {
+                const user = await userModel.findById(userID);
+                if (user) {
+                    user.status = UserStatus.OFFLINE;
+                    user.friends.forEach(friend => io.to(friend.id.toString()).emit('statusChange', { from: userID, status: UserStatus.OFFLINE }));
+                    await user.save();
+                }
+            } catch (error) {
+                console.error("Error updating user status to offline:", error);
             }
         });
     });

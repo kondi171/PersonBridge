@@ -14,13 +14,28 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalComponent } from '../../features/modal-wrapper/modal-wrapper.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 import { MessageRowComponent } from './message-row/message-row.component';
-import { UpdateUserService } from '../../services/update-user.service'; // Import the UpdateUserService
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 @Component({
   selector: 'app-panel',
   standalone: true,
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss'],
+  animations: [
+    trigger('listAnimation', [
+      transition('* <=> *', [
+        query(
+          ':enter',
+          [
+            style({ opacity: 0, transform: 'translateY(-20px)' }),
+            stagger('50ms', animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })))
+          ],
+          { optional: true }
+        ),
+        query(':leave', animate('200ms', style({ opacity: 0 })), { optional: true })
+      ])
+    ])
+  ],
   imports: [
     CommonModule,
     FontAwesomeModule,
@@ -37,6 +52,8 @@ export class PanelComponent implements OnInit, OnDestroy {
   loggedUserSubscription: Subscription;
   chatIDSubscription: Subscription;
   chatTypeSubscription: Subscription;
+  newMessageSubscription: Subscription;
+  forceRefreshMessagesInPanel: Subscription;
 
   Device = Device;
   icons = {
@@ -52,12 +69,13 @@ export class PanelComponent implements OnInit, OnDestroy {
   componentFirstInit = true;
   isModalVisible = false;
   UserStatus = UserStatus;
+  status: UserStatus = UserStatus.ONLINE;
+  forceMessages: boolean = false;
 
   constructor(
     private router: Router,
     private storeService: StoreService,
     private toastr: ToastrService,
-    private updateUserService: UpdateUserService // Inject the UpdateUserService
   ) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
@@ -69,9 +87,6 @@ export class PanelComponent implements OnInit, OnDestroy {
       if (this.loggedUser?._id) {
         this.yourID = this.loggedUser._id;
       }
-      if (this.loggedUser?.status) {
-        this.refreshUser(this.loggedUser._id); // Call the method to update the user
-      }
     });
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.activeChatID = chatID;
@@ -79,9 +94,31 @@ export class PanelComponent implements OnInit, OnDestroy {
     this.chatTypeSubscription = this.storeService.chatType$.subscribe(chatType => {
       this.activeChatType = chatType;
     });
+    this.newMessageSubscription = this.storeService.newMessage$.subscribe(() => {
+      this.fetchMessages();
+    });
+
+    this.forceRefreshMessagesInPanel = this.storeService.refreshMessages$.subscribe(force => {
+      this.forceMessages = force;
+      if (this.forceMessages) {
+        this.fetchMessages();
+        this.storeService.forceRefreshMessages(false);
+      }
+    });
   }
 
   ngOnInit(): void {
+    this.fetchMessages();
+  }
+
+  ngOnDestroy(): void {
+    this.loggedUserSubscription.unsubscribe();
+    this.chatIDSubscription.unsubscribe();
+    this.chatTypeSubscription.unsubscribe();
+    this.newMessageSubscription.unsubscribe();
+  }
+
+  fetchMessages() {
     fetch(`${environment.apiURL}/access/friends/${this.yourID}`, {
       method: 'GET',
       headers: {
@@ -101,18 +138,12 @@ export class PanelComponent implements OnInit, OnDestroy {
         }
         this.messageRows = data;
         this.sortMessages();
-        this.storeService.updateChatID(data[0].id);
+        // this.storeService.updateChatID(data[0].id);
       })
       .catch(error => {
         this.toastr.error('An Error Occured while retrieving your messages!', 'Messages Error');
         console.error('Messages Error:', error);
       });
-  }
-
-  ngOnDestroy(): void {
-    this.loggedUserSubscription.unsubscribe();
-    this.chatIDSubscription.unsubscribe();
-    this.chatTypeSubscription.unsubscribe();
   }
 
   sortMessages() {
@@ -144,7 +175,9 @@ export class PanelComponent implements OnInit, OnDestroy {
       },
       body: JSON.stringify({ yourID: this.yourID, status: status })
     })
-      .then(() => {
+      .then(response => response.json())
+      .then(data => {
+        this.status = data.status;
         if (status === UserStatus.ONLINE)
           this.toastr.info('You have successfully changed your status!', 'You are Online');
         else this.toastr.info('You have successfully changed your status!', 'You are Offline');
@@ -168,14 +201,5 @@ export class PanelComponent implements OnInit, OnDestroy {
       return path;
     }
     return `${environment.serverURL}/${path}`;
-  }
-
-  // Add this method to update the user
-  refreshUser(userID: string) {
-    this.updateUserService.updateUser(userID).then(updatedUser => {
-      this.storeService.setLoggedUser(updatedUser);
-    }).catch(error => {
-      console.error('Failed to update user:', error);
-    });
   }
 }

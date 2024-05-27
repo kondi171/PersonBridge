@@ -10,13 +10,14 @@ import { StoreService } from '../../services/store.service';
 import { CommonModule } from '@angular/common';
 import { GroupInfo, UserInfo } from '../../typescript/types';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-people',
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterModule, CardComponent, FooterComponent],
   templateUrl: './people.component.html',
-  styleUrl: './people.component.scss',
+  styleUrls: ['./people.component.scss'],
   animations: [
     trigger('fadeInCard', [
       transition(':enter', [
@@ -49,7 +50,7 @@ export class PeopleComponent implements OnInit {
   requests: UserInfo[] = [];
   totalFriends: number = 0;
 
-  constructor(private storeService: StoreService) {
+  constructor(private storeService: StoreService, private socketService: SocketService) {
     const loggedUser = storeService.getLoggedUser();
     if (loggedUser) {
       this.yourID = loggedUser._id;
@@ -62,7 +63,24 @@ export class PeopleComponent implements OnInit {
     this.showGroups();
     this.showBlocked();
     this.showRequests();
+
+    if (this.yourID) {
+      this.socketService.onStatusChange((data: any) => {
+        this.showOnline();
+        this.showOffline();
+      });
+
+      this.socketService.onSendRequest(() => {
+        this.showRequests();
+      });
+
+      this.socketService.onCancelRequest(() => {
+        this.showRequests();
+      });
+    }
   }
+
+
   showOnline() {
     fetch(`${environment.apiURL}/people/online/${this.yourID}`, {
       method: 'GET',
@@ -76,6 +94,7 @@ export class PeopleComponent implements OnInit {
         console.error('Online fetch error:', error);
       })
   }
+
   showOffline() {
     fetch(`${environment.apiURL}/people/offline/${this.yourID}`, {
       method: 'GET',
@@ -89,6 +108,7 @@ export class PeopleComponent implements OnInit {
         console.error('Offline fetch error', error);
       })
   }
+
   showGroups() {
     fetch(`${environment.apiURL}/people/groups/${this.yourID}`, {
       method: 'GET',
@@ -107,6 +127,7 @@ export class PeopleComponent implements OnInit {
         console.error('Groups fetch error', error);
       })
   }
+
   showBlocked() {
     fetch(`${environment.apiURL}/people/blocked/${this.yourID}`, {
       method: 'GET',
@@ -119,6 +140,7 @@ export class PeopleComponent implements OnInit {
         console.error('Blocked fetch error', error);
       })
   }
+
   showRequests() {
     fetch(`${environment.apiURL}/people/requests/${this.yourID}`, {
       method: 'GET',
@@ -131,17 +153,20 @@ export class PeopleComponent implements OnInit {
         console.error('Requests fetch error', error);
       })
   }
+
   handleRequest(requestID: string) {
     this.requests = this.requests.filter(request => request.id !== requestID);
     this.storeService.updateCounter(this.requests.length);
     this.showOnline();
     this.showOffline();
   }
+
   handleBlocked(blockID: string) {
     this.blocked = this.blocked.filter(block => block.id !== blockID);
     this.showOnline();
     this.showOffline();
   }
+
   updateTotalFriends() {
     this.totalFriends = this.online.length + this.offline.length;
   }

@@ -4,7 +4,7 @@
       <fa-icon class="fa" [icon]="icons.back"></fa-icon>
     </a>
     <div class="avatar">
-      <img [src]="friendChatData.avatar" alt="Avatar">
+      <img [src]="friendChatData.avatar" alt="Avatar" (error)="onImageError($event)">
     </div>
     <div class="info">
       <div class="identifier">
@@ -48,7 +48,8 @@
     </div>
     <div *ngIf="friendChatData.settings.PIN === 0 || accessGranted">
       <button *ngIf="messages.length >= 20" class="load-more-messages" (click)="loadMoreMessages()">Load More</button>
-      <div class="message" *ngFor="let message of messages">
+      <!-- <div #messagesContainer class="message" *ngFor="let message of messages" @messageAnimation> -->
+      <div #messagesContainer class="message" *ngFor="let message of messages">
         <app-message-box [friendData]="friendChatData" [message]="message" [chatType]="ChatType.USER_CHAT">
         </app-message-box>
       </div>

@@ -21,6 +21,7 @@ import { StoreService } from '../services/store.service';
 import { LoaderComponent } from '../features/loader/loader.component';
 import { faBrain, faPhone, faSearch, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SocketService } from '../services/socket.service';
 
 @Component({
   selector: 'app-access-page',
@@ -41,7 +42,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     YourAudioComponent,
     SomeonesVideoComponent,
     YourVideoComponent,
-    PINComponent,
     LoaderComponent
   ],
   templateUrl: './access-page.component.html',
@@ -58,7 +58,7 @@ export class AccessPageComponent implements OnInit {
     calls: faPhone,
     chatbots: faBrain,
   }
-  constructor(private router: Router, private storeService: StoreService) { }
+  constructor(private router: Router, private storeService: StoreService, private socketService: SocketService) { }
 
   ngOnInit(): void {
     this.checkScreenWidth();
@@ -71,6 +71,9 @@ export class AccessPageComponent implements OnInit {
     setTimeout(() => {
       this.isLoaderVisible = false;
     }, 2000);
+    const loggedUser = this.storeService.getLoggedUser();
+    if (loggedUser)
+      this.socketService.connect(loggedUser?._id);
   }
 
 
