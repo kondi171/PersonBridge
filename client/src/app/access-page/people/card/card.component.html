@@ -8,7 +8,7 @@
   <div class="card-border-top">
   </div>
   <div class="img" *ngIf="type !== CardType.GROUPS">
-    <img [src]="person.avatar" [alt]="person.name">
+    <img [src]="person.avatar" [alt]="person.name" (error)="onImageError($event)">
   </div>
   <span *ngIf="type !== CardType.GROUPS" class="name">{{person.name}} {{person.lastname}}</span>
   <p *ngIf="type !== CardType.GROUPS" class="mail">{{person.mail}}</p>
@@ -24,7 +24,7 @@
   </div>
   <span *ngIf="type === CardType.GROUPS" class="name">{{person.name}} {{person.lastname}}</span>
   <div class="img" *ngIf="type === CardType.GROUPS">
-    <img [src]="group.avatar" [alt]="group.name">
+    <img [src]="group.avatar" [alt]="group.name" (error)="onImageError($event)">
   </div>
   <span *ngIf="type === CardType.GROUPS" class="name">{{group.name}} </span>
   <span *ngIf="type === CardType.GROUPS" class="participants">Participants:

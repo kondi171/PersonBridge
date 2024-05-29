@@ -135,6 +135,10 @@ export class PersonRowComponent implements OnInit {
       });
   }
 
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
+  }
+
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;

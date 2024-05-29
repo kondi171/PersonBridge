@@ -6,234 +6,228 @@
   height: 100vh;
   overflow-y: scroll;
   overflow-x: hidden;
-}
 
-.users {
-  display: none;
-}
+  .users {
+    display: none;
+  }
 
-.brand {
-  width: 100%;
-  margin: 10vmin 2vmin 2vmin 2vmin;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  img {
+  .brand {
     width: 100%;
-  }
-}
+    margin: 10vmin 2vmin 2vmin 2vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-.description {
-  display: none;
-}
-
-.login-form {
-  position: relative;
-  border-radius: 5vmin;
-  padding: 2vmin 3vmin;
-  margin: 5vmin;
-  background: linear-gradient(#212121, #212121) padding-box,
-    linear-gradient(145deg, transparent 35%, $primaryColor, $secondaryColor) border-box;
-  border: 2px solid transparent;
-  background-size: 200% 100%;
-  animation: gradient 2s ease infinite;
-  // height: 60vh;
-  min-width: 200px;
-  min-height: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-
-    50% {
-      background-position: 100% 100%;
-    }
-
-    100% {
-      background-position: 0% 50%;
+    img {
+      width: 100%;
     }
   }
 
-  .login-form__heading {
-    font-family: $decorativeFont;
-    text-align: center;
-    font-weight: bold;
-    font-size: 5vmax;
-    color: $secondaryColor;
-    padding: 2vmin;
-
-    & span:first-of-type {
-      color: $primaryColor;
-    }
+  .description {
+    display: none;
   }
 
-  .form {
-    margin-top: 2vmin;
+  .login-form {
+    position: relative;
+    border-radius: 5vmin;
+    padding: 2vmin 3vmin;
+    margin: 5vmin;
+    background: linear-gradient(#212121, #212121) padding-box,
+      linear-gradient(145deg, transparent 35%, $primaryColor, $secondaryColor) border-box;
+    border: 2px solid transparent;
+    background-size: 200% 100%;
+    animation: gradient 2s ease infinite;
+    min-width: 200px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
 
-    .login-button {
-      display: block;
-      font-weight: bold;
-      letter-spacing: .5vmin;
-      background: linear-gradient(45deg, $primaryColor 0%, darken($primaryColor, 10%) 100%);
-      color: $bgColor;
-      font-size: 5vmin;
-      text-transform: uppercase;
-      padding-block: 2vmin;
-      margin: 2vmin auto;
-      border-radius: 5vmin;
-      box-shadow: $primaryColor 0 0 1vmin .1vmin;
-      border: none;
-      transition: all 0.2s ease-in-out;
-      width: 75%;
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 100%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .login-form__heading {
       font-family: $decorativeFont;
-
-      &:hover {
-        // transform: scale(1.03);
-        cursor: pointer;
-        color: $secondaryColor;
-        letter-spacing: 1px;
-        box-shadow: $secondaryColor 0 0 1vmin .1vmin;
-      }
-
-      &:active {
-        transform: scale(0.9);
-
-      }
-    }
-
-    .forgot-password {
-      display: block;
-      margin: 3vmin;
-      margin-left: 5vmin;
-      font-weight: bold;
-
-      a {
-        font-size: 3vmax;
-        color: $secondaryColor;
-        text-decoration: none;
-        transition-duration: .4s;
-
-        &:hover {
-          color: $textColor;
-        }
-      }
-    }
-
-    .input {
-      width: 90%;
-      background: $textColor;
-      border: none;
-      padding: 15px 20px;
-      border-radius: 20px;
-      margin: 2% 5%;
-      box-shadow: 0 0 2vmin .1vmin darken($textColor, 20%);
-      border-inline: 1vmin solid transparent;
-      color: $secondaryColor;
-      outline-style: none;
-      transition-duration: .4s;
-
-      &::-moz-placeholder,
-      &::placeholder {
-        color: rgb(170, 170, 170);
-      }
-
-      &:focus {
-        transform: translateX(3vmin);
-        box-shadow: $secondaryColor 0 .2vmax 3vmax 0;
-      }
-    }
-  }
-
-  .change-login-method {
-    &__title {
-      display: block;
       text-align: center;
       font-weight: bold;
+      font-size: 5vmax;
       color: $secondaryColor;
-      // margin: 4vmin;
+      padding: 2vmin;
+
+      & span:first-of-type {
+        color: $primaryColor;
+      }
     }
 
-    &__btns {
-      display: flex;
-      justify-content: space-evenly;
-      align-items: center;
-      margin: 2vmin auto;
+    .form {
+      margin-top: 2vmin;
 
-      button {
-        background-color: transparent;
+      .login-button {
+        display: block;
+        font-weight: bold;
+        letter-spacing: .5vmin;
+        background: linear-gradient(45deg, $primaryColor 0%, darken($primaryColor, 10%) 100%);
+        color: $bgColor;
+        font-size: 5vmin;
+        text-transform: uppercase;
+        padding-block: 2vmin;
+        margin: 2vmin auto;
+        border-radius: 5vmin;
+        box-shadow: $primaryColor 0 0 1vmin .1vmin;
         border: none;
-        margin: 0 2vmin;
-        flex-basis: 25%;
-
-        .fa {
-          color: $textColor;
-          background-color: $bgColor;
-          background-image: radial-gradient(circle, $bgColor 0%, $textColor 500%);
-          padding: 2vmin;
-          border-radius: 50%;
-          border: .1vmin solid $secondaryColor;
-          box-shadow: $bgColor 0 0 1vmin .2vmin;
-          font-size: 4vmin;
-          width: 10vmin;
-          transition-duration: .4s;
-        }
+        transition: all 0.2s ease-in-out;
+        width: 75%;
+        font-family: $decorativeFont;
 
         &:hover {
+          cursor: pointer;
+          color: $secondaryColor;
+          letter-spacing: 1px;
+          box-shadow: $secondaryColor 0 0 1vmin .1vmin;
+        }
+
+        &:active {
+          transform: scale(0.9);
+
+        }
+      }
+
+      .forgot-password {
+        display: block;
+        margin: 3vmin;
+        margin-left: 5vmin;
+        font-weight: bold;
+
+        a {
+          font-size: 3vmax;
+          color: $secondaryColor;
+          text-decoration: none;
+          transition-duration: .4s;
+
+          &:hover {
+            color: $textColor;
+          }
+        }
+      }
+
+      .input {
+        width: 90%;
+        background: $textColor;
+        border: none;
+        padding: 15px 20px;
+        border-radius: 20px;
+        margin: 2% 5%;
+        box-shadow: 0 0 2vmin .1vmin darken($textColor, 20%);
+        border-inline: 1vmin solid transparent;
+        color: $secondaryColor;
+        outline-style: none;
+        transition-duration: .4s;
+
+        &::-moz-placeholder,
+        &::placeholder {
+          color: rgb(170, 170, 170);
+        }
+
+        &:focus {
+          transform: translateX(3vmin);
+          box-shadow: $secondaryColor 0 .2vmax 3vmax 0;
+        }
+      }
+    }
+
+    .change-login-method {
+      &__title {
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        color: $secondaryColor;
+      }
+
+      &__btns {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        margin: 2vmin auto;
+
+        button {
+          background-color: transparent;
+          border: none;
+          margin: 0 2vmin;
+          flex-basis: 25%;
 
           .fa {
-            cursor: pointer;
-            transform: scale(1.2);
-            color: $primaryColor;
-            border-color: $primaryColor;
+            color: $textColor;
+            background-color: $bgColor;
+            background-image: radial-gradient(circle, $bgColor 0%, $textColor 500%);
+            padding: 2vmin;
+            border-radius: 50%;
+            border: .1vmin solid $secondaryColor;
+            box-shadow: $bgColor 0 0 1vmin .2vmin;
+            font-size: 4vmin;
+            width: 10vmin;
+            transition-duration: .4s;
+          }
+
+          &:hover {
+
+            .fa {
+              cursor: pointer;
+              transform: scale(1.2);
+              color: $primaryColor;
+              border-color: $primaryColor;
+            }
           }
         }
 
+        span {
+          display: none;
+        }
       }
+    }
+  }
 
-      span {
-        display: none;
-      }
+  .register-btn {
+    width: 80%;
+    margin: 0 10%;
+    border: none;
+    font-size: 4vmin;
+    font-family: $decorativeFont;
+    color: $textColor;
+    padding: 2vmin;
+    border-radius: 2vmin;
+    transition-duration: .4s;
+    box-shadow: $secondaryColor 0 0 1vmin .1vmin;
+    background: linear-gradient(45deg, $secondaryColor 0%, darken($secondaryColor, 10%) 100%);
+    font-weight: 300;
+    margin-bottom: 4vmin;
+
+    &:hover {
+      cursor: pointer;
+      color: $primaryColor;
+      letter-spacing: 1px;
+      box-shadow: $primaryColor 0 0 1vmin .1vmin;
     }
   }
 }
 
-.register-btn {
-  width: 80%;
-  margin: 0 10%;
-  border: none;
-  font-size: 4vmin;
-  font-family: $decorativeFont;
-  color: $textColor;
-  padding: 2vmin;
-  border-radius: 2vmin;
-  transition-duration: .4s;
-  box-shadow: $secondaryColor 0 0 1vmin .1vmin;
-  background: linear-gradient(45deg, $secondaryColor 0%, darken($secondaryColor, 10%) 100%);
-  font-weight: 300;
-  margin-bottom: 4vmin;
-
-  &:hover {
-    cursor: pointer;
-    color: $primaryColor;
-    letter-spacing: 1px;
-    box-shadow: $primaryColor 0 0 1vmin .1vmin;
-  }
-}
-
-// Dla tabletów (768px - 1023px)
 @media screen and (min-width: 768px) and (max-width: 1023px) {
-  .login-form {
+  .login-page .login-form {
     margin: 5vmin 15vmin;
   }
 }
 
-// Dla ekranów desktopowych (min-width: 1024px)
 @media screen and (min-width: 1024px) {
   .login-page {
     display: flex;
@@ -288,10 +282,7 @@
             width: 10vmin;
             border-radius: 50%;
             border: .1vmin solid $secondaryColor;
-            // filter: drop-shadow(1vmin 1vmin 1vmin $secondaryColor);
             box-shadow: $secondaryColor 0 0 1vmin .2vmin;
-            // height: 20%;
-
           }
 
           span {
@@ -300,7 +291,6 @@
             color: $textColor;
           }
         }
-
       }
     }
 
@@ -376,7 +366,6 @@
       z-index: 2;
       border-radius: 2vmin;
       margin-bottom: 0;
-
     }
   }
 }

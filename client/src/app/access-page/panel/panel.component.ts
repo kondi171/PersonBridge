@@ -14,28 +14,12 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalComponent } from '../../features/modal-wrapper/modal-wrapper.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 import { MessageRowComponent } from './message-row/message-row.component';
-import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 @Component({
   selector: 'app-panel',
   standalone: true,
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss'],
-  animations: [
-    trigger('listAnimation', [
-      transition('* <=> *', [
-        query(
-          ':enter',
-          [
-            style({ opacity: 0, transform: 'translateY(-20px)' }),
-            stagger('50ms', animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })))
-          ],
-          { optional: true }
-        ),
-        query(':leave', animate('200ms', style({ opacity: 0 })), { optional: true })
-      ])
-    ])
-  ],
   imports: [
     CommonModule,
     FontAwesomeModule,
@@ -46,6 +30,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
     MessageRowComponent
   ]
 })
+
 export class PanelComponent implements OnInit, OnDestroy {
   @Input() device: Device = Device.DESKTOP;
 
@@ -62,6 +47,8 @@ export class PanelComponent implements OnInit, OnDestroy {
   };
 
   loggedUser: User | null = null;
+  friends: MessageRow[] = [];
+  groups: MessageRow[] = [];
   messageRows: MessageRow[] = [];
   activeChatID = "";
   activeChatType = ChatType.USER_CHAT;
@@ -116,10 +103,11 @@ export class PanelComponent implements OnInit, OnDestroy {
     this.chatIDSubscription.unsubscribe();
     this.chatTypeSubscription.unsubscribe();
     this.newMessageSubscription.unsubscribe();
+    this.forceRefreshMessagesInPanel.unsubscribe();
   }
 
   fetchMessages() {
-    fetch(`${environment.apiURL}/access/friends/${this.yourID}`, {
+    fetch(`${environment.apiURL}/access/friends-and-groups/${this.yourID}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -132,13 +120,10 @@ export class PanelComponent implements OnInit, OnDestroy {
         return response.json();
       })
       .then(data => {
-        if (data.length === 0) {
-          this.storeService.updateChatID('no-messages');
-          return;
-        }
-        this.messageRows = data;
+        const friends = data.friends;
+        const groups = data.groups;
+        this.messageRows = [...friends, ...groups];
         this.sortMessages();
-        // this.storeService.updateChatID(data[0].id);
       })
       .catch(error => {
         this.toastr.error('An Error Occured while retrieving your messages!', 'Messages Error');
@@ -154,18 +139,24 @@ export class PanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMessages(id: string, chatType: ChatType) {
-    const trimmedUrl = this.router.url.slice(13);
-    const activePath = `${trimmedUrl}/settings`;
-    const chatPath = `${id}/settings`;
+  showMessages(chatID: string, chatType: ChatType) {
+    const trimmedURL = this.router.url.slice(13);
+    const chatPathForUser = `user/${chatID}/settings`;
+    const chatPathForGroup = `group/${chatID}/settings`;
 
-    if (id === this.activeChatID && this.device === Device.DESKTOP && !this.componentFirstInit && activePath === chatPath) {
+    if (chatID === this.activeChatID &&
+      this.device === Device.DESKTOP &&
+      !this.componentFirstInit &&
+      (trimmedURL !== chatPathForUser && trimmedURL !== chatPathForGroup)) {
       return;
     }
-    this.storeService.updateChatID(id);
-    this.router.navigate(['/access/chat/', id]);
+
+    this.storeService.updateChatType(chatType);
+    this.storeService.updateChatID(chatID);
+    this.router.navigate(['/access/chat/', chatType, chatID]);
     this.componentFirstInit = false;
   }
+
 
   toggleStatus(status: UserStatus) {
     fetch(`${environment.apiURL}/access/status`, {
@@ -194,6 +185,10 @@ export class PanelComponent implements OnInit, OnDestroy {
 
   closeModal() {
     this.isModalVisible = false;
+  }
+
+  onImageError(event: any) {
+    event.target.src = './../../../assets/img/Blank-Avatar.jpg';
   }
 
   ensureFullURL(path: string): string {

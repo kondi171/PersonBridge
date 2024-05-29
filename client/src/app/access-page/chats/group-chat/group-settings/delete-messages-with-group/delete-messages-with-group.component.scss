@@ -1,0 +1,111 @@
+@import './../../../../../../assets/scss/variables';
+@import './../../../../../../assets/scss/placeholders';
+@import './../../../../../../assets/scss/mixins';
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+
+  h3 {
+    width: 100%;
+    font-family: $decorativeFont;
+    font-size: 6vmin;
+    text-align: center;
+    color: $offlineColor;
+    background-color: $blackColor;
+    border-top-left-radius: 5vmin;
+    border-top-right-radius: 5vmin;
+    padding: 2vmin;
+    border-bottom: .3vmin solid $primaryColor;
+    margin-bottom: 4vmin;
+
+  }
+
+  span {
+    text-align: center;
+    color: $primaryColor;
+    font-size: 6vmin;
+    margin-bottom: 0;
+  }
+
+  strong {
+    text-align: center;
+    color: $textColor;
+    font-size: 6vmin;
+  }
+
+  label {
+    color: $textColor;
+    margin: 2vmin;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+
+  .input {
+    @extend %input;
+    font-size: 4vmin;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+
+  button {
+    @include btn($textColor, $offlineColor, $bgColor);
+    width: 60%;
+    margin: 5vmin 20%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .modal-content label {
+    font-size: 4vmin;
+  }
+}
+
+@media screen and (orientation:landscape) {
+  .modal-content {
+
+    h3 {
+      font-size: 8vmin;
+    }
+
+    label {
+      width: 60%;
+      margin: 2vmin 20%;
+    }
+
+    .input {
+      width: 60%;
+      margin: 0 20%;
+    }
+
+    button {
+      width: 40%;
+      margin: 5vmin 30%;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .modal-content {
+    .input {
+      font-size: 4vmin;
+      width: 80%;
+      margin: 0 10%;
+    }
+
+    label {
+      width: 80%;
+      margin: 2vmin 10%;
+      font-size: 4vmin;
+    }
+
+    button {
+      width: 40%;
+      margin: 4vmin 30%;
+    }
+  }
+}

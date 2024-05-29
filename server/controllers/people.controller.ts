@@ -79,6 +79,7 @@ export const getOffline = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ message: "An error occurred while retrieving offline friends.", error: error });
     }
 };
+
 export const getGroups = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
     if (!id) {
@@ -98,6 +99,7 @@ export const getGroups = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: 'Failed to retrieve user groups.' });
     }
 };
+
 export const getBlocked = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
     if (!id) {
@@ -240,8 +242,7 @@ export const ignoreRequest = async (req: Request, res: Response): Promise<void> 
     if (!yourID || !friendID) {
         res.status(400).json({ message: "Invalid or missing user ID." });
         return;
-    }
-    try {
+    } try {
         const updatedUser = await userModel.findByIdAndUpdate(
             yourID,
             { $pull: { "requests.received": friendID } },
@@ -266,4 +267,3 @@ export const ignoreRequest = async (req: Request, res: Response): Promise<void> 
         res.status(500).json({ message: "An error occurred while updating user data.", error: error });
     }
 };
-

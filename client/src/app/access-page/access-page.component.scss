@@ -135,9 +135,21 @@
 
           .description {
             padding: 1vmin 1vmin 1vmin 3vmin;
-            font-size: 1.2vmin;
-            text-align: justify;
-            overflow: hidden;
+
+            h4 {
+              text-align: center;
+              color: $textColor;
+              font-size: 3vmin;
+              border-bottom: 2px solid $textColor;
+              margin-bottom: 2vmin;
+            }
+
+            p {
+              font-size: 2vmin;
+              text-align: justify;
+              text-align-last: center;
+              overflow: hidden;
+            }
           }
         }
       }
@@ -156,7 +168,7 @@
           .cover {
             .title {
               color: $textColor;
-              font-size: 4vmin;
+              font-size: 3vmin;
             }
           }
 

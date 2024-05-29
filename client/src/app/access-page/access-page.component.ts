@@ -4,7 +4,6 @@ import { ActiveState, Device } from '../typescript/enums';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { MessageRowComponent } from './panel/message-row/message-row.component';
-import { ChatComponent } from './chat/chat.component';
 import { NavbarComponent } from '../features/navbar/navbar.component';
 import { PeopleComponent } from './people/people.component';
 import { ExploreComponent } from './explore/explore.component';
@@ -16,7 +15,6 @@ import { SomeonesAudioComponent } from './modals/someones-audio/someones-audio.c
 import { YourAudioComponent } from './modals/your-audio/your-audio.component';
 import { SomeonesVideoComponent } from './modals/someones-video/someones-video.component';
 import { YourVideoComponent } from './modals/your-video/your-video.component';
-import { PINComponent } from './chat/pin/pin.component';
 import { StoreService } from '../services/store.service';
 import { LoaderComponent } from '../features/loader/loader.component';
 import { faBrain, faPhone, faSearch, faUsers } from '@fortawesome/free-solid-svg-icons';
@@ -33,7 +31,6 @@ import { SocketService } from '../services/socket.service';
     MessageRowComponent,
     NavbarComponent,
     PanelComponent,
-    ChatComponent,
     PeopleComponent,
     ExploreComponent,
     SettingsComponent,

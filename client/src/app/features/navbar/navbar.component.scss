@@ -70,12 +70,8 @@
 
     &--desktop {
       display: block;
-      // display: flex;
-      // flex-direction: column;
-      // align-items: flex-start;
       width: 7vw;
       height: 100%;
-      // padding: 1vmin;
       background-color: lighten($blackColor, 15%);
       transition: ease-in-out .3s;
       overflow: hidden;
@@ -96,7 +92,6 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        // margin-left: .3vw;
 
         .item {
           display: flex;
@@ -107,7 +102,6 @@
           text-decoration: none;
           position: relative;
           padding-left: .9vw;
-          // width: 100%;
 
           .requests {
             position: absolute;

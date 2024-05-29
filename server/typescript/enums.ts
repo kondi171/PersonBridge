@@ -3,8 +3,7 @@ export enum UserStatus {
   OFFLINE = 'Offline'
 }
 
-export enum MessageSender {
-  YOU,
-  FRIEND,
-  SYSTEM
+export enum ChatType {
+  USER_CHAT = 'user',
+  GROUP_CHAT = 'group'
 }

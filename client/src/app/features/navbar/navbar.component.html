@@ -4,7 +4,7 @@
       <img src="./../../../assets/img/PersonBridge-logo.png" alt="PersonBridge brand" />
       <div class="text">Home</div>
     </a>
-    <a [routerLink]="['/access/chat', chatID]" [ngClass]="{'active': isChatActive}" class="item">
+    <a [routerLink]="['/access/chat', chatType, chatID]" [ngClass]="{'active': isChatActive}" class="item">
       <fa-icon class="fa icon" [icon]="icons.chats" />
       <div class="text">Chats</div>
     </a>
@@ -21,9 +21,9 @@
       <fa-icon class="fa icon" [icon]="icons.calls" />
       <div class="text">Calls</div>
     </a>
-    <a routerLink="/access/chatbots" routerLinkActive="active" class="item">
+    <a routerLink="/access/personbots" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.chatbots" />
-      <div class="text">Chatbots</div>
+      <div class="text">PersonBots</div>
     </a>
     <a routerLink="/access/settings" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.settings" />

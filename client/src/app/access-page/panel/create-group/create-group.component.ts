@@ -83,7 +83,6 @@ export class CreateGroupComponent implements OnInit {
       const fileInput = event.target as HTMLInputElement;
       this.file = fileInput.files ? fileInput.files[0] : null;
     }
-
   }
 
   filterFriends() {
@@ -151,7 +150,6 @@ export class CreateGroupComponent implements OnInit {
     if (this.file) {
       const formData = new FormData();
       formData.append('avatar', this.file);
-      console.log(formData)
       fetch(`${environment.apiURL}/access/group/${this.groupID}`, {
         method: 'POST',
         body: formData
@@ -162,15 +160,17 @@ export class CreateGroupComponent implements OnInit {
           }
           return response.json();
         })
-        .then(data => {
-          console.log(data)
-        })
         .catch(error => {
           this.toastr.error('An Error Occured while uploading avatar group!', 'Upload Avatar Group failed');
           console.error('Upload Avatar Group failed:', error);
         });
     }
   }
+
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
+  }
+
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;

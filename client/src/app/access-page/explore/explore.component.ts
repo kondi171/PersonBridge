@@ -146,4 +146,3 @@ export class ExploreComponent implements OnInit {
     this.requestCounter = newCounter;
   }
 }
-

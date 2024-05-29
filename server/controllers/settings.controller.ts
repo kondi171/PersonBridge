@@ -67,7 +67,6 @@ export const editName = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
 export const editLastname = async (req: Request, res: Response): Promise<void> => {
     const { id, lastname, password } = req.body;
     if (!id) {

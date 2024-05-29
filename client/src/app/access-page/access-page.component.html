@@ -11,75 +11,53 @@
     </div>
     <div class="main-panel" [ngClass]="{'hidden': !isAccessVisible()}">
       <div routerLink="/access/people" class="book">
-        <div class="description">Allows management of social connections by providing an organized view of friends,
-          including online, offline, blocked, and pending friend requests. Interactive elements enable direct management
-          of requests and blocked users.</div>
+        <div class="description">
+          <h4>People</h4>
+          <p>
+            Check status of your friends. Manage your friend requests, blocked people and groups
+          </p>
+        </div>
         <div class="cover">
           <h4 class="title">People</h4>
           <fa-icon class="fa icon" [icon]="icons.people" />
         </div>
       </div>
       <div routerLink="/access/explore" class="book">
-        <div class="description">Allows searching for and discovering new people. This section
-          provides search functionalities, displays results, and manages sent friend requests. Interactive elements
-          enable seamless searches and request management.</div>
+        <div class="description">
+          <h4>Explore</h4>
+          <p>
+            Manage your network, find people and send or cancel friend requests
+          </p>
+        </div>
         <div class="cover">
           <h4 class="title">Explore</h4>
           <fa-icon class="fa icon" [icon]="icons.explore" />
         </div>
       </div>
       <div routerLink="/access/calls" class="book">
-        <div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates itaque sapiente
-          perferendis, saepe doloremque temporibus possimus quas doloribus, quae delectus nemo aspernatur ullam
-          necessitatibus rerum, autem beatae.</div>
+        <div class="description">
+          <h4>Calls</h4>
+          <p>
+            Calls description here
+          </p>
+        </div>
         <div class="cover">
           <h4 class="title">Calls</h4>
           <fa-icon class="fa icon" [icon]="icons.calls" />
         </div>
       </div>
-      <div routerLink="/access/chatbots" class="book">
-        <div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates itaque sapiente
-          perferendis, saepe doloremque temporibus possimus quas doloribus, quae delectus nemo aspernatur ullam
-          necessitatibus rerum, autem beatae.</div>
+      <div routerLink="/access/personbots" class="book">
+        <div class="description">
+          <h4>PersonBots</h4>
+          <p>
+            PersonBots description here
+          </p>
+        </div>
         <div class="cover">
-          <h4 class="title">Chatbots</h4>
+          <h4 class="title">PersonBots</h4>
           <fa-icon class="fa icon" [icon]="icons.chatbots" />
         </div>
       </div>
-      <!-- <div class="tile">
-        <h4 class="title">People</h4>
-        <fa-icon class="fa icon" [icon]="icons.people" />
-        <div class="description">Allows to manage social connections. This section provides an organized view of your
-          friends, showing who is currently online, offline, blocked, and any pending friend requests.
-          Interactive elements allow you to manage friend requests and blocked users directly from this section. The
-          total number of friends is updated dynamically as changes occur.</div>
-      </div>
-      <div class="tile">
-        <h4 class="title">Explore</h4>
-        <fa-icon class="fa icon" [icon]="icons.explore" />
-        <div class="description">Allows you to search for and discover new people within the application. This section
-          provides functionalities to search for users, view search results, and manage sent friend requests.
-          Interactive elements enhance the user experience by allowing users to perform searches and manage their friend
-          requests directly from this section. The component dynamically updates the number of sent requests and handles
-          errors gracefully with user-friendly notifications. Smooth animations make the transitions seamless, providing
-          a polished user experience.</div>
-      </div> -->
-      <!-- <div class="tile">
-        <h4 class="title">Calls</h4>
-        <fa-icon class="fa icon" [icon]="icons.calls" />
-        <div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates itaque sapiente
-          perferendis, saepe doloremque temporibus possimus quas doloribus, quae delectus nemo aspernatur ullam
-          necessitatibus rerum, autem beatae. Eius similique quae, cumque corporis, porro culpa excepturi adipisci
-          molestias nostrum dignissimos ullam.</div>
-      </div>
-      <div class="tile">
-        <h4 class="title">Chatbots</h4>
-        <fa-icon class="fa icon" [icon]="icons.chatbots" />
-        <div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates itaque sapiente
-          perferendis, saepe doloremque temporibus possimus quas doloribus, quae delectus nemo aspernatur ullam
-          necessitatibus rerum, autem beatae. Eius similique quae, cumque corporis, porro culpa excepturi adipisci
-          molestias nostrum dignissimos ullam.</div>
-      </div> -->
     </div>
   </div>
   <app-navbar></app-navbar>

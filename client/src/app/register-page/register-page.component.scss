@@ -96,7 +96,6 @@
         font-family: $decorativeFont;
 
         &:hover {
-          // transform: scale(1.03);
           cursor: pointer;
           color: $primaryColor;
           letter-spacing: 1px;
@@ -158,15 +157,12 @@
   }
 }
 
-
-// Dla tabletów (768px - 1023px)
 @media screen and (min-width: 768px) and (max-width: 1023px) {
   .register-page .register-form {
     margin: 5vmin 15vmin;
   }
 }
 
-// Dla ekranów desktopowych (min-width: 1024px)
 @media screen and (min-width: 1024px) {
   .register-page {
     display: flex;
@@ -221,10 +217,7 @@
             width: 10vmin;
             border-radius: 50%;
             border: .1vmin solid $primaryColor;
-            // filter: drop-shadow(1vmin 1vmin 1vmin $secondaryColor);
             box-shadow: $primaryColor 0 0 1vmin .2vmin;
-            // height: 20%;
-
           }
 
           span {
@@ -250,7 +243,6 @@
         padding: 0vmin;
         display: block;
         margin-left: 2vmin;
-
       }
 
       .form {

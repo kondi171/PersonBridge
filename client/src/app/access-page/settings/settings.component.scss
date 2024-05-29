@@ -156,7 +156,6 @@
             background: linear-gradient(45deg, $offlineColor 0%, darken($offlineColor, 10%) 100%);
             color: $textColor;
 
-
             &:hover {
               cursor: pointer;
               color: darken($offlineColor, 20%);
@@ -213,7 +212,6 @@
   .settings {
     .zones {
       .zone {
-
         &--biometric {
           .biometrics {
             .biometric {
@@ -229,7 +227,6 @@
         }
 
         &--danger {
-
           .option {
             width: 70%;
 

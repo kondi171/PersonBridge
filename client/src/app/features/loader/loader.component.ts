@@ -1,12 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-loader',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './loader.component.html',
   styleUrl: './loader.component.scss'
 })
 export class LoaderComponent {
-
+  loaderSquares = Array(7).fill(0);
 }

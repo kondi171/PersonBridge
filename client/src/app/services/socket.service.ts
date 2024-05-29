@@ -22,10 +22,17 @@ export class SocketService {
             query: { userID }
         });
         this.socket.connect();
-        this.socket.on('messageToUserSend', (data: any) => {
+        this.socket.on('messageToUserSent', (data: any) => {
             this.storeService.notifyNewMessage();
         });
-        this.socket.on('markMessageAsRead', (data: any) => {
+        this.socket.on('messageToGroupSent', (data: any) => {
+            this.storeService.notifyNewMessage();
+        });
+        this.socket.on('addReactionToUser', (data: any) => {
+            this.storeService.notifyNewMessage();
+        });
+        this.socket.on('addReactionToGroup', (data: any) => {
+            this.storeService.notifyNewMessage();
         });
     }
 
@@ -65,15 +72,31 @@ export class SocketService {
         }
     }
 
-    onMessageToUserSend(callback: (data: any) => void) {
+    onMessageToUserSent(callback: (data: any) => void) {
         if (this.socket) {
-            this.socket.on('messageToUserSend', callback);
+            this.socket.on('messageToUserSent', callback);
+        }
+    }
+    onMessageToGroupSent(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('messageToGroupSent', callback);
         }
     }
 
     onMarkMessageAsRead(callback: (data: any) => void) {
         if (this.socket) {
             this.socket.on('markMessageAsRead', callback);
+        }
+    }
+
+    onAddReactionToUser(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('addReactionToUser', callback);
+        }
+    }
+    onAddReactionToGroup(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('addReactionToGroup', callback);
         }
     }
 }

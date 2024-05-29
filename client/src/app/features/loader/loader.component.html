@@ -1,14 +1,8 @@
 <div class="wrapper">
   <div class="brand">
-    <img class="img" src="./../../assets/img/PersonBridge-brand.png" alt="">
+    <img class="img" src="./../../assets/img/PersonBridge-brand.png" alt="PersonBridge brand">
   </div>
   <div class="loader">
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
-    <div class="loader-square"></div>
+    <div class="loader-square" *ngFor="let square of loaderSquares"></div>
   </div>
 </div>

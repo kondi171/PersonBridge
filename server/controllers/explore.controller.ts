@@ -7,9 +7,7 @@ export const findUsers = async (req: Request, res: Response): Promise<void> => {
     if (!yourID) {
         res.status(400).json({ message: "Missing user ID" });
         return;
-    }
-
-    try {
+    } try {
         const currentUser = await userModel.findById(yourID, 'friends');
         if (!currentUser) {
             res.status(404).json({ message: "User not found" });
@@ -79,6 +77,7 @@ export const getRequests = async (req: Request, res: Response): Promise<void> =>
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
 export const getSentRequests = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
     if (!id) {
@@ -97,6 +96,7 @@ export const getSentRequests = async (req: Request, res: Response): Promise<void
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
 export const sendRequest = async (req: Request, res: Response): Promise<void> => {
     const { yourID, personID } = req.body;
     if (!yourID || !personID) {

@@ -15,7 +15,6 @@ export class RedirectGuard implements CanActivate {
         state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         const loggedUser = this.storeService.getLoggedUser();
         if (loggedUser) {
-            // Użytkownik zalogowany, przekierowanie do strony głównej
             this.router.navigate(['/access']);
             return false;
         }

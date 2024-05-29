@@ -63,5 +63,4 @@ export class EditNameComponent {
         console.error('Edit name Error:', error);
       });
   }
-
 }

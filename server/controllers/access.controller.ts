@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import userModel from "../models/user.model";
-import { MessageSender } from "../typescript/enums";
+import { ChatType } from "../typescript/enums";
 import { v4 as uuidv4 } from 'uuid';
 import { promises as fsPromises } from 'fs';
 import path from 'path';
-import { Participant } from "../typescript/types";
 import { getIo } from "../middlewares/websocket.middleware";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
@@ -34,8 +33,7 @@ export const changeUserStatus = async (req: Request, res: Response): Promise<voi
     if (!yourID || !status) {
         res.status(400).send("Missing parameters");
         return;
-    }
-    try {
+    } try {
         const user = await userModel.findById(yourID);
         if (user) {
             user.status = status;
@@ -46,7 +44,6 @@ export const changeUserStatus = async (req: Request, res: Response): Promise<voi
             await user.save();
             res.send({ status: user.status });
         } else {
-            console.log("User not found");
             res.status(404).send("User not found");
         }
     } catch (error) {
@@ -55,184 +52,83 @@ export const changeUserStatus = async (req: Request, res: Response): Promise<voi
     }
 };
 
-
-
 export const getUserFriendsAndGroupsWithMessages = async (req: Request, res: Response): Promise<void> => {
-    const userId = req.params.id;
-    if (!userId) {
+    const userID = req.params.id;
+    if (!userID) {
         res.status(400).json({ message: "User ID is required" });
         return;
-    }
-
-    try {
-        const user = await userModel.findById(userId);
+    } try {
+        const user = await userModel.findById(userID);
         if (!user) {
             res.status(404).json({ message: "User not found." });
             return;
         }
 
-        const friendsData = user.friends.map(friend => friend);
-        const friendsIDs = user.friends.map(friend => friend.id);
-        const groupsData = user.groups.map(group => group);
-        const groupIDs = user.groups.map(group => group.id);
+        const friendsData = user.friends;
+        const friendsIDs = friendsData.map(friend => friend.id);
+        const groupsData = user.groups;
 
         const friends = await userModel.find({
             '_id': { $in: friendsIDs }
         });
 
-        const groups = await userModel.find({
-            'groups.id': { $in: groupIDs }
-        });
+        const friendsResults = friends
+            .map(friend => {
+                const friendData = friendsData.find(f => f.id === friend._id.toString());
+                if (!friendData || friendData.messages.length === 0) {
+                    return null;
+                }
 
-        const friendsResults = friends.map(friend => {
-            const friendData = friendsData.find(f => f.id === friend._id.toString());
-            if (!friendData || friendData.messages.length === 0) {
-                return null;
-            }
+                const lastMessage = friendData.messages.slice(-1)[0];
 
-            const lastMessage = friendData.messages.slice(-1)[0];
+                return {
+                    id: friend._id,
+                    name: friend.name,
+                    lastname: friend.lastname,
+                    avatar: friend.avatar,
+                    status: friend.status,
+                    lastMessage: lastMessage,
+                    settings: friendData.settings,
+                    accessibility: friendData.accessibility,
+                    type: ChatType.USER_CHAT
+                };
+            })
+            .filter(result => result !== null);
 
-            return {
-                id: friend._id,
-                name: friend.name,
-                lastname: friend.lastname,
-                avatar: friend.avatar,
-                status: friend.status,
-                lastMessage: lastMessage,
-                settings: friendData ? friendData.settings : null,
-                accessibility: friendData ? friendData.accessibility : null
-            };
-        }).filter(result => result !== null);
-
-        const groupsResults = groupsData.map(group => {
+        const groupsResults = await Promise.all(groupsData.map(async group => {
             if (group.messages.length === 0) {
                 return null;
             }
 
-            const lastMessage = group.messages.slice(-1)[0];
+            const participantsStatus = await Promise.all(group.participants.map(async participantID => {
+                const participant = await userModel.findById(participantID);
+                return participant ? { id: participant._id, status: participant.status, name: participant.name } : null;
+            }));
 
+            const lastMessage = group.messages.slice(-1)[0];
             return {
                 id: group.id,
                 name: group.name,
                 avatar: group.avatar,
-                administrator: group.administrator,
-                PIN: group.PIN,
+                participants: participantsStatus.filter(p => p !== null),
                 accessibility: group.accessibility,
-                lastMessage: lastMessage
-            };
-        }).filter(result => result !== null);
-
-        res.json({ friends: friendsResults, groups: groupsResults });
-    } catch (error) {
-        res.status(500).send(error);
-    }
-};
-export const getUserFriendsWithMessages = async (req: Request, res: Response): Promise<void> => {
-    const userId = req.params.id;
-    if (!userId) {
-        res.status(400).json({ message: "User ID is required" });
-        return;
-    }
-
-    try {
-        const user = await userModel.findById(userId);
-        if (!user) {
-            res.status(404).json({ message: "User not found." });
-            return;
-        }
-
-        const friendsData = user.friends.map(friend => friend);
-        const friendsIDs = user.friends.map(friend => friend.id);
-        if (friendsData.length === 0) {
-            res.status(200).json([]);
-            return;
-        }
-
-        const friends = await userModel.find({
-            '_id': { $in: friendsIDs }
-        });
-
-        const results = friends.map(friend => {
-            const friendData = friendsData.find(f => f.id === friend._id.toString());
-            if (!friendData || friendData.messages.length === 0) {
-                return null;
-            }
-
-            const lastMessage = friendData.messages.slice(-1)[0];
-
-            return {
-                id: friend._id,
-                name: friend.name,
-                lastname: friend.lastname,
-                avatar: friend.avatar,
-                status: friend.status,
                 lastMessage: lastMessage,
-                settings: friendData ? friendData.settings : null,
-                accessibility: friendData ? friendData.accessibility : null
+                type: ChatType.GROUP_CHAT
             };
-        }).filter(result => result !== null);
-        res.json(results);
+        }));
+
+        res.json({ friends: friendsResults, groups: groupsResults.filter(result => result !== null) });
     } catch (error) {
         res.status(500).send(error);
     }
 };
 
-export const getUserGroupsWithMessages = async (req: Request, res: Response): Promise<void> => {
-    const userId = req.params.id;
-    if (!userId) {
-        res.status(400).json({ message: "User ID is required" });
-        return;
-    }
-
-    try {
-        const user = await userModel.findById(userId);
-        if (!user) {
-            res.status(404).json({ message: "User not found." });
-            return;
-        }
-
-        const groupsData = user.groups.map(group => group);
-        const groupIDs = user.groups.map(group => group.id);
-        if (groupsData.length === 0) {
-            res.status(200).json([]);
-            return;
-        }
-
-        const groups = await userModel.find({
-            'groups.id': { $in: groupIDs }
-        });
-
-        const results = groupsData.map(group => {
-            if (group.messages.length === 0) {
-                return null;
-            }
-
-            const lastMessage = group.messages.slice(-1)[0];
-
-            return {
-                id: group.id,
-                name: group.name,
-                avatar: group.avatar,
-                administrator: group.administrator,
-                PIN: group.PIN,
-                accessibility: group.accessibility,
-                lastMessage: lastMessage
-            };
-        }).filter(result => result !== null);
-
-        res.json(results);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-};
 export const getFriends = async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
     if (!id) {
         res.status(400).json({ message: "Invalid or missing user ID." });
         return;
-    }
-
-    try {
+    } try {
         const user = await userModel.findById(id);
         if (!user) {
             res.status(404).json({ message: "User not found." });
@@ -277,16 +173,10 @@ export const createGroup = async (req: Request, res: Response): Promise<void> =>
     const creatorID = participants[0];
 
     try {
-        const users = await userModel.find({ _id: { $in: participants } });
-
-        const groupParticipants: Participant[] = users.map(user => ({
-            id: user._id.toString(),
-            nickname: user.name
-        }));
         const newGroup = {
             id: uuidv4(),
             name: name,
-            participants: groupParticipants,
+            participants: participants,
             avatar: avatar,
             administrator: creatorID
         }

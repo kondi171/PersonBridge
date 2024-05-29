@@ -1,7 +1,7 @@
 <div class="create-group">
   <h3 class="title">Create Group</h3>
   <div class="avatar" (click)="fileInput.click()">
-    <img class="avatar__img" [src]="avatarPreview || '../../../../assets/img/Blank-Avatar.jpg'" alt="Avatar">
+    <img class="avatar__img" [src]="avatarPreview || '../../../../assets/img/Blank-Avatar.jpg'" alt="Group Avatar">
     <span class="avatar__change">Change Avatar</span>
   </div>
   <input #fileInput type="file" name="file" (change)="uploadAvatar($event)"
@@ -18,7 +18,8 @@
   <div *ngIf="filteredFriends.length > 0; else noFriends">
     <div *ngFor="let friend of filteredFriends" class="result">
       <div class="result__avatar">
-        <img [src]="ensureFullURL(friend.avatar)" alt="{{friend.name}} {{friend.lastname}}">
+        <img [src]="ensureFullURL(friend.avatar)" alt="{{friend.name}} {{friend.lastname}}"
+          (error)="onImageError($event)">
       </div>
       <div class="result__person">
         <span class="name">

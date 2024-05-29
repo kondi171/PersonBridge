@@ -1,0 +1,66 @@
+<section class="chat" *ngIf="!noMessages; else noMessagesTemplate">
+  <header class="header">
+    <a routerLink="/access" routerLinkActive="active" class="icon-back">
+      <fa-icon class="fa" [icon]="icons.back"></fa-icon>
+    </a>
+    <div class="avatar">
+      <img [src]="groupChatData.avatar" alt="Avatar" (error)="onImageError($event)">
+    </div>
+    <div class="info">
+      <div class="identifier">
+        {{groupChatData.name}}
+      </div>
+      <div class="status">
+        <div class="status__dot"
+          [ngClass]="{'status__dot--online': onlineParticipantsCount > 0, 'status__dot--offline': onlineParticipantsCount <= 0}">
+        </div>
+        <div class="status__info"
+          [ngClass]="{'status__info--online': onlineParticipantsCount > 0, 'status__info--offline': onlineParticipantsCount <= 0}">
+          <span>{{ groupChatData.status }}</span>
+          <span *ngIf="onlineParticipantsCount > 0"> - {{onlineParticipantsCount}}</span>
+        </div>
+      </div>
+
+      <div class="icons">
+        <div class="icon-wrapper" (click)="handleAudioCall()">
+          <fa-icon class="fa icon" [icon]="icons.audio"></fa-icon>
+          <span class="text">Audio Call</span>
+        </div>
+        <div class="icon-wrapper" (click)="handleVideoCall()">
+          <fa-icon class="fa icon" [icon]="icons.video"></fa-icon>
+          <span class="text">Video Call</span>
+        </div>
+        <a class="icon-wrapper" (click)="navigateToSettings()">
+          <fa-icon class="fa icon" [icon]="icons.settings"></fa-icon>
+          <span class="text">Settings</span>
+        </a>
+      </div>
+    </div>
+  </header>
+  <div #messagesContainer class="messages">
+    <div *ngIf="messages.length === 0" class="start-chat">
+      Send a message to start chatting.
+    </div>
+    <button *ngIf="messages.length >= 20" class="load-more-messages" (click)="loadMoreMessages()">Load More</button>
+    <div class="message" *ngFor="let message of messages">
+      <app-message-box [groupData]="groupChatData" [message]="message" [chatType]="ChatType.GROUP_CHAT">
+      </app-message-box>
+    </div>
+  </div>
+  <div class="type-message">
+    <div class="input-container">
+      <textarea [(ngModel)]="messageContent" name="messageContent" class="input-container__input"
+        placeholder="Type your message..." (keydown)="handleKeyDown($event)"></textarea>
+      <fa-icon class="input-container__icon" [icon]="icons.emoticons" (click)="toggleEmojiPicker()"></fa-icon>
+      <emoji-mart class="emoji-picker-container" *ngIf="showEmojiPicker" (emojiClick)="addEmoji($event)" set="google">
+      </emoji-mart>
+    </div>
+    <button (click)="sendMessage()" class="type-message__btn">
+      Send
+      <fa-icon class="fa icon" [icon]="icons.send"></fa-icon>
+    </button>
+  </div>
+</section>
+<ng-template #noMessagesTemplate>
+  <app-no-messages></app-no-messages>
+</ng-template>

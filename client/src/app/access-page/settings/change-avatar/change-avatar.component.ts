@@ -58,5 +58,7 @@ export class ChangeAvatarComponent {
       this.toastr.error('Please select a file to upload!', 'No File Selected');
     }
   }
-
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
+  }
 }

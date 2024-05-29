@@ -29,26 +29,9 @@ export class StoreService {
   private forceRefreshMessagesSubject = new BehaviorSubject<boolean>(false);
   refreshMessages$ = this.forceRefreshMessagesSubject.asObservable();
 
-  updateChatID(newChatID: string) { this.activeChatIDSubject.next(newChatID); }
-
-  updateChatType(newChatType: ChatType) {
-    this.activeChatTypeSubject.next(newChatType);
-  }
-
-  updateCounter(newCount: number) {
-    this.requestCounterSubject.next(newCount);
-  }
-
-  forceRefreshMessages(force: boolean) {
-    this.forceRefreshMessagesSubject.next(force);
-  }
-
-  updateAccessibility(friendID: string, accessibility: FriendSettingsData['accessibility']) {
-    const current = this.accessibilitySource.value;
-    this.accessibilitySource.next({
-      ...current,
-      [friendID]: accessibility
-    });
+  private getLoggedUserFromLocalStorage(): User | null {
+    const loggedUser = localStorage.getItem('loggedUser');
+    return loggedUser ? JSON.parse(loggedUser) : null;
   }
 
   private checkActiveChatID(): string {
@@ -59,16 +42,28 @@ export class StoreService {
     } else return 'no-messages';
   }
 
-  private checkActiveChatType(): ChatType {
-    return ChatType.USER_CHAT;
+  private checkActiveChatType(): ChatType { return ChatType.USER_CHAT; }
+
+  updateChatID(newChatID: string) { this.activeChatIDSubject.next(newChatID); }
+  updateChatType(newChatType: ChatType) { this.activeChatTypeSubject.next(newChatType); }
+  updateCounter(newCount: number) { this.requestCounterSubject.next(newCount); }
+  forceRefreshMessages(force: boolean) { this.forceRefreshMessagesSubject.next(force); }
+
+  updateAccessibility(friendID: string, accessibility: FriendSettingsData['accessibility']) {
+    const current = this.accessibilitySource.value;
+    this.accessibilitySource.next({
+      ...current,
+      [friendID]: accessibility
+    });
   }
-  getChatType(): ChatType {
-    return this.activeChatTypeSubject.getValue();
-  }
+
+  getChatType(): ChatType { return this.activeChatTypeSubject.getValue(); }
+
   setLoggedUser(user: User) {
     localStorage.setItem('loggedUser', JSON.stringify(user));
     this.loggedUserSubject.next(user);
   }
+
   updateUserStatus(status: string) {
     const user = this.loggedUserSubject.getValue();
     if (user) {
@@ -76,6 +71,7 @@ export class StoreService {
       this.loggedUserSubject.next(user);
     }
   }
+
   updateAvatar(avatarUrl: string) {
     const currentUser = this.loggedUserSubject.value;
     if (currentUser) {
@@ -84,6 +80,7 @@ export class StoreService {
       this.loggedUserSubject.next(updatedUser);
     }
   }
+
   updateLoggedUserRequests(requests: string[]) {
     const user = this.loggedUserSubject.getValue();
     if (user) {
@@ -98,17 +95,6 @@ export class StoreService {
     this.loggedUserSubject.next(null);
   }
 
-  private getLoggedUserFromLocalStorage(): User | null {
-    const loggedUser = localStorage.getItem('loggedUser');
-    return loggedUser ? JSON.parse(loggedUser) : null;
-  }
-
-  getLoggedUser() {
-    return this.loggedUserSubject.value;
-  }
-
-  notifyNewMessage() {
-    this.newMessageSubject.next();
-  }
-
+  getLoggedUser() { return this.loggedUserSubject.value; }
+  notifyNewMessage() { this.newMessageSubject.next(); }
 }

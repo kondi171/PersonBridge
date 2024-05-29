@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCog, faUsers, faComments, faSearch, faBrain, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { Device } from '../../typescript/enums';
+import { ChatType, Device } from '../../typescript/enums';
 import { StoreService } from '../../services/store.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -21,8 +21,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   Device = Device;
   requestSubscription: Subscription;
   chatIDSubscription: Subscription;
+  chatTypeSubscription: Subscription;
   requestsCounter: number = 0;
   chatID: string = '';
+  chatType: ChatType = ChatType.USER_CHAT;
 
   icons = {
     chats: faComments,
@@ -44,6 +46,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.chatID = chatID;
+    });
+    this.chatTypeSubscription = this.storeService.chatType$.subscribe(chatType => {
+      this.chatType = chatType;
     });
     const loggedUser = this.storeService.getLoggedUser();
     if (loggedUser) this.yourID = loggedUser._id;

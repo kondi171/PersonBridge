@@ -9,6 +9,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../../services/store.service';
 import { SocketService } from '../../../services/socket.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-message-row',
@@ -16,10 +17,21 @@ import { SocketService } from '../../../services/socket.service';
   imports: [CommonModule, RouterModule, FontAwesomeModule],
   providers: [DatePipe],
   templateUrl: './message-row.component.html',
-  styleUrls: ['./message-row.component.scss']
+  styleUrls: ['./message-row.component.scss'],
+  animations: [
+    trigger('messageRowAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(20px)', opacity: 0 }),
+        animate('500ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({ transform: 'translateY(20px)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class MessageRowComponent implements OnInit, OnDestroy {
-  @Input() person!: MessageRow;
+  @Input() messageRow!: MessageRow;
   UserStatus = UserStatus;
   formattedDate: string = '';
   isUnread: boolean = false;
@@ -28,6 +40,7 @@ export class MessageRowComponent implements OnInit, OnDestroy {
   yourID = "";
   chatID = "";
   ChatType = ChatType;
+  onlineParticipantsCount: number = 0;
 
   constructor(private storeService: StoreService, private socketService: SocketService, private datePipe: DatePipe) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
@@ -37,10 +50,10 @@ export class MessageRowComponent implements OnInit, OnDestroy {
     });
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.chatID = chatID;
-      if (this.person?.id) {
-        if (this.person.id === chatID) {
+      if (this.messageRow?.id) {
+        if (this.messageRow.id === chatID) {
           this.isUnread = false;
-          this.person.lastMessage.read = true;
+          this.messageRow.lastMessage.read = true;
         }
       }
     });
@@ -59,22 +72,26 @@ export class MessageRowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const timestamp = new Date().getTime();
-    this.person.avatar = this.ensureFullURL(this.person.avatar) + `?${timestamp}`;
-    this.formatDate(new Date(this.person.lastMessage.date));
-    this.isUnread = !this.person.lastMessage.read && this.person.lastMessage.sender === this.person.id;
+    this.messageRow.avatar = this.ensureFullURL(this.messageRow.avatar) + `?${timestamp}`;
+    this.formatDate(new Date(this.messageRow.lastMessage.date));
+    this.isUnread = !this.messageRow.lastMessage.read && this.messageRow.lastMessage.sender === this.messageRow.id;
 
-    this.socketService.onStatusChange(() => {
-      this.getUserStatus();
+    this.socketService.onStatusChange((data) => {
+      this.updateParticipantStatus(data.from);
     });
     this.socketService.onMarkMessageAsRead((data) => {
       this.handleMarkMessageAsRead(data);
     });
 
     this.storeService.accessibility$.subscribe(accessibility => {
-      if (accessibility[this.person.id]) {
-        this.person.accessibility = accessibility[this.person.id];
+      if (accessibility[this.messageRow.id]) {
+        this.messageRow.accessibility = accessibility[this.messageRow.id];
       }
     });
+
+    if (this.messageRow.type === ChatType.GROUP_CHAT) {
+      this.updateParticipantsStatus();
+    }
   }
 
   ngOnDestroy() {
@@ -99,31 +116,50 @@ export class MessageRowComponent implements OnInit, OnDestroy {
     else this.formattedDate = `${this.datePipe.transform(date, 'd MMMM yyyy')}`;
   }
 
-  getUserStatus() {
-    fetch(`${environment.apiURL}/access/status/${this.person.id}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.person.status = data.status;
-      })
-  }
-
   handleMarkMessageAsRead(data: any) {
-    if (this.person.id === data.from && this.person.lastMessage.sender === this.yourID) {
-      this.person.lastMessage.read = true;
+    if (this.messageRow.id === data.from && this.messageRow.lastMessage.sender === this.yourID) {
+      this.messageRow.lastMessage.read = true;
       this.isUnread = false;
     }
   }
 
+  updateParticipantStatus(participantID: string) {
+    if (this.messageRow.participants) {
+      const participant = this.messageRow.participants.find(p => p.id === participantID);
+      if (participant) {
+        participant.status = participant.status === UserStatus.ONLINE ? UserStatus.OFFLINE : UserStatus.ONLINE;
+        this.updateParticipantsStatus();
+      }
+    }
+  }
+
+  updateParticipantsStatus(): void {
+    if (this.messageRow.participants) {
+      const participantsExcludingYou = this.messageRow.participants.filter(p => p.id !== this.yourID);
+      this.onlineParticipantsCount = participantsExcludingYou.filter(p => p.status === UserStatus.ONLINE).length;
+    }
+  }
+
+  isAnyParticipantOnline(): boolean {
+    return this.onlineParticipantsCount > 0;
+  }
+
   getIcon(): any {
-    if (this.person.lastMessage.sender === this.person.id) {
-      return this.person.lastMessage.read ? this.icons.oldMessage : this.icons.newMessage;
-    } else if (this.person.lastMessage.sender === this.yourID) {
-      return this.person.lastMessage.read ? this.icons.readMessage : this.icons.sentMessage;
+    if (this.messageRow.lastMessage.sender === this.messageRow.id) {
+      return this.messageRow.lastMessage.read ? this.icons.oldMessage : this.icons.newMessage;
+    } else if (this.messageRow.lastMessage.sender === this.yourID) {
+      return this.messageRow.lastMessage.read ? this.icons.readMessage : this.icons.sentMessage;
     }
     return this.icons.systemMessage;
+  }
+
+  getParticipantName(senderID: string): string {
+    const participant = this.messageRow.participants?.find(p => p.id === senderID);
+    return participant ? `${participant.name}: ` : '';
+  }
+
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
   }
 
   ensureFullURL(path: string): string {

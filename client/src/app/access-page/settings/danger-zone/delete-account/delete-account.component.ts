@@ -43,7 +43,7 @@ export class DeleteAccountComponent {
           return;
         }
         this.storeService.removeLoggedUser();
-        // this.socketService.disconnect();
+        this.socketService.disconnect();
         this.router.navigate(['/login']);
         this.toastr.error('You have successfully removed your Account!', 'Delete Successful');
       })

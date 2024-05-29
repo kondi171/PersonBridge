@@ -25,7 +25,7 @@ export default function startSocketServer(app: any) {
         const userID = socket.handshake.query.userID;
         console.log(`User connected: ${userID}`);
         if (userID)
-            socket.join(userID);  // Join the user to a room with their userID
+            socket.join(userID);
         try {
             const user = await userModel.findById(userID);
             if (user) {

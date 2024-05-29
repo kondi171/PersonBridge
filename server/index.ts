@@ -6,10 +6,13 @@ import MongoStore from "connect-mongo";
 import cluster from 'cluster';
 import { cpus } from 'os';
 
+import userChatRoutes from './routes/chats/user/user-chat.routes';
+import userSettingsRoutes from './routes/chats/user/user-settings.routes';
+import groupChatRoutes from './routes/chats/group/group-chat.routes';
+import groupSettingsRoutes from './routes/chats/group/group-settings.routes';
+
 import authenticationRoutes from "./routes/authentication.routes";
 import accessRoutes from "./routes/access.routes";
-import chatRoutes from "./routes/chat.routes";
-import chatSettingsRoutes from "./routes/chat-settings.routes";
 import peopleRoutes from "./routes/people.routes";
 import exploreRoutes from "./routes/explore.routes";
 import settingsRoutes from "./routes/settings.routes";
@@ -30,7 +33,7 @@ import startSocketServer from "./middlewares/websocket.middleware";
 //   });
 // } else {
 
-const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 4616;
+const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 4617;
 const app = express();
 
 const username: string = "WebKing";
@@ -68,10 +71,13 @@ app.use('/resources/groups/avatars', express.static('resources/groups/avatars', 
   }
 }));
 
+app.use(userChatRoutes);
+app.use(groupChatRoutes);
+app.use(userSettingsRoutes);
+app.use(groupSettingsRoutes);
+
 app.use(authenticationRoutes);
 app.use(accessRoutes);
-app.use(chatRoutes);
-app.use(chatSettingsRoutes);
 app.use(peopleRoutes);
 app.use(exploreRoutes);
 app.use(settingsRoutes);

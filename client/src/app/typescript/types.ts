@@ -49,7 +49,7 @@ export type GroupInfo = {
 export type Participant = {
     id: string,
     nickname: string,
-    avatar: string,
+    avatar: string
 }
 
 export type AccessibilityAction = 'mute' | 'ignore' | 'block';

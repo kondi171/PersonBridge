@@ -1,8 +1,8 @@
 <div class="result">
   <div class="result__avatar">
-    <img [src]="person.avatar" [alt]="person.name">
+    <img [src]="person.avatar" [alt]="person.name" (error)="onImageError($event)">
   </div>
-  <div class="result__person">
+  <div class=" result__person">
     <span class="name">
       {{ person.name }} {{ person.lastname }}
     </span>

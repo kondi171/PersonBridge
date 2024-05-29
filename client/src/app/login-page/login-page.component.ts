@@ -38,7 +38,6 @@ export class LoginPageComponent {
   constructor(
     private router: Router,
     private storeService: StoreService,
-    private socketService: SocketService,
     private toastr: ToastrService
   ) { }
 

@@ -1,5 +1,5 @@
 import { ChatType, UserStatus } from "./enums"
-import { FriendAccessibility, FriendSettings, MessageReaction, Participant } from "./types"
+import { FriendAccessibility, FriendSettings, MessageReaction } from "./types"
 
 export interface User {
     _id: string,
@@ -39,6 +39,7 @@ export interface FriendChatData {
     settings: FriendSettings,
     blocked: string[]
 }
+
 export interface GroupChatData {
     id: string,
     name: string,
@@ -46,13 +47,19 @@ export interface GroupChatData {
     administrator: string,
     status: UserStatus,
     PIN: number,
-    participants: Participant[],
+    participants: {
+        id: string,
+        avatar: string,
+        status: string,
+        nickname: string
+    }[],
     accessibility: {
         mute: boolean,
         ignore: boolean
     },
     messages: Message[]
 }
+
 export interface FriendSettingsData {
     id: string,
     name: string,
@@ -67,16 +74,22 @@ export interface FriendSettingsData {
 export interface MessageRow {
     id: string;
     name: string;
-    lastname?: string;  // Pole lastname będzie opcjonalne, ponieważ grupy nie mają nazwisk
+    lastname?: string;
     avatar: string;
-    status: UserStatus;
+    status?: UserStatus;
     lastMessage: Message;
-    settings?: FriendSettings; // Pole settings będzie opcjonalne, ponieważ grupy mogą nie mieć tych ustawień
-    accessibility?: FriendAccessibility; // Pole accessibility będzie opcjonalne, ponieważ grupy mogą nie mieć tych ustawień
-    type: ChatType
+    settings?: FriendSettings;
+    accessibility?: FriendAccessibility;
+    type: ChatType;
+    administrator?: string;
+    participants?: {
+        id: string;
+        status: UserStatus;
+        name: string;
+    }[];
 }
 
-export type Message = {
+export interface Message {
     id: string,
     content: string,
     date: Date,

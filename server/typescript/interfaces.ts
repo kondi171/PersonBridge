@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
-import { Biometrics, FriendAccessibility, FriendRequests, FriendSettings, MessageReaction, Participant } from "./types";
-import { MessageSender, UserStatus } from "./enums";
+import { Biometrics, FriendAccessibility, FriendRequests, FriendSettings, MessageReaction } from "./types";
+import { UserStatus } from "./enums";
 
 export interface UserDocument extends Document {
     name: string,
@@ -37,10 +37,9 @@ export interface Group {
     id: string,
     name: string,
     avatar: string,
-    administrator: string,
     status: UserStatus,
-    PIN: number,
-    participants: Participant[],
+    administrator: string,
+    participants: string[],
     messages: Message[],
     accessibility: {
         mute: boolean,

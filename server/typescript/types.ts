@@ -24,8 +24,3 @@ export type FriendAccessibility = {
     ignore: boolean,
     block: boolean
 };
-
-export type Participant = {
-    id: string,
-    nickname: string
-}

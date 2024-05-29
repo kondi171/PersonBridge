@@ -66,6 +66,11 @@ export class CardComponent implements OnInit, OnDestroy {
     this.group.avatar = this.ensureFullURL(this.group.avatar) + `?${timestamp}`;
   }
 
+  ngOnDestroy(): void {
+    this.loggedUserSubscription.unsubscribe();
+    this.chatIDSubscription.unsubscribe();
+  }
+
   unblock() {
     this.fadeOut = false;
     setTimeout(() => {
@@ -135,22 +140,23 @@ export class CardComponent implements OnInit, OnDestroy {
   messageFriend(id: string) {
     this.storeService.updateChatID(id);
     this.storeService.updateChatType(ChatType.USER_CHAT);
-    this.router.navigate([`/access/chat/${id}`]);
+    this.router.navigate([`/access/chat/user/${id}`]);
   }
+
   messageGroup(id: string) {
     this.storeService.updateChatID(id);
     this.storeService.updateChatType(ChatType.GROUP_CHAT);
-    this.router.navigate([`/access/chat/${id}`]);
+    this.router.navigate([`/access/chat/group/${id}`]);
   }
+
+  onImageError(event: any) {
+    event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
+  }
+
   ensureFullURL(path: string): string {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
     return `${environment.serverURL}/${path}`;
-  }
-
-  ngOnDestroy(): void {
-    this.loggedUserSubscription.unsubscribe();
-    this.chatIDSubscription.unsubscribe();
   }
 }

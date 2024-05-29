@@ -13,6 +13,7 @@ export class ModalComponent {
   @Input() visible: boolean = false;
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
   closeBtnIcon = faCircleXmark;
+
   closeModal() {
     this.close.emit();
   }
