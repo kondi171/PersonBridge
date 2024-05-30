@@ -23,10 +23,10 @@ export type UserInfo = {
     avatar: string,
 }
 
-export type FriendAccessibility = {
+export type Accessibility = {
     mute: boolean,
     ignore: boolean,
-    block: boolean
+    block?: boolean
 }
 
 export type FriendSettings = {
@@ -48,7 +48,10 @@ export type GroupInfo = {
 
 export type Participant = {
     id: string,
-    nickname: string,
+    name?: string,
+    lastname?: string,
+    mail?: string,
+    nickname?: string,
     avatar: string
 }
 

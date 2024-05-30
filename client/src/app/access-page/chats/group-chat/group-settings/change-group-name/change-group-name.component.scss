@@ -13,27 +13,13 @@
     font-family: $decorativeFont;
     font-size: 6vmin;
     text-align: center;
-    color: $offlineColor;
+    color: $primaryColor;
     background-color: $blackColor;
     border-top-left-radius: 5vmin;
     border-top-right-radius: 5vmin;
     padding: 2vmin;
     border-bottom: .3vmin solid $primaryColor;
     margin-bottom: 4vmin;
-
-  }
-
-  span {
-    text-align: center;
-    color: $primaryColor;
-    font-size: 6vmin;
-    margin-bottom: 0;
-  }
-
-  strong {
-    text-align: center;
-    color: $textColor;
-    font-size: 6vmin;
   }
 
   label {
@@ -53,7 +39,7 @@
   }
 
   button {
-    @include btn($textColor, $offlineColor, $bgColor);
+    @include btn($bgColor, $primaryColor, $secondaryColor);
     width: 60%;
     margin: 5vmin 20%;
   }

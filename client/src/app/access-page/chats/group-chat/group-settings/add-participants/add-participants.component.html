@@ -1,0 +1,34 @@
+<div class="add-participants">
+  <h3 class="title">Add Participants</h3>
+  <div class="searchbar">
+    <div class="input-container">
+      <input [(ngModel)]="searchInputValue" (input)="filterFriends()" type="search" class="input-container__input"
+        placeholder="Search...">
+      <fa-icon class="input-container__icon" [icon]="icons.search"></fa-icon>
+    </div>
+  </div>
+  <div *ngIf="filteredFriends.length > 0; else noFriends">
+    <div *ngFor="let friend of filteredFriends" class="result">
+      <div class="result__avatar">
+        <img [src]="ensureFullURL(friend.avatar)" alt="{{friend.name}} {{friend.lastname}}"
+          (error)="onImageError($event)">
+      </div>
+      <div class="result__person">
+        <span class="name">
+          {{friend.name}} {{friend.lastname}}
+        </span>
+        <span class="mail">
+          {{friend.mail}}
+        </span>
+      </div>
+      <fa-icon *ngIf="!participants.includes(friend.id)" (click)="handleAddParticipant(friend.id)"
+        class="fa result__add" [icon]="icons.add"></fa-icon>
+      <fa-icon *ngIf="participants.includes(friend.id)" (click)="handleRemoveParticipant(friend.id)"
+        class="fa result__remove" [icon]="icons.remove"></fa-icon>
+    </div>
+  </div>
+  <ng-template #noFriends>
+    <span class="no-results">No friends found.</span>
+  </ng-template>
+  <button class="add-participants-btn" (click)="handleAddParticipants()">Add To Group</button>
+</div>

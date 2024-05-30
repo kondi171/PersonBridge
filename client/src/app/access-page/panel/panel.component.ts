@@ -140,16 +140,16 @@ export class PanelComponent implements OnInit, OnDestroy {
   }
 
   showMessages(chatID: string, chatType: ChatType) {
-    const trimmedURL = this.router.url.slice(13);
-    const chatPathForUser = `user/${chatID}/settings`;
-    const chatPathForGroup = `group/${chatID}/settings`;
+    // const trimmedURL = this.router.url.slice(13);
+    // const chatPathForUser = `user/${chatID}/settings`;
+    // const chatPathForGroup = `group/${chatID}/settings`;
 
-    if (chatID === this.activeChatID &&
-      this.device === Device.DESKTOP &&
-      !this.componentFirstInit &&
-      (trimmedURL !== chatPathForUser && trimmedURL !== chatPathForGroup)) {
-      return;
-    }
+    // if (chatID === this.activeChatID &&
+    //   this.device === Device.DESKTOP &&
+    //   !this.componentFirstInit &&
+    //   (trimmedURL !== chatPathForUser && trimmedURL !== chatPathForGroup)) {
+    //   return;
+    // }
 
     this.storeService.updateChatType(chatType);
     this.storeService.updateChatID(chatID);

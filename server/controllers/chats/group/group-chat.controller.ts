@@ -66,7 +66,9 @@ export const sendMessageToGroup = async (req: Request, res: Response): Promise<v
     if (!yourID || !groupID || !message) {
         res.status(400).json({ message: "Message, User and Group IDs are required" });
         return;
-    } try {
+    }
+
+    try {
         const user = await userModel.findById(yourID);
         if (!user) {
             res.status(404).json({ message: "User not found" });
@@ -97,7 +99,7 @@ export const sendMessageToGroup = async (req: Request, res: Response): Promise<v
         const updateOperations = participants.map(async participant => {
             if (participant._id.toString() !== yourID) {
                 const groupInParticipant = participant.groups.find(g => g.id === groupID);
-                if (groupInParticipant) {
+                if (groupInParticipant && !groupInParticipant.accessibility.ignore) {
                     const messageForGroup = {
                         id: messageID,
                         content: message,
@@ -195,6 +197,35 @@ export const addGroupReaction = async (req: Request, res: Response): Promise<voi
         res.status(200).json({ message: "Reaction added/updated and system messages sent successfully" });
     } catch (error) {
         console.error("Error while adding/updating reaction:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const markGroupMessagesAsRead = async (req: Request, res: Response): Promise<void> => {
+    const { yourID, groupID } = req.body;
+    if (!yourID || !groupID) {
+        res.status(400).json({ message: "User ID and Group ID are required" });
+        return;
+    } try {
+        const user = await userModel.findById(yourID);
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+        const group = user.groups.find(group => group.id === groupID);
+        if (!group) {
+            res.status(404).json({ message: "Group not found in user's groups" });
+            return;
+        }
+        group.messages.forEach(message => {
+            message.read = true;
+        });
+
+        await user.save();
+
+        res.status(200).json({ message: "All messages marked as read" });
+    } catch (error) {
+        console.error("Error marking messages as read", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };

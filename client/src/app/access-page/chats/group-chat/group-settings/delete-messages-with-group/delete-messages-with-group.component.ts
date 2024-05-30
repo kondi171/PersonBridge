@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './delete-messages-with-group.component.scss'
 })
 export class DeleteMessagesWithGroupComponent {
-  @Input() friendID: string = '';
+  @Input() groupID: string = '';
   yourID = "";
   password = "";
   constructor(private storeService: StoreService, private toastr: ToastrService) {
@@ -27,25 +27,26 @@ export class DeleteMessagesWithGroupComponent {
       this.toastr.error('Password which you provided is empty!', 'Delete failed');
       return;
     }
-    fetch(`${environment.apiURL}/chat-settings/messages`, {
+    fetch(`${environment.apiURL}/group/settings/messages`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.friendID, password: this.password })
+      body: JSON.stringify({ yourID: this.yourID, groupID: this.groupID, password: this.password })
     })
       .then(response => response.json())
       .then(data => {
+        console.log(data.message)
         if (data.message === 'Invalid password') {
           this.toastr.error(data.message, 'Deleting failed');
           return;
         }
-        this.toastr.success(`Your messages was deleted!`, 'Delete was successful');
+        this.toastr.success(`Your messages with this group was deleted!`, 'Delete was successful');
         this.password = '';
         this.storeService.forceRefreshMessages(true);
       })
       .catch(error => {
-        this.toastr.error('An Error Occured while deleting messages!', 'Delete Error');
+        this.toastr.error('An Error Occured while deleting messages with this group!', 'Delete Error');
         console.error('Delete Error:', error);
       });
   }

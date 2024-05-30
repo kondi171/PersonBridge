@@ -1,1 +1,9 @@
-<p>leave-group works!</p>
+<div class="modal-content">
+  <h3>Leave Group</h3>
+  <strong>Are you sure?</strong>
+  <span>You will lose all your messages with this group!</span>
+  <label for="password">Password:</label>
+  <input [(ngModel)]="password" class="input" type="password" name="password" id="password"
+    placeholder="Type password...">
+  <button (click)="handleLeaveGroup()">Leave</button>
+</div>

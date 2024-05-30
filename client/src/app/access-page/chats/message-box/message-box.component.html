@@ -37,7 +37,7 @@
   </ng-container>
 </ng-container>
 <ng-container *ngIf="chatType === ChatType.GROUP_CHAT">
-  <ng-container *ngIf="message.sender === activeUser.id || message.sender === loggedUser?._id; else systemMessage">
+  <ng-container *ngIf="message.sender === activeUser.id || message.sender === loggedUser?._id; else removedUserMessage">
     <div class="message-box"
       [ngClass]="{'is-you': message.sender === loggedUser?._id, 'is-friend': message.sender === activeUser.id}">
       <div class="avatar">
@@ -74,6 +74,32 @@
   </ng-container>
 </ng-container>
 
+<ng-template #removedUserMessage>
+  <div *ngIf="message.sender.length === 24; else systemMessage" class="message-box is-friend">
+    <div class="avatar">
+      <img src="../../../../assets/img/Blank-Avatar.jpg" (error)="onImageError($event)">
+    </div>
+    <div class="message">
+      <div class="name">
+        User
+      </div>
+      <div class="container">
+        <div class="content-wrapper">
+          <div class="content" (click)="toggleReactionsVisibility()"
+            [innerHTML]="formatMessageContent(message.content)">
+          </div>
+          <div class="given-reactions" *ngIf="message.reactions.length > 0">
+            <span class="given-reactions__counter" *ngIf="message.reactions.length > 1">{{ message.reactions.length
+            }}</span>
+            <span class="given-reactions__emoticons" *ngFor="let reaction of message.reactions">{{ reaction.emoticon
+            }}</span>
+          </div>
+        </div>
+        <div class="date">{{ formattedDate }}</div>
+      </div>
+    </div>
+  </div>
+</ng-template>
 <ng-template #systemMessage>
-  <div class="system-message">{{message.content}} </div>
+  <div *ngIf="message.sender" class="system-message">{{message.content}} - {{formattedDate}}</div>
 </ng-template>

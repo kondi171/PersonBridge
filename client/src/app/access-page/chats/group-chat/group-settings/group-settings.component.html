@@ -1,82 +1,83 @@
 <section class="chat-settings">
-    <a [routerLink]="['/access/chat/group', activeChatID]" routerLinkActive="active" class="icon-back">
-        <fa-icon class="fa " [icon]="icons.back" />
-    </a>
-    <div class="clip">
-        <div class="avatar">
-            <img [src]="friendInfo.avatar" [alt]="friendInfo.name" (error)="onImageError($event)">
-            <span class="total-messages">
-                <fa-icon class="fa" [icon]="icons.messages" />
-                {{friendInfo.messagesCounter}}
-            </span>
-        </div>
-        <div class="user">
-            {{friendInfo.name}} {{friendInfo.lastname}}
-        </div>
-        <div class="mail">
-            {{friendInfo.mail}}
-        </div>
-        <div class="accessibility">
-            <div (click)="handleMute()" class="option" [ngClass]="{'active': friendInfo.accessibility.mute}">
-                <fa-icon class="fa" [icon]="icons.mute" />
-                <span>Mute</span>
-            </div>
-            <div (click)="handleIgnore()" class="option" [ngClass]="{'active': friendInfo.accessibility.ignore}">
-                <fa-icon class="fa" [icon]="icons.ignore" />
-                <span>Ignore</span>
-            </div>
-            <div (click)="handleBlock()" class="option" [ngClass]="{'active': friendInfo.accessibility.block}">
-                <fa-icon class="fa" [icon]="icons.block" />
-                <span>Block</span>
-            </div>
-        </div>
+  <a [routerLink]="['/access/chat/group', activeChatID]" routerLinkActive="active" class="icon-back">
+    <fa-icon class="fa " [icon]="icons.back" />
+  </a>
+  <div class="clip">
+    <div (click)="fileInput.click()" class="avatar">
+      <img class="avatar__img" [src]="groupInfo.avatar" [alt]="groupInfo.name" (error)="onImageError($event)">
+      <span class="avatar__change">Change Avatar</span>
+      <span class="total-messages">
+        <fa-icon class="fa" [icon]="icons.messages" />
+        {{groupInfo.messages.length}}
+      </span>
     </div>
-    <div class="settings">
-        <div class="option">
-            <div class="option__info">
-                <fa-icon class="fa" [icon]="icons.pin"></fa-icon>
-                <span>Set PIN</span>
-            </div>
-            <div class="pin-code">
-                <input type="password" maxlength="1" [(ngModel)]="PIN[0]" name="pin1" #pin1
-                    (input)="moveFocus(pin1, pin2)" (keypress)="validateInput($event)">
-                <input type="password" maxlength="1" [(ngModel)]="PIN[1]" name="pin2" #pin2
-                    (input)="moveFocus(pin2, pin3)" (keypress)="validateInput($event)">
-                <input type="password" maxlength="1" [(ngModel)]="PIN[2]" name="pin3" #pin3
-                    (input)="moveFocus(pin3, pin4)" (keypress)="validateInput($event)">
-                <input type="password" maxlength="1" [(ngModel)]="PIN[3]" name="pin4" #pin4
-                    (input)="moveFocus(pin4, null)" (keypress)="validateInput($event)">
-            </div>
-            <div class="btns">
-                <button class="set" (click)="handleSetPIN()">Set</button>
-                <button class="remove" (click)="handleRemovePIN()">Remove</button>
-            </div>
-        </div>
-
-
-        <div class="option">
-            <div class="option__info">
-                <fa-icon class="fa" [icon]="icons.nickname" />
-                <span>Set a nickname</span>
-            </div>
-            <input [(ngModel)]="nickname" class="nickname-input" type="text" placeholder="Enter Nickname...">
-            <button class="nickname-btn" (click)="handleSetNickname()">Set</button>
-        </div>
-        <button (click)="handleDeleteMessages()" class="option remove">
-            <span>Delete messages</span>
-            <fa-icon class="fa" [icon]="icons.messages" />
-        </button>
-        <button (click)="handleRemoveFriend()" class="option remove">
-            <span>Remove friend</span>
-            <fa-icon class="fa" [icon]="icons.remove" />
-        </button>
+    <input #fileInput type="file" name="file" (change)="handleUploadAvatar($event)"
+      accept="image/jpeg, image/png, image/gif, image/webp, image/svg+xml, image/avif" hidden>
+    <div class="group">
+      {{groupInfo.name}}
+      <button class="change-group-name-btn" (click)="handleChangeGroupName()">Change Name</button>
     </div>
-    <app-modal [visible]="isModalVisible" (close)="isModalVisible = false">
-        <app-delete-messages-with-group *ngIf="modalContent === ModalContent.DELETE_MESSAGES"
-            [friendID]="this.activeChatID" />
-        <app-leave-group *ngIf="modalContent === ModalContent.REMOVE_FRIEND" />
-    </app-modal>
-    <footer>
-        <app-footer [position]="Position.FIXED" />
-    </footer>
+    <div class="administrator">
+      <span>Administrator:</span>
+      <strong class="administrator__identifier">
+        {{groupInfo.administrator.name}}
+        {{groupInfo.administrator.lastname}}
+      </strong>
+      <div class="administrator__avatar">
+        <img [src]="ensureFullURL(groupInfo.administrator.avatar)" [alt]="groupInfo.administrator.name"
+          (error)="onImageError($event)">
+      </div>
+    </div>
+    <div class="accessibility">
+      <div (click)="handleMute()" class="option" [ngClass]="{'active': groupInfo.accessibility.mute}">
+        <fa-icon class="fa" [icon]="icons.mute" />
+        <span>Mute</span>
+      </div>
+      <div (click)="handleIgnore()" class="option" [ngClass]="{'active': groupInfo.accessibility.ignore}">
+        <fa-icon class="fa" [icon]="icons.ignore" />
+        <span>Ignore</span>
+      </div>
+    </div>
+  </div>
+  <div class="participants">
+    <h3>Participants - {{groupInfo.participants.length}}</h3>
+    <div class="cards">
+      <div *ngFor="let participant of groupInfo.participants" class="card">
+        <div class="card-border-top"></div>
+        <div class="img">
+          <img [src]="ensureFullURL(participant.avatar)" [alt]="participant.name" (error)="onImageError($event)">
+        </div>
+        <span class=" name">{{ participant.name }} {{ participant.lastname }}</span>
+        <p class="mail">{{ participant.mail }}</p>
+        <span class="messages-count">Total messages: {{participantMessages(participant.id)}}</span>
+        <button (click)="handleRemoveFromGroup(participant.id)">Remove</button>
+      </div>
+    </div>
+  </div>
+  <div class="settings">
+    <button (click)="handleAddToGroup()" class="option primary">
+      <span>Add participants</span>
+      <fa-icon class="fa" [icon]="icons.add" />
+    </button>
+    <button (click)="handleDeleteMessages()" class="option remove">
+      <span>Delete messages</span>
+      <fa-icon class="fa" [icon]="icons.messages" />
+    </button>
+    <button (click)="handleLeaveGroup()" class="option remove">
+      <span>Leave group</span>
+      <fa-icon class="fa" [icon]="icons.leave" />
+    </button>
+  </div>
+  <app-modal [visible]="isModalVisible" (close)="isModalVisible = false">
+    <app-change-group-name [group]="groupInfo" (groupNameChanged)="onGroupNameChanged()"
+      *ngIf="modalContent === ModalContent.EDIT_NAME" />
+    <app-delete-messages-with-group *ngIf="modalContent === ModalContent.DELETE_MESSAGES"
+      [groupID]="this.activeChatID" />
+    <app-leave-group *ngIf="modalContent === ModalContent.LEAVE_GROUP" [groupID]="this.activeChatID" />
+    <app-add-participants *ngIf="modalContent === ModalContent.ADD_PARTICIPANTS" [group]="this.groupInfo"
+      (participantsAdded)="getGroupInfo()" />
+  </app-modal>
+  <footer>
+    <app-footer [position]="Position.FIXED" />
+  </footer>
 </section>

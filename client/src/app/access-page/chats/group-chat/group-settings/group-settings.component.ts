@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBellSlash, faCommentSlash, faLock, faKey, faA, faComments, faUserMinus, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faBellSlash, faCommentSlash, faLock, faKey, faA, faComments, faUserMinus, faChevronLeft, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../../../../features/footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -8,32 +8,34 @@ import { StoreService } from '../../../../services/store.service';
 import { environment } from '../../../../app.environment';
 import { ToastrService } from 'ngx-toastr';
 import { Modal, Position } from '../../../../typescript/enums';
-import { FriendSettingsData } from '../../../../typescript/interfaces';
+import { GroupSettingsData, Message } from '../../../../typescript/interfaces';
 import { AccessibilityAction } from '../../../../typescript/types';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../../../../features/modal-wrapper/modal-wrapper.component';
 import { FormsModule } from '@angular/forms';
 import { DeleteMessagesWithGroupComponent } from './delete-messages-with-group/delete-messages-with-group.component';
 import { LeaveGroupComponent } from './leave-group/leave-group.component';
+import { ChangeGroupNameComponent } from './change-group-name/change-group-name.component';
+import { AddParticipantsComponent } from './add-participants/add-participants.component';
 
 @Component({
   selector: 'app-group-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, FooterComponent, RouterModule, ModalComponent, DeleteMessagesWithGroupComponent, LeaveGroupComponent],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, FooterComponent, RouterModule, ModalComponent, ChangeGroupNameComponent, AddParticipantsComponent, DeleteMessagesWithGroupComponent, LeaveGroupComponent],
   templateUrl: './group-settings.component.html',
   styleUrls: ['./group-settings.component.scss']
 })
 export class GroupSettingsComponent implements OnInit, OnDestroy {
+  @ViewChild(ChangeGroupNameComponent) changeGroupNameComponent!: ChangeGroupNameComponent;
+  @ViewChild(AddParticipantsComponent) addParticipantsComponent!: AddParticipantsComponent;
   Position = Position;
 
   icons = {
     messages: faComments,
     mute: faBellSlash,
     ignore: faCommentSlash,
-    block: faLock,
-    pin: faKey,
-    nickname: faA,
-    remove: faUserMinus,
+    add: faUserPlus,
+    leave: faUserMinus,
     back: faChevronLeft,
   };
 
@@ -41,26 +43,24 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   loggedUserSubscription: Subscription;
   activeChatID = '';
   yourID = '';
-  friendInfo: FriendSettingsData = {
+  groupInfo: GroupSettingsData = {
     id: '',
     name: '',
-    lastname: '',
-    mail: '',
     avatar: '',
-    messagesCounter: 0,
-    settings: {
-      nickname: '',
-      PIN: 0
+    administrator: {
+      id: '',
+      name: '',
+      lastname: '',
+      avatar: ''
     },
+    participants: [],
     accessibility: {
       mute: false,
-      ignore: false,
-      block: false
-    }
+      ignore: false
+    },
+    messages: []
   };
-
-  nickname = '';
-  PIN = ['', '', '', ''];
+  messagesCounter: number = 0;
   isModalVisible = false;
   modalContent = Modal.DELETE_MESSAGES;
   ModalContent = Modal;
@@ -75,8 +75,17 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getGroupInfo();
+  }
+
+  ngOnDestroy(): void {
+    this.chatIDSubscription.unsubscribe();
+    this.loggedUserSubscription.unsubscribe();
+  }
+
+  getGroupInfo() {
     if (this.activeChatID === 'no-messages') return;
-    fetch(`${environment.apiURL}/chat-settings/${this.yourID}/${this.activeChatID}`, {
+    fetch(`${environment.apiURL}/group/settings/${this.yourID}/${this.activeChatID}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -84,149 +93,151 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
     })
       .then(response => response.json())
       .then(data => {
-        const { id, name, lastname, mail, avatar, settings, accessibility } = data.friend;
+        const { id, name, administrator, avatar, participants, accessibility, messages } = data;
         const timestamp = new Date().getTime();
-        this.friendInfo = {
+        this.groupInfo = {
           id: id,
           name: name,
-          lastname: lastname,
-          mail: mail,
           avatar: this.ensureFullURL(avatar) + `?${timestamp}`,
-          messagesCounter: data.messages.length,
-          settings: settings,
-          accessibility: accessibility
+          administrator: administrator,
+          participants: participants,
+          accessibility: accessibility,
+          messages: messages
         };
       })
       .catch(error => {
-        this.toastr.error('An Error Occurred while fetching friend!', 'Data Retrieve Error');
+        this.toastr.error('An Error Occurred while fetching group!', 'Data Retrieve Error');
         console.error('Data Retrieve Error:', error);
       });
   }
 
+  handleUploadAvatar(event: Event) {
+    if (this.yourID !== this.groupInfo.administrator.id) {
+      this.toastr.error('You need to be administrator of this group to change it avatar!', 'Access Denied');
+      return;
+    }
+    const fileInput = event.target as HTMLInputElement;
+    const file = fileInput.files ? fileInput.files[0] : null;
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      fetch(`${environment.apiURL}/group/settings/avatar/${this.groupInfo.id}`, {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(() => {
+          this.toastr.success('Avatar uploaded successfully!', 'Success');
+          this.getGroupInfo();
+          fetch(`${environment.apiURL}/group/settings/avatar`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ yourID: this.yourID, groupID: this.activeChatID })
+          })
+            .catch(error => {
+              this.toastr.error('An Error Occured while uploading avatar!', 'Avatar upload error');
+              console.error('Avatar upload error:', error);
+            })
+        })
+        .catch(error => {
+          this.toastr.error('An Error Occured while uploading avatar!', 'Avatar upload error');
+          console.error('Avatar upload error:', error);
+        });
+    } else {
+      this.toastr.error('Please select a file to upload!', 'No File Selected');
+    }
+  }
+
   handleMute() {
-    this.updateAccessibility('mute', 'Friend was muted!', 'Friend was unmuted!');
+    this.updateAccessibility('mute', 'Group was muted!', 'Group was unmuted!');
   }
 
   handleIgnore() {
-    this.updateAccessibility('ignore', 'Friend was ignored!', 'Friend was unignored!');
-  }
-
-  handleBlock() {
-    this.updateAccessibility('block', 'Friend was blocked!', 'Friend was unblocked!');
+    this.updateAccessibility('ignore', 'Group was ignored!', 'Group was unignored!');
   }
 
   updateAccessibility(action: AccessibilityAction, successMessage: string, revertMessage: string) {
-    fetch(`${environment.apiURL}/chat-settings/${action}`, {
+    fetch(`${environment.apiURL}/group/settings/${action}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID })
+      body: JSON.stringify({ yourID: this.yourID, groupID: this.activeChatID })
     })
       .then(response => response.json())
       .then(data => {
         const isActionEnabled = data[action];
         const message = isActionEnabled ? successMessage : revertMessage;
-        this.toastr.success(message, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        this.friendInfo.accessibility[action] = isActionEnabled;
-        this.storeService.updateAccessibility(this.activeChatID, this.friendInfo.accessibility);
+        this.toastr.success(message, `${this.groupInfo.name}`);
+        this.groupInfo.accessibility[action] = isActionEnabled;
+        this.storeService.updateAccessibility(this.activeChatID, this.groupInfo.accessibility);
       })
       .catch(error => {
-        this.toastr.error(`An Error Occurred while ${action} friend!`, 'Accessibility Change Error');
+        this.toastr.error(`An Error Occurred while ${action} group!`, 'Accessibility Change Error');
         console.error('Accessibility Change Error:', error);
       });
   }
 
-  handleSetNickname() {
-    if (!this.nickname) {
-      this.toastr.error('Nickname which you provided is empty!', 'Edit failed');
+  handleChangeGroupName() {
+    if (this.yourID !== this.groupInfo.administrator.id) {
+      this.toastr.error('You need to be administrator of this group to change it name!', 'Access Denied');
       return;
     }
-    if (this.nickname.length > 20) {
-      this.toastr.error('Nickname can be up to 20 characters long!', 'Edit failed');
+    this.openModal(Modal.EDIT_NAME);
+  }
+
+  participantMessages(participantID: string) {
+    const messages = this.groupInfo.messages.filter((message: Message) => message.sender === participantID);
+    return messages.length;
+  }
+
+  handleRemoveFromGroup(participantID: string) {
+    if (this.yourID === participantID) {
+      this.toastr.error("You can't remove yourself from the group!", 'Access Denied');
       return;
     }
-    fetch(`${environment.apiURL}/chat-settings/nickname`, {
-      method: 'PATCH',
+    if (this.yourID !== this.groupInfo.administrator.id) {
+      this.toastr.error('You need to be administrator of this group to remove a participant!', 'Access Denied');
+      return;
+    }
+    fetch(`${environment.apiURL}/group/settings/remove`, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID, nickname: this.nickname })
+      body: JSON.stringify({ yourID: this.yourID, groupID: this.activeChatID, removeID: participantID, participants: this.groupInfo.participants })
     })
       .then(response => response.json())
       .then(data => {
-        if (data.message === "Nickname set successfully") {
-          this.toastr.success(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-          this.nickname = '';
-        } else {
-          this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+        if (data.message === 'Participant removed from the group successfully') {
+          this.toastr.success(data.message, 'Success');
+          this.getGroupInfo();
         }
+        else this.toastr.error(`An Error Occurred while removing participant from the group!`, 'Remove Participant Error');
       })
       .catch(error => {
-        this.toastr.error('An Error Occurred while editing nickname!', 'Nickname Change Error');
-        console.error('Nickname Change Error:', error);
+        this.toastr.error(`An Error Occurred while removing participant from the group!`, 'Remove Participant Error');
+        console.error('Remove Participant Error:', error);
       });
   }
 
-  validateInput(event: KeyboardEvent): void {
-    const inputChar = String.fromCharCode(event.keyCode);
-    if (!/^[0-9]$/.test(inputChar)) {
-      event.preventDefault();
-    }
-  }
-
-  moveFocus(currentInput: HTMLInputElement, nextInput: HTMLInputElement | null): void {
-    if (currentInput.value.length >= currentInput.maxLength && nextInput) {
-      nextInput.focus();
-    }
-  }
-
-  handleSetPIN() {
-    const pinCode = this.PIN.join('');
-    if (!pinCode) {
-      this.toastr.error('PIN which you provided is empty!', 'Edit failed');
+  handleAddToGroup() {
+    if (this.yourID !== this.groupInfo.administrator.id) {
+      this.toastr.error('You need to be administrator of this group to add a participants!', 'Access Denied');
       return;
     }
-    if (pinCode.length !== 4) {
-      this.toastr.error('PIN must contain exactly 4 digits!', 'Edit failed');
-      return;
-    }
-    this.updatePIN('PATCH', pinCode, 'PIN set successfully');
-  }
-
-  handleRemovePIN() {
-    this.updatePIN('DELETE', '', 'PIN removed successfully');
-  }
-
-  updatePIN(method: string, pinCode: string, successMessage: string) {
-    fetch(`${environment.apiURL}/chat-settings/PIN`, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID, PIN: pinCode })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.message === successMessage) {
-          this.toastr.success(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-          this.PIN = ['', '', '', ''];
-        } else {
-          this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
-        }
-      })
-      .catch(error => {
-        this.toastr.error(`An Error Occurred while editing PIN!`, 'PIN Change Error');
-        console.error('PIN Change Error:', error);
-      });
+    this.openModal(Modal.ADD_PARTICIPANTS);
   }
 
   handleDeleteMessages() {
     this.openModal(Modal.DELETE_MESSAGES);
   }
 
-  handleRemoveFriend() {
-    this.openModal(Modal.REMOVE_FRIEND);
+  handleLeaveGroup() {
+    this.openModal(Modal.LEAVE_GROUP);
   }
 
   openModal(content: Modal) {
@@ -238,11 +249,6 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
     this.isModalVisible = false;
   }
 
-  ngOnDestroy(): void {
-    this.chatIDSubscription.unsubscribe();
-    this.loggedUserSubscription.unsubscribe();
-  }
-
   onImageError(event: any) {
     event.target.src = './../../../../assets/img/Blank-Avatar.jpg';
   }
@@ -252,5 +258,9 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       return path;
     }
     return `${environment.serverURL}/${path}`;
+  }
+
+  onGroupNameChanged() {
+    this.getGroupInfo();
   }
 }

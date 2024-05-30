@@ -68,6 +68,7 @@
         align-items: center;
         font-size: 4vmin;
         margin: 1vmin 0;
+        width: 25%;
 
         &__dot {
           min-width: 4vmin;
@@ -188,7 +189,6 @@
 
   .create-group-text {
     transform: scale(0);
-
   }
 }
 
@@ -261,6 +261,7 @@
           .text {
             display: block;
             position: absolute;
+            text-wrap: nowrap;
             top: 4vmin;
             left: 0vmin;
             color: $textColor;
@@ -302,7 +303,7 @@
       padding: 1vmin;
       border-radius: 2vmin;
       z-index: 15;
-      bottom: 20vmin;
+      bottom: 21vmin;
       left: 22.8vw;
       right: auto;
     }

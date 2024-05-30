@@ -211,7 +211,7 @@ export const uploadAvatar = async (req: Request, res: Response): Promise<void> =
                 { $set: { "groups.$.avatar": filePath } }
             );
         } catch (error) {
-            console.error('Error updating user avatar:', error);
+            console.error('Error updating group avatar:', error);
             res.status(500).json({ message: 'Failed to update group avatar.' });
         }
     } else {

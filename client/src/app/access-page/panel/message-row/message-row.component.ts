@@ -74,7 +74,7 @@ export class MessageRowComponent implements OnInit, OnDestroy {
     const timestamp = new Date().getTime();
     this.messageRow.avatar = this.ensureFullURL(this.messageRow.avatar) + `?${timestamp}`;
     this.formatDate(new Date(this.messageRow.lastMessage.date));
-    this.isUnread = !this.messageRow.lastMessage.read && this.messageRow.lastMessage.sender === this.messageRow.id;
+    this.setUnreadStatus();
 
     this.socketService.onStatusChange((data) => {
       this.updateParticipantStatus(data.from);
@@ -114,6 +114,14 @@ export class MessageRowComponent implements OnInit, OnDestroy {
     if (isToday) this.formattedDate = `${this.datePipe.transform(date, 'HH:mm')}`;
     else if (isCurrentYear) this.formattedDate = `${this.datePipe.transform(date, 'd MMMM')}`;
     else this.formattedDate = `${this.datePipe.transform(date, 'd MMMM yyyy')}`;
+  }
+
+  setUnreadStatus() {
+    if (this.messageRow.type === ChatType.GROUP_CHAT) {
+      this.isUnread = !this.messageRow.lastMessage.read && this.messageRow.lastMessage.sender !== this.yourID;
+    } else {
+      this.isUnread = !this.messageRow.lastMessage.read && this.messageRow.lastMessage.sender === this.messageRow.id;
+    }
   }
 
   handleMarkMessageAsRead(data: any) {

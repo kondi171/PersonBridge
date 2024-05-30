@@ -127,6 +127,11 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.socketService.onAddReactionToGroup(() => {
       this.storeService.forceRefreshMessages(true);
+      this.getMessages(false, true);
+    });
+    this.socketService.onGroupUpdated(() => {
+      this.getMessages(false, true);
+      this.storeService.forceRefreshMessages(true);
     });
   }
 
@@ -202,6 +207,22 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while fetching group!', 'Data Retrieve Error');
+        console.error('Data Retrieve Error:', error);
+      });
+    this.markMessagesAsRead();
+  }
+
+  markMessagesAsRead() {
+    if (this.chatID.length === 24) return;
+    fetch(`${environment.apiURL}/group/chat/mark`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ yourID: this.yourID, groupID: this.chatID })
+    })
+      .catch(error => {
+        this.toastr.error('An Error Occured while marking message!', 'Message Error');
         console.error('Data Retrieve Error:', error);
       });
   }

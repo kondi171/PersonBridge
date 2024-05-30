@@ -99,4 +99,10 @@ export class SocketService {
             this.socket.on('addReactionToGroup', callback);
         }
     }
+    onGroupUpdated(callback: (data: any) => void) {
+        if (this.socket) {
+            this.socket.on('groupUpdated', callback);
+        }
+    }
+
 }
