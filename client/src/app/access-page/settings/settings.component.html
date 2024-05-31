@@ -3,10 +3,10 @@
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
       <fa-icon class="fa" [icon]="icons.back" />
     </a>
-    <span>Settings</span>
-    <fa-icon class="fa icon" [icon]="icons.section" />
+    <span @fadeHeadingIn>Settings</span>
+    <fa-icon @fadeHeadingIn class="fa icon" [icon]="icons.section" />
   </h2>
-  <div class="personal-info">
+  <div class="personal-info" @slideIn>
     <app-change-avatar />
     <div class="user">
       {{loggedUser!.name}} {{loggedUser!.lastname}}
@@ -15,7 +15,7 @@
       {{loggedUser!.mail}}
     </div>
   </div>
-  <div class="zones">
+  <div class="zones" @slideIn>
     <article class="zone zone--edit">
       <h3 class="zone__title">Edit Zone:</h3>
       <div class="edit" (click)="editName()">

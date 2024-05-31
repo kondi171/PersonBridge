@@ -1,12 +1,13 @@
+<!-- <ng-container *ngIf="isInitialized"> -->
 <section class="chat" *ngIf="!noMessages; else noMessagesTemplate">
   <header class="header">
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
       <fa-icon class="fa" [icon]="icons.back"></fa-icon>
     </a>
-    <div class="avatar">
+    <div class="avatar" @fadeIn>
       <img [src]="friendChatData.avatar" alt="Avatar" (error)="onImageError($event)">
     </div>
-    <div class="info">
+    <div class="info" @fadeIn>
       <div class="identifier">
         <span *ngIf="friendChatData.settings.nickname === friendChatData.name">{{friendChatData.name}}
           {{friendChatData.lastname}}</span>
@@ -39,7 +40,7 @@
     </div>
   </header>
   <div #messagesContainer class="messages">
-    <div *ngIf="messages.length === 0" class="start-chat">
+    <div *ngIf="messages.length === 0 && isInitialized" class="start-chat">
       Send a message to start chatting.
     </div>
     <div *ngIf="friendChatData.settings.PIN !== 0 && !accessGranted" class="pin">
@@ -49,12 +50,13 @@
     <div *ngIf="friendChatData.settings.PIN === 0 || accessGranted">
       <button *ngIf="messages.length >= 20" class="load-more-messages" (click)="loadMoreMessages()">Load More</button>
       <div #messagesContainer class="message" *ngFor="let message of messages">
-        <app-message-box [friendData]="friendChatData" [message]="message" [chatType]="ChatType.USER_CHAT">
+        <app-message-box @messageAnimation [friendData]="friendChatData" [message]="message"
+          [chatType]="ChatType.USER_CHAT">
         </app-message-box>
       </div>
     </div>
   </div>
-  <div class="type-message">
+  <div class="type-message" @fadeIn>
     <div class="input-container">
       <textarea [(ngModel)]="messageContent" name="messageContent" class="input-container__input"
         placeholder="Type your message..." (keydown)="handleKeyDown($event)"></textarea>
@@ -68,6 +70,7 @@
     </button>
   </div>
 </section>
+<!-- </ng-container> -->
 <ng-template #noMessagesTemplate>
   <app-no-messages></app-no-messages>
 </ng-template>

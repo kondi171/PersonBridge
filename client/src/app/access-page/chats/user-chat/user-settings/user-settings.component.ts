@@ -15,13 +15,22 @@ import { ModalComponent } from '../../../../features/modal-wrapper/modal-wrapper
 import { FormsModule } from '@angular/forms';
 import { DeleteMessagesWithUserComponent } from './delete-messages-with-user/delete-messages-with-user.component';
 import { RemoveFriendComponent } from './remove-friend/remove-friend.component';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-user-settings',
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule, FooterComponent, RouterModule, ModalComponent, DeleteMessagesWithUserComponent, RemoveFriendComponent],
   templateUrl: './user-settings.component.html',
-  styleUrls: ['./user-settings.component.scss']
+  styleUrls: ['./user-settings.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-in', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {
   Position = Position;
@@ -64,6 +73,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   isModalVisible = false;
   modalContent = Modal.DELETE_MESSAGES;
   ModalContent = Modal;
+  isInitialized: boolean = false;
 
   constructor(private storeService: StoreService, private toastr: ToastrService) {
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
@@ -95,7 +105,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           messagesCounter: data.messages.length,
           settings: settings,
           accessibility: accessibility
-        };
+        }
+        this.isInitialized = true;
       })
       .catch(error => {
         this.toastr.error('An Error Occurred while fetching friend!', 'Data Retrieve Error');

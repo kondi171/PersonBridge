@@ -17,13 +17,22 @@ import { DeleteMessagesWithGroupComponent } from './delete-messages-with-group/d
 import { LeaveGroupComponent } from './leave-group/leave-group.component';
 import { ChangeGroupNameComponent } from './change-group-name/change-group-name.component';
 import { AddParticipantsComponent } from './add-participants/add-participants.component';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-group-settings',
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule, FooterComponent, RouterModule, ModalComponent, ChangeGroupNameComponent, AddParticipantsComponent, DeleteMessagesWithGroupComponent, LeaveGroupComponent],
   templateUrl: './group-settings.component.html',
-  styleUrls: ['./group-settings.component.scss']
+  styleUrls: ['./group-settings.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-in', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class GroupSettingsComponent implements OnInit, OnDestroy {
   @ViewChild(ChangeGroupNameComponent) changeGroupNameComponent!: ChangeGroupNameComponent;
@@ -64,6 +73,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   isModalVisible = false;
   modalContent = Modal.DELETE_MESSAGES;
   ModalContent = Modal;
+  isInitialized: boolean = false;
 
   constructor(private storeService: StoreService, private toastr: ToastrService) {
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
@@ -103,7 +113,8 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
           participants: participants,
           accessibility: accessibility,
           messages: messages
-        };
+        }
+        this.isInitialized = true;
       })
       .catch(error => {
         this.toastr.error('An Error Occurred while fetching group!', 'Data Retrieve Error');

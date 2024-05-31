@@ -58,6 +58,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   UserStatus = UserStatus;
   status: UserStatus = UserStatus.ONLINE;
   forceMessages: boolean = false;
+  isInitialized: boolean = false;
 
   constructor(
     private router: Router,
@@ -124,6 +125,7 @@ export class PanelComponent implements OnInit, OnDestroy {
         const groups = data.groups;
         this.messageRows = [...friends, ...groups];
         this.sortMessages();
+        this.isInitialized = true;
       })
       .catch(error => {
         this.toastr.error('An Error Occured while retrieving your messages!', 'Messages Error');

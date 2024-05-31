@@ -13,8 +13,14 @@ export class ModalComponent {
   @Input() visible: boolean = false;
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
   closeBtnIcon = faCircleXmark;
+  isClosing = false;
 
   closeModal() {
-    this.close.emit();
+    this.isClosing = true;
+    setTimeout(() => {
+      this.visible = false;
+      this.isClosing = false;
+      this.close.emit();
+    }, 300); // Czas trwania animacji zamykania
   }
 }

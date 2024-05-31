@@ -1,4 +1,4 @@
-<section class="chat-settings">
+<section class="user-settings" @fadeIn *ngIf="isInitialized">
   <a [routerLink]="['/access/chat/user', activeChatID]" routerLinkActive="active" class="icon-back">
     <fa-icon class="fa " [icon]="icons.back" />
   </a>

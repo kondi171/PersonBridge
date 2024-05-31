@@ -44,6 +44,7 @@
         .edit {
           font-size: 6vmin;
           margin: 2vmin 0 0 4vmin;
+          display: flex;
 
           .icon {
             color: $primaryColor;

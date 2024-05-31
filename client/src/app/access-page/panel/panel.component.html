@@ -21,10 +21,9 @@
     <a routerLink="/access/settings" routerLinkActive="active" class="item" aria-label="Link to settings">
       <fa-icon class="fa cog" [icon]="icons.cog"></fa-icon>
     </a>
-
   </header>
   <div class="messages">
-    <div *ngIf="messageRows.length === 0" class="no-messages">
+    <div *ngIf="messageRows.length === 0 && isInitialized" class="no-messages">
       There is no messages yet!
     </div>
     <div class="message" *ngFor="let messageRow of messageRows" (click)="showMessages(messageRow.id, messageRow.type)">

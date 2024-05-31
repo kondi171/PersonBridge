@@ -22,6 +22,7 @@ import { VoiceComponent } from './biometric-zone/voice/voice.component';
 import { DeleteMessagesComponent } from './danger-zone/delete-messages/delete-messages.component';
 import { DeleteAccountComponent } from './danger-zone/delete-account/delete-account.component';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-settings',
@@ -44,7 +45,21 @@ import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
     DeleteAccountComponent,
   ],
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+  styleUrls: ['./settings.component.scss'],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(100vh)' }),
+        animate('600ms ease-in', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ]),
+    trigger('fadeHeadingIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-in', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class SettingsComponent implements OnDestroy {
 

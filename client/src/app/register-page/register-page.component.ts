@@ -5,13 +5,45 @@ import { FormsModule } from '@angular/forms';
 import { RegisterData } from '../typescript/types';
 import { environment } from '../app.environment';
 import { ToastrService } from 'ngx-toastr';
-
+import { trigger, state, style, animate, transition } from '@angular/animations';
 @Component({
   selector: 'app-register-page',
   standalone: true,
   imports: [FormsModule, BackgroundEffectComponent],
   templateUrl: './register-page.component.html',
-  styleUrl: './register-page.component.scss'
+  styleUrls: ['./register-page.component.scss'],
+  animations: [
+    trigger('slideInRight', [
+      state('void', style({ transform: 'translateX(100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateX(0)', opacity: 1 })),
+      transition(':enter', [
+        animate('800ms ease-out')
+      ]),
+      transition(':leave', [
+        animate('800ms ease-in', style({ transform: 'translateX(100%)', opacity: 0 }))
+      ])
+    ]),
+    trigger('slideDown', [
+      state('void', style({ transform: 'translateY(-100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateY(0)', opacity: 1 })),
+      transition(':enter', [
+        animate('600ms ease-out')
+      ]),
+      transition(':leave', [
+        animate('600ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
+      ])
+    ]),
+    trigger('slideUp', [
+      state('void', style({ transform: 'translateY(100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateY(0)', opacity: 1 })),
+      transition(':enter', [
+        animate('800ms ease-out')
+      ]),
+      transition(':leave', [
+        animate('800ms ease-in', style({ transform: 'translateY(100%)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class RegisterPageComponent {
   registerData: RegisterData = {

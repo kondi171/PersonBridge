@@ -3,8 +3,8 @@
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
       <fa-icon class="fa" [icon]="icons.back" />
     </a>
-    <span>People</span>
-    <fa-icon class="fa icon" [icon]="icons.section" />
+    <span @fadeHeadingIn>People</span>
+    <fa-icon @fadeHeadingIn class="fa icon" [icon]="icons.section" />
     <div class="friends" [@fadeInTotal]>
       <strong>{{totalFriends}}</strong>
       <p>

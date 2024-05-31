@@ -1,6 +1,6 @@
-<app-background-effect />
+<app-background-effect></app-background-effect>
 <section class="register-page">
-  <div class="landing">
+  <div class="landing" [@slideDown]>
     <div class="brand">
       <img class="img" src="./../../assets/img/PersonBridge-brand.png" alt="PersonBridge brand">
     </div>
@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="register-form">
+  <div class="register-form" [@slideInRight]>
     <div class="register-form__heading">
       <span>Sign </span>
       <span>Up</span>
@@ -75,5 +75,5 @@
       <input class="register-button" type="submit" value="Sign Up">
     </form>
   </div>
-  <button (click)="switchToLoginPage()" class="login-btn">Already have Account? Sign In!</button>
+  <button (click)="switchToLoginPage()" class="login-btn" [@slideUp]>Already have Account? Sign In!</button>
 </section>

@@ -3,10 +3,10 @@
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
       <fa-icon class="fa" [icon]="icons.back" />
     </a>
-    <span>Chats</span>
-    <fa-icon class="fa icon" [icon]="icons.section" />
+    <span @fadeIn>Chats</span>
+    <fa-icon @fadeIn class="fa icon" [icon]="icons.section" />
   </h2>
-  <div class="content">
+  <div class="content" @fadeIn>
     <h3 class="info">There are no messages yet!</h3>
     <div class="emoticon">
       <img src="./../../assets/img/Sad-Emoticon.png" alt="">

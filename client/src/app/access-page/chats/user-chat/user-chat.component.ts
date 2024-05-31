@@ -34,6 +34,12 @@ import { trigger, transition, style, animate } from '@angular/animations';
       transition(':leave', [
         animate('500ms ease-in', style({ transform: 'translateY(20px)', opacity: 0 }))
       ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-in', style({ opacity: 1 }))
+      ])
     ])
   ]
 })
@@ -89,6 +95,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
   private initialized = false;
   forceMessages: boolean = false;
   visibleReactions: { [key: string]: boolean } = {};
+  isInitialized: boolean = false;
 
   constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
@@ -100,6 +107,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.saveCurrentMessageContent();
       this.chatID = chatID;
+      this.isInitialized = false;
       if (this.chatID === 'no-messages') {
         this.noMessages = true;
       } else if (this.chatID !== '') {
@@ -216,6 +224,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
         if (scrollDown && this.initialized) {
           this.scrollToBottom();
         }
+        this.isInitialized = true;
       })
       .catch(error => {
         this.toastr.error('An Error Occured while fetching friend!', 'Data Retrieve Error');

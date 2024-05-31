@@ -82,8 +82,8 @@
   }
 
   .group-name {
-    width: 80%;
-    margin: 0 10% 2vmin 10%;
+    width: 60%;
+    margin: 0 20% 2vmin 20%;
     border: none;
     background-color: transparent;
     text-align: center;
@@ -178,7 +178,8 @@
       align-items: center;
 
       img {
-        width: 60%;
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
         border: .7vmin solid $primaryColor;
       }

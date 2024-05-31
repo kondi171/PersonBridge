@@ -20,6 +20,7 @@ import { LoaderComponent } from '../features/loader/loader.component';
 import { faBrain, faPhone, faSearch, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SocketService } from '../services/socket.service';
+import { trigger, transition, style, animate, query, stagger, state } from '@angular/animations';
 
 @Component({
   selector: 'app-access-page',
@@ -42,13 +43,61 @@ import { SocketService } from '../services/socket.service';
     LoaderComponent
   ],
   templateUrl: './access-page.component.html',
-  styleUrls: ['./access-page.component.scss']
+  styleUrls: ['./access-page.component.scss'],
+  animations: [
+    // trigger('staggeredAnimation', [
+    //   transition('* => *', [
+    //     query('.book', [
+    //       style({ transform: 'translateY(100%)', opacity: 0 }),
+    //       stagger(200, [
+    //         animate('0.5s', style({ transform: 'translateY(0)', opacity: 1 }))
+    //       ])
+    //     ], { optional: true })
+    //   ])
+    // ]),
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-35vh)' }),
+        animate('600ms ease-in', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('800ms', style({ opacity: 1 }))
+      ])
+    ]),
+    trigger('fadeInBook1', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('800ms', style({ opacity: 1 }))
+      ])
+    ]),
+    trigger('fadeInBook2', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('800ms 200ms', style({ opacity: 1 }))
+      ])
+    ]),
+    trigger('fadeInBook3', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('800ms 400ms', style({ opacity: 1 }))
+      ])
+    ]),
+    trigger('fadeInBook4', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('800ms 600ms', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class AccessPageComponent implements OnInit {
   isMobile = false;
   isModalVisible = true;
   device = Device.DESKTOP;
-  isLoaderVisible = false;
+  isLoaderVisible = true;
   icons = {
     people: faUsers,
     explore: faSearch,
@@ -72,7 +121,6 @@ export class AccessPageComponent implements OnInit {
     if (loggedUser)
       this.socketService.connect(loggedUser?._id);
   }
-
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {

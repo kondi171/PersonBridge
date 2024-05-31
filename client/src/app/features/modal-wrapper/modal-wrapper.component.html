@@ -1,7 +1,7 @@
-<div class="modal" [class.visible]="visible">
+<div class="modal" [class.visible]="visible" [class.closing]="isClosing">
   <div class="modal-content">
     <ng-content></ng-content>
     <fa-icon class="close-button" (click)="closeModal()" [icon]="closeBtnIcon" />
   </div>
 </div>
-<div class="overlay" [class.visible]="visible" (click)="closeModal()"></div>
+<div class="overlay" [class.visible]="visible" [class.closing]="isClosing" (click)="closeModal()"></div>

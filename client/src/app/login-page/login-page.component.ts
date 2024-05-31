@@ -5,11 +5,11 @@ import { faEnvelope, faFingerprint, faMicrophone, faKey } from '@fortawesome/fre
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StoreService } from '../services/store.service';
-import { SocketService } from '../services/socket.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoginData } from '../typescript/types';
 import { environment } from '../app.environment';
 import { BackgroundEffectComponent } from '../features/background-effect/background-effect.component';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-login-page',
@@ -22,6 +22,38 @@ import { BackgroundEffectComponent } from '../features/background-effect/backgro
   ],
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
+  animations: [
+    trigger('slideInLeft', [
+      state('void', style({ transform: 'translateX(-100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateX(0)', opacity: 1 })),
+      transition(':enter', [
+        animate('600ms ease-out')
+      ]),
+      transition(':leave', [
+        animate('600ms ease-in', style({ transform: 'translateX(-100%)', opacity: 0 }))
+      ])
+    ]),
+    trigger('slideDown', [
+      state('void', style({ transform: 'translateY(-100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateY(0)', opacity: 1 })),
+      transition(':enter', [
+        animate('600ms ease-out')
+      ]),
+      transition(':leave', [
+        animate('600ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 }))
+      ])
+    ]),
+    trigger('slideUp', [
+      state('void', style({ transform: 'translateY(100%)', opacity: 0 })),
+      state('*', style({ transform: 'translateY(0)', opacity: 1 })),
+      transition(':enter', [
+        animate('600ms ease-out')
+      ]),
+      transition(':leave', [
+        animate('600ms ease-in', style({ transform: 'translateY(100%)', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class LoginPageComponent {
   loginData: LoginData = {

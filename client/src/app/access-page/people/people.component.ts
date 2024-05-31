@@ -30,6 +30,12 @@ import { SocketService } from '../../services/socket.service';
         style({ opacity: 0, transform: 'scale(0)' }),
         animate('600ms ease-in', style({ opacity: 1, transform: 'scale(1)' }))
       ])
+    ]),
+    trigger('fadeHeadingIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-in', style({ opacity: 1 }))
+      ])
     ])
   ]
 })

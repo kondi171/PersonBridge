@@ -1,5 +1,15 @@
 @import "../../../assets/scss/variables";
 
+.layer {
+  width: 100vw;
+  height: 100vh;
+
+  img {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
 .wrapper {
   position: fixed;
   top: 0;
@@ -12,7 +22,7 @@
   height: 100vh;
   background-color: #0000007c;
   z-index: 100;
-  backdrop-filter: blur(100px);
+  backdrop-filter: blur(170px);
 
   .brand {
     width: 100%;

@@ -3,8 +3,8 @@
     <a routerLink="/access" routerLinkActive="active" class="icon-back">
       <fa-icon class="fa" [icon]="icons.back"></fa-icon>
     </a>
-    <span>Explore</span>
-    <fa-icon class="fa icon" [icon]="icons.section"></fa-icon>
+    <span @fadeIn>Explore</span>
+    <fa-icon @fadeIn class="fa icon" [icon]="icons.section"></fa-icon>
   </h2>
   <div class="find" *ngIf="showResults" [@fadeIn]>
     <h3>Find your beloved person...</h3>
