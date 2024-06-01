@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { DeleteMessagesWithUserComponent } from './delete-messages-with-user/delete-messages-with-user.component';
 import { RemoveFriendComponent } from './remove-friend/remove-friend.component';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { AudioService } from '../../../../services/audio.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -75,7 +76,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   ModalContent = Modal;
   isInitialized: boolean = false;
 
-  constructor(private storeService: StoreService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private audioService: AudioService) {
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.activeChatID = chatID;
     });
@@ -110,6 +111,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         this.toastr.error('An Error Occurred while fetching friend!', 'Data Retrieve Error');
+        this.audioService.playErrorSound();
         console.error('Data Retrieve Error:', error);
       });
   }
@@ -144,11 +146,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         const isActionEnabled = data[action];
         const message = isActionEnabled ? successMessage : revertMessage;
         this.toastr.success(message, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+        this.audioService.playSuccessSound();
         this.friendInfo.accessibility[action] = isActionEnabled;
         this.storeService.updateAccessibility(this.activeChatID, this.friendInfo.accessibility);
       })
       .catch(error => {
         this.toastr.error(`An Error Occurred while ${action} friend!`, 'Accessibility Change Error');
+        this.audioService.playErrorSound();
         console.error('Accessibility Change Error:', error);
       });
   }
@@ -156,10 +160,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   handleSetNickname() {
     if (!this.nickname) {
       this.toastr.error('Nickname which you provided is empty!', 'Edit failed');
+      this.audioService.playErrorSound();
       return;
     }
     if (this.nickname.length > 20) {
       this.toastr.error('Nickname can be up to 20 characters long!', 'Edit failed');
+      this.audioService.playErrorSound();
       return;
     }
     fetch(`${environment.apiURL}/user/settings/nickname`, {
@@ -176,10 +182,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           this.nickname = '';
         } else {
           this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+          this.audioService.playSuccessSound();
+          this.audioService.playErrorSound();
         }
       })
       .catch(error => {
         this.toastr.error('An Error Occurred while editing nickname!', 'Nickname Change Error');
+        this.audioService.playErrorSound();
         console.error('Nickname Change Error:', error);
       });
   }
@@ -201,10 +210,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     const pinCode = this.PIN.join('');
     if (!pinCode) {
       this.toastr.error('PIN which you provided is empty!', 'Edit failed');
+      this.audioService.playErrorSound();
       return;
     }
     if (pinCode.length !== 4) {
       this.toastr.error('PIN must contain exactly 4 digits!', 'Edit failed');
+      this.audioService.playErrorSound();
       return;
     }
     this.updatePIN('PATCH', pinCode, 'PIN set successfully');
@@ -226,13 +237,16 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       .then(data => {
         if (data.message === successMessage) {
           this.toastr.success(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+          this.audioService.playSuccessSound();
           this.PIN = ['', '', '', ''];
         } else {
           this.toastr.error(`${data.message}!`, `${this.friendInfo.name} ${this.friendInfo.lastname}`);
+          this.audioService.playErrorSound();
         }
       })
       .catch(error => {
         this.toastr.error(`An Error Occurred while editing PIN!`, 'PIN Change Error');
+        this.audioService.playErrorSound();
         console.error('PIN Change Error:', error);
       });
   }
@@ -248,6 +262,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   openModal(content: Modal) {
     this.modalContent = content;
     this.isModalVisible = true;
+    this.audioService.playChangeStateSound();
   }
 
   closeModal() {

@@ -3,6 +3,7 @@ import { StoreService } from '../../../../services/store.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../app.environment';
 import { FormsModule } from '@angular/forms';
+import { AudioService } from '../../../../services/audio.service';
 
 @Component({
   selector: 'app-delete-messages',
@@ -14,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class DeleteMessagesComponent {
   yourID = "";
   password = "";
-  constructor(private storeService: StoreService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private audioService: AudioService) {
     const loggedUser = storeService.getLoggedUser();
     if (loggedUser) {
       this.yourID = loggedUser._id;
@@ -24,6 +25,7 @@ export class DeleteMessagesComponent {
   deleteMessages() {
     if (this.password === '') {
       this.toastr.error('Password which you provided is empty!', 'Delete failed');
+      this.audioService.playErrorSound();
       return;
     }
     fetch(`${environment.apiURL}/settings/messages`, {
@@ -37,13 +39,16 @@ export class DeleteMessagesComponent {
       .then(data => {
         if (data.error) {
           this.toastr.error(data.error, 'Deleting failed');
+          this.audioService.playErrorSound();
           return;
         }
         this.toastr.success(`Your messages was deleted!`, 'Delete was successful');
+        this.audioService.playSuccessSound();
         this.password = '';
       })
       .catch(error => {
         this.toastr.error('An Error Occured while deleting messages!', 'Deleting failed');
+        this.audioService.playErrorSound();
         console.error('Delete Messages Error:', error);
       });
   }

@@ -18,6 +18,7 @@ import { LeaveGroupComponent } from './leave-group/leave-group.component';
 import { ChangeGroupNameComponent } from './change-group-name/change-group-name.component';
 import { AddParticipantsComponent } from './add-participants/add-participants.component';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { AudioService } from '../../../../services/audio.service';
 
 @Component({
   selector: 'app-group-settings',
@@ -75,7 +76,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   ModalContent = Modal;
   isInitialized: boolean = false;
 
-  constructor(private storeService: StoreService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private audioService: AudioService) {
     this.chatIDSubscription = this.storeService.chatID$.subscribe(chatID => {
       this.activeChatID = chatID;
     });
@@ -118,6 +119,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         this.toastr.error('An Error Occurred while fetching group!', 'Data Retrieve Error');
+        this.audioService.playErrorSound();
         console.error('Data Retrieve Error:', error);
       });
   }
@@ -140,6 +142,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
         .then(response => response.json())
         .then(() => {
           this.toastr.success('Avatar uploaded successfully!', 'Success');
+          this.audioService.playSuccessSound();
           this.getGroupInfo();
           fetch(`${environment.apiURL}/group/settings/avatar`, {
             method: 'POST',
@@ -150,15 +153,18 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
           })
             .catch(error => {
               this.toastr.error('An Error Occured while uploading avatar!', 'Avatar upload error');
+              this.audioService.playErrorSound();
               console.error('Avatar upload error:', error);
             })
         })
         .catch(error => {
           this.toastr.error('An Error Occured while uploading avatar!', 'Avatar upload error');
+          this.audioService.playErrorSound();
           console.error('Avatar upload error:', error);
         });
     } else {
       this.toastr.error('Please select a file to upload!', 'No File Selected');
+      this.audioService.playErrorSound();
     }
   }
 
@@ -183,11 +189,13 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
         const isActionEnabled = data[action];
         const message = isActionEnabled ? successMessage : revertMessage;
         this.toastr.success(message, `${this.groupInfo.name}`);
+        this.audioService.playSuccessSound();
         this.groupInfo.accessibility[action] = isActionEnabled;
         this.storeService.updateAccessibility(this.activeChatID, this.groupInfo.accessibility);
       })
       .catch(error => {
         this.toastr.error(`An Error Occurred while ${action} group!`, 'Accessibility Change Error');
+        this.audioService.playErrorSound();
         console.error('Accessibility Change Error:', error);
       });
   }
@@ -195,6 +203,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   handleChangeGroupName() {
     if (this.yourID !== this.groupInfo.administrator.id) {
       this.toastr.error('You need to be administrator of this group to change it name!', 'Access Denied');
+      this.audioService.playErrorSound();
       return;
     }
     this.openModal(Modal.EDIT_NAME);
@@ -208,10 +217,12 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   handleRemoveFromGroup(participantID: string) {
     if (this.yourID === participantID) {
       this.toastr.error("You can't remove yourself from the group!", 'Access Denied');
+      this.audioService.playErrorSound();
       return;
     }
     if (this.yourID !== this.groupInfo.administrator.id) {
       this.toastr.error('You need to be administrator of this group to remove a participant!', 'Access Denied');
+      this.audioService.playErrorSound();
       return;
     }
     fetch(`${environment.apiURL}/group/settings/remove`, {
@@ -225,12 +236,16 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       .then(data => {
         if (data.message === 'Participant removed from the group successfully') {
           this.toastr.success(data.message, 'Success');
+          this.audioService.playSuccessSound();
           this.getGroupInfo();
+        } else {
+          this.toastr.error(`An Error Occurred while removing participant from the group!`, 'Remove Participant Error');
+          this.audioService.playErrorSound();
         }
-        else this.toastr.error(`An Error Occurred while removing participant from the group!`, 'Remove Participant Error');
       })
       .catch(error => {
         this.toastr.error(`An Error Occurred while removing participant from the group!`, 'Remove Participant Error');
+        this.audioService.playErrorSound();
         console.error('Remove Participant Error:', error);
       });
   }
@@ -238,6 +253,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   handleAddToGroup() {
     if (this.yourID !== this.groupInfo.administrator.id) {
       this.toastr.error('You need to be administrator of this group to add a participants!', 'Access Denied');
+      this.audioService.playErrorSound();
       return;
     }
     this.openModal(Modal.ADD_PARTICIPANTS);
@@ -254,6 +270,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   openModal(content: Modal) {
     this.modalContent = content;
     this.isModalVisible = true;
+    this.audioService.playChangeStateSound();
   }
 
   closeModal() {

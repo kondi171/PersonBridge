@@ -146,7 +146,7 @@ export const setBlock = async (req: Request, res: Response): Promise<void> => {
         }
         await user.save();
         await friendUser.save();
-        res.status(200).json({ block: friend.accessibility.block });
+        res.status(200).json({ block: friend.accessibility.block, accessibility: friend.accessibility });
     } catch (error) {
         res.status(500).send(error);
     }

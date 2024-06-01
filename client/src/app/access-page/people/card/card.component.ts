@@ -8,6 +8,7 @@ import { environment } from '../../../app.environment';
 import { ToastrService } from 'ngx-toastr';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
+import { AudioService } from '../../../services/audio.service';
 @Component({
   selector: 'app-card',
   standalone: true,
@@ -47,7 +48,7 @@ export class CardComponent implements OnInit, OnDestroy {
   yourID = "";
   yourName = "";
   fadeOut = true;
-  constructor(private router: Router, private storeService: StoreService, private toastr: ToastrService) {
+  constructor(private router: Router, private storeService: StoreService, private toastr: ToastrService, private audioService: AudioService) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       const loggedUser = user;
       if (loggedUser) {
@@ -74,7 +75,7 @@ export class CardComponent implements OnInit, OnDestroy {
   unblock() {
     this.fadeOut = false;
     setTimeout(() => {
-      fetch(`${environment.apiURL}/chat-settings/block`, {
+      fetch(`${environment.apiURL}/user/settings/block`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -82,14 +83,19 @@ export class CardComponent implements OnInit, OnDestroy {
         body: JSON.stringify({ yourID: this.yourID, friendID: this.activeChatID })
       })
         .then(response => response.json())
-        .then(() => {
+        .then((data) => {
+          console.log(data)
           this.toastr.success('Friend was unblocked!', `${this.person.name} ${this.person.lastname}`);
+          this.audioService.playSuccessSound();
           this.blockedHandled.emit(this.person.id);
+          this.storeService.forceRefreshMessages(true);
+          this.storeService.updateAccessibility(this.activeChatID, data.accessibility);
         })
         .catch(error => {
           console.error('Operation failed:', error);
+          this.audioService.playErrorSound();
           this.toastr.error('Operation failed!', 'Internal Error');
-        })
+        });
     }, 400);
   }
 
@@ -106,10 +112,12 @@ export class CardComponent implements OnInit, OnDestroy {
         .then(response => response.json())
         .then(data => {
           this.toastr.success(data.message, `${this.person.name} ${this.person.lastname}`);
+          this.audioService.playSuccessSound();
           this.requestHandled.emit(this.person.id);
         })
         .catch(error => {
           console.error('Operation failed:', error);
+          this.audioService.playErrorSound();
           this.toastr.error('Operation failed!', 'Internal Error');
         })
     }, 400);
@@ -132,6 +140,7 @@ export class CardComponent implements OnInit, OnDestroy {
         })
         .catch(error => {
           console.error('Operation failed:', error);
+          this.audioService.playErrorSound();
           this.toastr.error('Operation failed!', 'Internal Error');
         })
     }, 400);

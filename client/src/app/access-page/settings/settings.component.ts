@@ -23,6 +23,7 @@ import { DeleteMessagesComponent } from './danger-zone/delete-messages/delete-me
 import { DeleteAccountComponent } from './danger-zone/delete-account/delete-account.component';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-settings',
@@ -93,7 +94,8 @@ export class SettingsComponent implements OnDestroy {
     private storeService: StoreService,
     private socketService: SocketService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private audioService: AudioService
   ) {
     this.subscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
@@ -103,36 +105,43 @@ export class SettingsComponent implements OnDestroy {
   editName() {
     this.isModalVisible = true;
     this.modalContent = Modal.EDIT_NAME;
+    this.audioService.playChangeStateSound();
   }
 
   editLastname() {
     this.isModalVisible = true;
     this.modalContent = Modal.EDIT_LASTNAME;
+    this.audioService.playChangeStateSound();
   }
 
   editMail() {
     this.isModalVisible = true;
     this.modalContent = Modal.EDIT_MAIL;
+    this.audioService.playChangeStateSound();
   }
 
   editPassword() {
     this.isModalVisible = true;
     this.modalContent = Modal.EDIT_PASSWORD;
+    this.audioService.playChangeStateSound();
   }
 
   setFingerprint() {
     this.isModalVisible = true;
     this.modalContent = Modal.SET_FINGERPRINT;
+    this.audioService.playChangeStateSound();
   }
 
   setFace() {
     this.isModalVisible = true;
     this.modalContent = Modal.SET_FACE;
+    this.audioService.playChangeStateSound();
   }
 
   setVoice() {
     this.isModalVisible = true;
     this.modalContent = Modal.SET_VOICE;
+    this.audioService.playChangeStateSound();
   }
 
   logout() {
@@ -140,19 +149,23 @@ export class SettingsComponent implements OnDestroy {
     this.socketService.disconnect();
     this.router.navigate(['/login']);
     this.toastr.success('You have successfully logged out!', 'Logout Successful');
+    this.audioService.playSuccessSound();
   }
 
   deleteMessages() {
     this.isModalVisible = true;
     this.modalContent = Modal.DELETE_MESSAGES;
+    this.audioService.playChangeStateSound();
   }
 
   deleteAccount() {
     this.isModalVisible = true;
     this.modalContent = Modal.DELETE_ACCOUNT;
+    this.audioService.playChangeStateSound();
   }
 
   openModal() {
+    // this.audioService.playChangeStateSound();
     this.isModalVisible = true;
   }
 

@@ -1,31 +1,33 @@
 <nav [class]="device === Device.DESKTOP ? 'sidebar--desktop' : 'sidebar--mobile'" class="sidebar">
   <div class="items">
-    <a routerLink="/access" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="item">
+    <a routerLink="/access" (click)="playSound()" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+      class="item">
       <img src="./../../../assets/img/PersonBridge-logo.png" alt="PersonBridge brand" />
       <div class="text">Home</div>
     </a>
-    <a [routerLink]="['/access/chat', chatType, chatID]" [ngClass]="{'active': isChatActive}" class="item">
+    <a [routerLink]="['/access/chat', chatType, chatID]" (click)="playSound()" [ngClass]="{'active': isChatActive}"
+      class="item">
       <fa-icon class="fa icon" [icon]="icons.chats" />
       <div class="text">Chats</div>
     </a>
-    <a routerLink="/access/people" routerLinkActive="active" class="item" #rla="routerLinkActive">
+    <a routerLink="/access/people" (click)="playSound()" routerLinkActive="active" class="item" #rla="routerLinkActive">
       <fa-icon class="fa icon" [icon]="icons.friends" />
       <span class="requests" *ngIf="requestsCounter > 0" [class.active]="rla.isActive">{{requestsCounter}}</span>
       <div class="text">People</div>
     </a>
-    <a routerLink="/access/explore" routerLinkActive="active" class="item">
+    <a routerLink="/access/explore" (click)="playSound()" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.explore" />
       <div class="text">Explore</div>
     </a>
-    <a routerLink="/access/calls" routerLinkActive="active" class="item">
+    <a routerLink="/access/calls" (click)="playSound()" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.calls" />
       <div class="text">Calls</div>
     </a>
-    <a routerLink="/access/personbots" routerLinkActive="active" class="item">
+    <a routerLink="/access/personbots" (click)="playSound()" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.chatbots" />
       <div class="text">PersonBots</div>
     </a>
-    <a routerLink="/access/settings" routerLinkActive="active" class="item">
+    <a routerLink="/access/settings" (click)="playSound()" routerLinkActive="active" class="item">
       <fa-icon class="fa icon" [icon]="icons.settings" />
       <div class="text">Settings</div>
     </a>

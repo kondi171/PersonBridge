@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { environment } from '../../../app.environment';
 import { StoreService } from '../../../services/store.service';
 import { ToastrService } from 'ngx-toastr';
+import { AudioService } from '../../../services/audio.service';
 
 @Component({
   selector: 'app-change-avatar',
@@ -13,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 export class ChangeAvatarComponent {
   yourID = '';
   avatar = '';
-  constructor(private storeService: StoreService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private audioService: AudioService) {
     const loggedUser = storeService.getLoggedUser();
     if (loggedUser) {
       this.yourID = loggedUser._id;
@@ -37,6 +38,7 @@ export class ChangeAvatarComponent {
         .then(response => response.json())
         .then(() => {
           this.toastr.success('Avatar uploaded successfully!', 'Success');
+          this.audioService.playSuccessSound();
           fetch(`${environment.apiURL}/access/user/${this.yourID}`, {
             method: 'GET',
           })
@@ -47,15 +49,18 @@ export class ChangeAvatarComponent {
             })
             .catch(error => {
               this.toastr.error('An Error Occured while changing avatar!', 'Avatar upload error');
+              this.audioService.playErrorSound();
               console.error('Avatar upload error:', error);
             })
         })
         .catch(error => {
           this.toastr.error('An Error Occured while uploading avatar!', 'Avatar upload error');
+          this.audioService.playErrorSound();
           console.error('Avatar upload error:', error);
         });
     } else {
       this.toastr.error('Please select a file to upload!', 'No File Selected');
+      this.audioService.playErrorSound();
     }
   }
   onImageError(event: any) {

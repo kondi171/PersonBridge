@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalComponent } from '../../features/modal-wrapper/modal-wrapper.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 import { MessageRowComponent } from './message-row/message-row.component';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-panel',
@@ -64,6 +65,7 @@ export class PanelComponent implements OnInit, OnDestroy {
     private router: Router,
     private storeService: StoreService,
     private toastr: ToastrService,
+    private audioService: AudioService
   ) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
@@ -129,6 +131,7 @@ export class PanelComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while retrieving your messages!', 'Messages Error');
+        this.audioService.playErrorSound();
         console.error('Messages Error:', error);
       });
   }
@@ -152,7 +155,7 @@ export class PanelComponent implements OnInit, OnDestroy {
     //   (trimmedURL !== chatPathForUser && trimmedURL !== chatPathForGroup)) {
     //   return;
     // }
-
+    this.audioService.playChangeStateSound();
     this.storeService.updateChatType(chatType);
     this.storeService.updateChatID(chatID);
     this.router.navigate(['/access/chat/', chatType, chatID]);
@@ -177,12 +180,14 @@ export class PanelComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while changing status!', 'Status Change Error');
+        this.audioService.playErrorSound();
         console.error('Login Error:', error);
       });
   }
 
   openModal() {
     this.isModalVisible = true;
+    this.audioService.playChangeStateSound();
   }
 
   closeModal() {

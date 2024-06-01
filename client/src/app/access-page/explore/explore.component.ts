@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PersonRowComponent } from './person-row/person-row.component';
 import { SocketService } from '../../services/socket.service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-explore',
@@ -48,7 +49,7 @@ export class ExploreComponent implements OnInit {
   limit = 20;
   offset = 0;
 
-  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService, private audioService: AudioService) {
     const loggedUser = this.storeService.getLoggedUser();
     if (loggedUser) {
       this.yourID = loggedUser._id;
@@ -58,6 +59,7 @@ export class ExploreComponent implements OnInit {
   ngOnInit(): void {
     this.socketService.onAcceptRequest(() => {
       this.handleGetSentRequest();
+      this.audioService.playChangeStateSound();
     });
     this.socketService.onIgnoreRequest(() => {
       this.handleGetSentRequest();
@@ -91,6 +93,7 @@ export class ExploreComponent implements OnInit {
   handleFindPeople(loadMore = false) {
     if (this.searchInputValue.length === 0) {
       this.toastr.error('Search input is empty!', 'Search failed');
+      this.audioService.playErrorSound();
       return;
     }
 
@@ -117,6 +120,7 @@ export class ExploreComponent implements OnInit {
             this.toastr.info('No more users to load.', 'Info');
           } else {
             this.toastr.error('No users found!', 'Find Error');
+            this.audioService.playErrorSound();
             this.results = [];
           }
         } else {
@@ -124,6 +128,7 @@ export class ExploreComponent implements OnInit {
           this.offset += this.limit;
           if (loadMore) {
             this.toastr.success('Loaded more users.', 'Success');
+            this.audioService.playSuccessSound();
           }
         }
         return data;
@@ -131,6 +136,7 @@ export class ExploreComponent implements OnInit {
       .catch(error => {
         console.error('Internal Server Error:', error);
         this.toastr.error('Internal Server Error!', 'Error');
+        this.audioService.playErrorSound();
       });
   }
 

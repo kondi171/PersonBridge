@@ -9,6 +9,7 @@ import { environment } from '../../../app.environment';
 import { ToastrService } from 'ngx-toastr';
 import { UserInfo } from '../../../typescript/types';
 import { CommonModule } from '@angular/common';
+import { AudioService } from '../../../services/audio.service';
 
 @Component({
   selector: 'app-create-group',
@@ -36,7 +37,7 @@ export class CreateGroupComponent implements OnInit {
     remove: faMinus
   }
 
-  constructor(private storeService: StoreService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private audioService: AudioService) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser) {
@@ -66,6 +67,7 @@ export class CreateGroupComponent implements OnInit {
         })
         .catch(error => {
           this.toastr.error('An Error Occured while retrieving your friends!', 'Friends Error');
+          this.audioService.playErrorSound();
           console.error('Friends Error:', error);
         });
     }
@@ -107,13 +109,16 @@ export class CreateGroupComponent implements OnInit {
   handleCreateGroup() {
     if (this.groupName.trim().length === 0) {
       this.toastr.error('The Group name cannot be empty!', 'Group Name Error');
+      this.audioService.playErrorSound();
       return;
     } else if (this.groupName.length < 3) {
       this.toastr.error('The Group name must be at least 3 characters long!', 'Group Name Error');
+      this.audioService.playErrorSound();
       return;
     }
     if (this.participants.length < 3) {
       this.toastr.error('The group must have a minimum of 3 participants, including you!', 'Participants Error');
+      this.audioService.playErrorSound();
       return;
     }
     else {
@@ -136,11 +141,13 @@ export class CreateGroupComponent implements OnInit {
           this.participants = [];
           this.participants.push(this.yourID);
           this.toastr.success('The group was created!', 'Group Created');
+          this.audioService.playSuccessSound();
           this.groupID = data.id;
           this.uploadAvatarToTheServer();
         })
         .catch(error => {
           this.toastr.error('An Error Occured while creating group!', 'Creating Group failed');
+          this.audioService.playErrorSound();
           console.error('Creating Group failed:', error);
         });
     }
@@ -162,6 +169,7 @@ export class CreateGroupComponent implements OnInit {
         })
         .catch(error => {
           this.toastr.error('An Error Occured while uploading avatar group!', 'Upload Avatar Group failed');
+          this.audioService.playErrorSound();
           console.error('Upload Avatar Group failed:', error);
         });
     }

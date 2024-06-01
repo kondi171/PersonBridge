@@ -18,6 +18,7 @@ import { PINComponent } from '../user-chat/pin/pin.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SocketService } from '../../../services/socket.service';
+import { AudioService } from '../../../services/audio.service';
 
 @Component({
   selector: 'app-group-chat',
@@ -93,7 +94,7 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
   onlineParticipantsCount: number = 0;
   isInitialized: boolean = false;
 
-  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router) {
+  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router, private audioService: AudioService) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser?._id) {
@@ -132,6 +133,8 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.socketService.onMessageToGroupSent((data: any) => {
       this.getMessages(false, true);
+      if (!this.groupChatData.accessibility.mute)
+        this.audioService.playNewMessageSound();
     });
     this.socketService.onAddReactionToGroup(() => {
       this.storeService.forceRefreshMessages(true);
@@ -198,6 +201,7 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
           if (loadMore) {
             this.toastr.success('Loaded more messages.', 'Success');
+            this.audioService.playSuccessSound();
           }
         } else {
           if (loadMore) {
@@ -217,6 +221,7 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while fetching group!', 'Data Retrieve Error');
+        this.audioService.playErrorSound();
         console.error('Data Retrieve Error:', error);
       });
     this.markMessagesAsRead();
@@ -233,6 +238,7 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
     })
       .catch(error => {
         this.toastr.error('An Error Occured while marking message!', 'Message Error');
+        this.audioService.playErrorSound();
         console.error('Data Retrieve Error:', error);
       });
   }
@@ -270,6 +276,7 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while sending message!', 'Message Error');
+        this.audioService.playErrorSound();
         console.error("Message doesn't sent!:", error);
       });
   }
@@ -285,6 +292,7 @@ export class GroupChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
   navigateToSettings() {
     this.router.navigate(['/access/chat/group', this.groupChatData.id, 'settings']);
+    this.audioService.playChangeStateSound();
   }
 
   handleAudioCall() {

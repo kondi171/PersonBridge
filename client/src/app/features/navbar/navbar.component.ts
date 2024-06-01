@@ -7,7 +7,8 @@ import { StoreService } from '../../services/store.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { environment } from '../../app.environment';
-import { SocketService } from '../../services/socket.service'; // Import SocketService
+import { SocketService } from '../../services/socket.service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-navbar',
@@ -39,7 +40,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private storeService: StoreService,
     private router: Router,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private audioService: AudioService
   ) {
     this.requestSubscription = this.storeService.counter$.subscribe(counter => {
       this.requestsCounter = counter;
@@ -88,6 +90,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.socketService.disconnect();
   }
 
+  playSound() {
+    this.audioService.playChangeStateSound();
+  }
   get isChatActive(): boolean {
     const path = this.router.url;
     const chat = path.slice(0, 13);

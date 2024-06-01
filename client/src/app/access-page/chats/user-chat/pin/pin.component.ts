@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../app.environment';
+import { AudioService } from '../../../../services/audio.service';
 
 @Component({
   selector: 'app-pin',
@@ -19,7 +20,7 @@ export class PINComponent {
   isPINForgotten = false;
   password = '';
 
-  constructor(private toastr: ToastrService) { }
+  constructor(private toastr: ToastrService, private audioService: AudioService) { }
 
   validateInput(event: KeyboardEvent): void {
     const inputChar = String.fromCharCode(event.keyCode);
@@ -44,11 +45,16 @@ export class PINComponent {
     if (Number(pinCode) === this.correctPIN) {
       this.accessGranted.emit(true);
       this.toastr.success('Correct PIN!', 'Access Granted');
-    } else this.toastr.error('Incorrect PIN!', 'Access Denied');
+      this.audioService.playSuccessSound();
+    } else {
+      this.toastr.error('Incorrect PIN!', 'Access Denied');
+      this.audioService.playErrorSound();
+    }
   }
   handleAccessMessagesByPassword() {
     if (this.password === '') {
       this.toastr.error('Password which you provided is empty!', 'Access Denied');
+      this.audioService.playErrorSound();
       return;
     }
     fetch(`${environment.apiURL}/user/chat/PIN`, {
@@ -65,10 +71,15 @@ export class PINComponent {
         if (data.success) {
           this.accessGranted.emit(true);
           this.toastr.success('Correct password!', 'Access Granted');
-        } else this.toastr.error('Invalid password!', 'Access Denied');
+          this.audioService.playSuccessSound();
+        } else {
+          this.toastr.error('Invalid password!', 'Access Denied');
+          this.audioService.playErrorSound();
+        }
       })
       .catch(error => {
         this.toastr.error('An Error Occured while granting Access!', 'Access Error');
+        this.audioService.playErrorSound();
         console.error("Access Denied:", error);
       });
 

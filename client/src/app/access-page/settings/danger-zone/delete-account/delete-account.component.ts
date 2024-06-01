@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../app.environment';
 import { SocketService } from '../../../../services/socket.service';
 import { Router } from '@angular/router';
+import { AudioService } from '../../../../services/audio.service';
 
 @Component({
   selector: 'app-delete-account',
@@ -17,7 +18,7 @@ export class DeleteAccountComponent {
   password = "";
   yourID = "";
 
-  constructor(private storeService: StoreService, private toastr: ToastrService, private socketService: SocketService, private router: Router) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private socketService: SocketService, private router: Router, private audioService: AudioService) {
     const loggedUser = storeService.getLoggedUser();
     if (loggedUser) {
       this.yourID = loggedUser._id;
@@ -27,6 +28,7 @@ export class DeleteAccountComponent {
   deleteAccount() {
     if (this.password === '') {
       this.toastr.error('Password which you provided is empty!', 'Delete failed');
+      this.audioService.playErrorSound();
       return;
     }
     fetch(`${environment.apiURL}/settings/account`, {
@@ -40,15 +42,18 @@ export class DeleteAccountComponent {
       .then(data => {
         if (data.error) {
           this.toastr.error(data.error, 'Delete failed');
+          this.audioService.playErrorSound();
           return;
         }
         this.storeService.removeLoggedUser();
         this.socketService.disconnect();
         this.router.navigate(['/login']);
-        this.toastr.error('You have successfully removed your Account!', 'Delete Successful');
+        this.toastr.success('You have successfully removed your Account!', 'Delete Successful');
+        this.audioService.playSuccessSound();
       })
       .catch(error => {
         this.toastr.error('An Error Occured while deleting!', 'Delete failed');
+        this.audioService.playErrorSound();
         console.error('Delete Account Error:', error);
       });
   }

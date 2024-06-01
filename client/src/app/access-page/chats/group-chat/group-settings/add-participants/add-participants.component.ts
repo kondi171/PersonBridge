@@ -9,6 +9,7 @@ import { GroupSettingsData, User } from '../../../../../typescript/interfaces';
 import { UserInfo } from '../../../../../typescript/types';
 import { StoreService } from '../../../../../services/store.service';
 import { environment } from '../../../../../app.environment';
+import { AudioService } from '../../../../../services/audio.service';
 
 @Component({
   selector: 'app-add-participants',
@@ -51,7 +52,7 @@ export class AddParticipantsComponent implements OnInit {
     add: faPlus,
     remove: faMinus
   }
-  constructor(private storeService: StoreService, private toastr: ToastrService) {
+  constructor(private storeService: StoreService, private toastr: ToastrService, private audioService: AudioService) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser) {
@@ -87,6 +88,7 @@ export class AddParticipantsComponent implements OnInit {
         })
         .catch(error => {
           this.toastr.error('An Error Occured while retrieving your friends!', 'Friends Error');
+          this.audioService.playErrorSound();
           console.error('Friends Error:', error);
         });
     }
@@ -113,6 +115,7 @@ export class AddParticipantsComponent implements OnInit {
   handleAddParticipants() {
     if (this.participants.length < 1) {
       this.toastr.error('You must add at least one participant!', 'Participants Error');
+      this.audioService.playErrorSound();
       return;
     } else {
       fetch(`${environment.apiURL}/group/settings/add`, {
@@ -132,11 +135,13 @@ export class AddParticipantsComponent implements OnInit {
           this.participants = [];
           this.participants.push(this.yourID);
           this.toastr.success('You added participants to the group!', 'Participants Added');
+          this.audioService.playSuccessSound();
           this.fetchParticipants();
           this.participantsAdded.emit();
         })
         .catch(error => {
           this.toastr.error('An Error Occured while adding participants group!', 'Adding participants failed');
+          this.audioService.playErrorSound();
           console.error('Adding participants failed:', error);
         });
     }

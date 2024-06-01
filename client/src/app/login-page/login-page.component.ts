@@ -10,6 +10,7 @@ import { LoginData } from '../typescript/types';
 import { environment } from '../app.environment';
 import { BackgroundEffectComponent } from '../features/background-effect/background-effect.component';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { AudioService } from '../services/audio.service';
 
 @Component({
   selector: 'app-login-page',
@@ -70,7 +71,8 @@ export class LoginPageComponent {
   constructor(
     private router: Router,
     private storeService: StoreService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private audioService: AudioService
   ) { }
 
   switchToRegisterPage() {
@@ -95,15 +97,18 @@ export class LoginPageComponent {
       .then(data => {
         if (data.message) {
           this.toastr.error(data.message, 'Login Error');
+          this.audioService.playErrorSound();
           return;
         } else {
           this.storeService.setLoggedUser(data);
           this.router.navigate(['/access']);
           this.toastr.success('You have successfully logged in!', 'Login Successful');
+          this.audioService.playSuccessSound();
         }
       })
       .catch(error => {
         this.toastr.error('An Error Occured while logging in!', 'Login Error');
+        this.audioService.playErrorSound();
         console.error('Login Error:', error);
       });
   }

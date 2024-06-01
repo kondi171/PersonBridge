@@ -6,6 +6,7 @@ import { RegisterData } from '../typescript/types';
 import { environment } from '../app.environment';
 import { ToastrService } from 'ngx-toastr';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { AudioService } from '../services/audio.service';
 @Component({
   selector: 'app-register-page',
   standalone: true,
@@ -53,7 +54,7 @@ export class RegisterPageComponent {
     password: ''
   }
 
-  constructor(private router: Router, private toastr: ToastrService) { }
+  constructor(private router: Router, private toastr: ToastrService, private audioService: AudioService) { }
 
   switchToLoginPage() {
     this.router.navigate(['/login']);
@@ -83,22 +84,27 @@ export class RegisterPageComponent {
     let valid = true;
     if (!this.registerData.mail || !/\S+@\S+\.\S+/.test(this.registerData.mail)) {
       this.toastr.error('Invalid email address!', 'Register Error');
+      this.audioService.playErrorSound();
       valid = false;
     }
     if (!this.registerData.name.trim()) {
       this.toastr.error('Name is required!', 'Register Error');
+      this.audioService.playErrorSound();
       valid = false;
     }
     if (!this.registerData.lastname.trim()) {
       this.toastr.error('Lastname is required!', 'Register Error');
+      this.audioService.playErrorSound();
       valid = false;
     }
     if (!this.registerData.password || this.registerData.password.length < 6) {
       this.toastr.error('Password must be at least 6 characters long!', 'Register Error');
+      this.audioService.playErrorSound();
       valid = false;
     }
     if (valid) {
       this.toastr.success('Registration successful!', 'Register Successful');
+      this.audioService.playSuccessSound();
       this.registerUser();
       this.registerData = {
         mail: '',

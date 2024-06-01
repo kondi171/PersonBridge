@@ -18,6 +18,7 @@ import { PINComponent } from './pin/pin.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { SocketService } from '../../../services/socket.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { AudioService } from '../../../services/audio.service';
 
 @Component({
   selector: 'app-user-chat',
@@ -97,7 +98,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
   visibleReactions: { [key: string]: boolean } = {};
   isInitialized: boolean = false;
 
-  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router) {
+  constructor(private storeService: StoreService, private socketService: SocketService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private router: Router, private audioService: AudioService) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {
       this.loggedUser = user;
       if (this.loggedUser?._id) {
@@ -141,6 +142,8 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.socketService.onMessageToUserSent((data: any) => {
       if (data.from === this.friendChatData.id) {
+        if (!this.friendChatData.accessibility.mute)
+          this.audioService.playNewMessageSound();
         this.getMessages(false, true);
       }
     });
@@ -205,6 +208,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
           if (loadMore) {
             this.messages = [...formattedMessages, ...this.messages];
             this.toastr.success('Loaded more messages.', 'Success');
+            this.audioService.playSuccessSound();
           } else {
             this.messages = formattedMessages.slice(-limitToUse);
           }
@@ -228,6 +232,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while fetching friend!', 'Data Retrieve Error');
+        this.audioService.playErrorSound();
         console.error('Data Retrieve Error:', error);
       });
     this.markMessagesAsRead();
@@ -255,6 +260,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
     })
       .catch(error => {
         this.toastr.error('An Error Occured while marking message!', 'Message Error');
+        this.audioService.playErrorSound();
         console.error('Data Retrieve Error:', error);
       });
   }
@@ -272,6 +278,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
   sendMessage() {
     if (!this.accessGranted) {
       this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
+      this.audioService.playErrorSound();
       return;
     }
 
@@ -279,11 +286,13 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.friendChatData.accessibility.block) {
       this.toastr.error('Friend is blocked!', `${this.friendChatData.name} ${this.friendChatData.lastname}`);
+      this.audioService.playErrorSound();
       return;
     }
 
     if (this.friendChatData.blocked.includes(this.yourID)) {
       this.toastr.error('Friend is blocking you!', `${this.friendChatData.name} ${this.friendChatData.lastname}`);
+      this.audioService.playErrorSound();
       return;
     }
 
@@ -311,6 +320,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .catch(error => {
         this.toastr.error('An Error Occured while sending message!', 'Message Error');
+        this.audioService.playErrorSound();
         console.error("Message doesn't sent!:", error);
       });
   }
@@ -332,8 +342,10 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
   navigateToSettings() {
     if (this.accessGranted) {
       this.router.navigate(['/access/chat/user', this.friendChatData.id, 'settings']);
+      this.audioService.playChangeStateSound();
     } else {
       this.toastr.error('You need to enter the correct PIN to access settings!', 'Access Denied');
+      this.audioService.playErrorSound();
     }
   }
 
@@ -342,6 +354,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
       // Audio Call
     } else {
       this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
+      this.audioService.playErrorSound();
     }
   }
 
@@ -350,6 +363,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewInit {
       // Video Call
     } else {
       this.toastr.error('You need to enter the correct PIN!', 'Access Denied');
+      this.audioService.playErrorSound();
     }
   }
 

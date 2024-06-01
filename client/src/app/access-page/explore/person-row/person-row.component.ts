@@ -8,6 +8,7 @@ import { StoreService } from '../../../services/store.service';
 import { ToastrService } from 'ngx-toastr';
 import { FullName } from '../../../typescript/types';
 import { SocketService } from '../../../services/socket.service';
+import { AudioService } from '../../../services/audio.service';
 
 @Component({
   selector: 'app-person-row',
@@ -38,7 +39,8 @@ export class PersonRowComponent implements OnInit {
   constructor(
     private storeService: StoreService,
     private socketService: SocketService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private audioService: AudioService
   ) {
     const loggedUser = this.storeService.getLoggedUser();
     if (loggedUser) {
@@ -96,11 +98,13 @@ export class PersonRowComponent implements OnInit {
           throw new Error('Internal Server Error');
         }
         this.toastr.success('Request Sent!', `${fullname.name} ${fullname.lastname}`);
+        this.audioService.playSuccessSound();
         return response.json();
       })
       .catch(error => {
         console.error('Internal Server Error:', error);
         this.toastr.error('Internal Server Error!', 'Error');
+        this.audioService.playErrorSound();
         throw error;
       });
   }
@@ -131,6 +135,7 @@ export class PersonRowComponent implements OnInit {
       .catch(error => {
         console.error('Internal Server Error:', error);
         this.toastr.error('Internal Server Error!', 'Error');
+        this.audioService.playErrorSound();
         throw error;
       });
   }
