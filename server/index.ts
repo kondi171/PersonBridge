@@ -45,7 +45,8 @@ mongoose.connect(`mongodb+srv://${username}:${password}@${clusterURL}.mongodb.ne
 
 const db = mongoose.connection;
 const corsOptions = {
-  origin: 'http://localhost:4200',
+  // origin: 'http://localhost:4200',
+  origin: "https://personbridge.netlify.app",
   credentials: true,
 };
 

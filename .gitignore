@@ -2,7 +2,8 @@
 
 /client/.angular
 /client/.history
-
+/client/.env
+/server/.env
 
 # Compiled output
 /dist
