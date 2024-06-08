@@ -24,11 +24,11 @@
         </div>
       </div>
       <div class="icons">
-        <div class="icon-wrapper" (click)="handleAudioCall()">
+        <div class="icon-wrapper hidden" (click)="handleAudioCall()">
           <fa-icon class="fa icon" [icon]="icons.audio"></fa-icon>
           <span class="text">Audio Call</span>
         </div>
-        <div class="icon-wrapper" (click)="handleVideoCall()">
+        <div class="icon-wrapper hidden" (click)="handleVideoCall()">
           <fa-icon class="fa icon" [icon]="icons.video"></fa-icon>
           <span class="text">Video Call</span>
         </div>
@@ -44,8 +44,9 @@
       Send a message to start chatting.
     </div>
     <div *ngIf="friendChatData.settings.PIN !== 0 && !accessGranted" class="pin">
-      <app-pin [correctPIN]="friendChatData.settings.PIN" [yourID]="yourID" (accessGranted)="onAccessGranted($event)">
-      </app-pin>
+      <app-user-pin [correctPIN]="friendChatData.settings.PIN" [yourID]="yourID"
+        (accessGranted)="onAccessGranted($event)">
+      </app-user-pin>
     </div>
     <div *ngIf="friendChatData.settings.PIN === 0 || accessGranted">
       <button *ngIf="messages.length >= 20" class="load-more-messages" (click)="loadMoreMessages()">Load More</button>

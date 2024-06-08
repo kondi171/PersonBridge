@@ -8,7 +8,8 @@ export enum ActiveState {
 
 export enum ChatType {
   USER_CHAT = 'user',
-  GROUP_CHAT = 'group'
+  GROUP_CHAT = 'group',
+  BOT_CHAT = 'bot'
 }
 
 export enum CardType {

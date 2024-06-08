@@ -1,0 +1,27 @@
+<div class="content">
+  <form *ngIf="isPINForgotten" class="password" (ngSubmit)="handleAccessMessagesByPassword()">
+    <h3>Please Enter Password:</h3>
+    <input [(ngModel)]="password" class="input" type="password" name="password" id="password"
+      placeholder="Type password...">
+    <button class="password-btn" type="submit">Accept</button>
+    <div class="forget" (click)="handleChangeAccessMethod()">
+      Change to PIN
+    </div>
+  </form>
+  <div *ngIf="!isPINForgotten" class="pin">
+    <h3>Please Enter PIN:</h3>
+    <div class="pin-code">
+      <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[0]" name="pin1" #pinInput
+        (input)="moveFocus(pinInput, pin2)" (keypress)="validateInput($event)">
+      <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[1]" name="pin2" #pin2
+        (input)="moveFocus(pin2, pin3)" (keypress)="validateInput($event)">
+      <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[2]" name="pin3" #pin3
+        (input)="moveFocus(pin3, pin4)" (keypress)="validateInput($event)">
+      <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[3]" name="pin4" #pin4
+        (input)="moveFocus(pin4, null)" (keypress)="validateInput($event)">
+    </div>
+    <div class="forget" (click)="handleChangeAccessMethod()">
+      Did you forget the PIN?
+    </div>
+  </div>
+</div>

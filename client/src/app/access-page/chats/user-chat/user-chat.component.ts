@@ -14,7 +14,7 @@ import { NoMessagesComponent } from '../no-messages/no-messages.component';
 import { ToastrService } from 'ngx-toastr';
 import { ChatType, UserStatus } from '../../../typescript/enums';
 import { FriendChatData, User, Message } from '../../../typescript/interfaces';
-import { PINComponent } from './pin/pin.component';
+import { UserPINComponent } from './user-pin/user-pin.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { SocketService } from '../../../services/socket.service';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -23,7 +23,7 @@ import { AudioService } from '../../../services/audio.service';
 @Component({
   selector: 'app-user-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PickerComponent, MessageBoxComponent, NoMessagesComponent, PINComponent],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PickerComponent, MessageBoxComponent, NoMessagesComponent, UserPINComponent],
   templateUrl: './user-chat.component.html',
   styleUrls: ['./user-chat.component.scss'],
   animations: [

@@ -1,0 +1,61 @@
+<section class="bot-settings" @fadeIn *ngIf="isInitialized">
+  <a [routerLink]="['/access/chat/bot', activeChatID]" routerLinkActive="active" class="icon-back">
+    <fa-icon class="fa " [icon]="icons.back" />
+  </a>
+  <div class="clip">
+    <div class="chatbot">
+      {{chatbotInfo.name}}
+    </div>
+    <div class="founder">
+      {{chatbotInfo.founder}}
+    </div>
+    <span class="total-messages">
+      <fa-icon class="fa" [icon]="icons.messages" />
+      {{chatbotInfo.messagesCounter}}
+    </span>
+    <div class="description">
+      {{chatbotInfo.description}}
+    </div>
+  </div>
+  <div class="settings">
+    <div class="option">
+      <div class="option__info">
+        <fa-icon class="fa" [icon]="icons.pin"></fa-icon>
+        <span>Set PIN</span>
+      </div>
+      <div class="pin-code">
+        <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[0]" name="pin1" #pin1
+          (input)="moveFocus(pin1, pin2)" (keypress)="validateInput($event)">
+        <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[1]" name="pin2" #pin2
+          (input)="moveFocus(pin2, pin3)" (keypress)="validateInput($event)">
+        <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[2]" name="pin3" #pin3
+          (input)="moveFocus(pin3, pin4)" (keypress)="validateInput($event)">
+        <input autocomplete="off" type="password" maxlength="1" [(ngModel)]="PIN[3]" name="pin4" #pin4
+          (input)="moveFocus(pin4, null)" (keypress)="validateInput($event)">
+      </div>
+      <div class="btns">
+        <button class="set" (click)="handleSetPIN()">Set</button>
+        <button class="remove" (click)="handleRemovePIN()">Remove</button>
+      </div>
+    </div>
+    <div class="option">
+      <div class="option__info">
+        <fa-icon class="fa" [icon]="icons.nickname" />
+        <span>Set a nickname</span>
+      </div>
+      <input [(ngModel)]="nickname" class="nickname-input" type="text" placeholder="Enter Nickname...">
+      <button class="nickname-btn" (click)="handleSetNickname()">Set</button>
+    </div>
+    <button (click)="handleDeleteMessages()" class="option remove">
+      <span>Delete messages</span>
+      <fa-icon class="fa" [icon]="icons.messages" />
+    </button>
+  </div>
+  <app-modal [visible]="isModalVisible" (close)="isModalVisible = false">
+    <app-delete-messages-with-bot *ngIf="modalContent === ModalContent.DELETE_MESSAGES"
+      [chatbotID]="this.activeChatID" />
+  </app-modal>
+  <footer>
+    <app-footer [position]="Position.FIXED" />
+  </footer>
+</section>

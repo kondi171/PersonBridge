@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy, ElementRef, HostListener } from '@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { StoreService } from '../../../services/store.service';
-import { FriendChatData, User, Message, GroupChatData } from '../../../typescript/interfaces';
+import { FriendChatData, User, Message, GroupChatData, ChatbotChatData } from '../../../typescript/interfaces';
 import { environment } from '../../../app.environment';
 import { ChatType, UserStatus } from '../../../typescript/enums';
 import { Participant } from '../../../typescript/types';
@@ -24,7 +24,9 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     read: false,
     reactions: []
   };
+
   @Input() chatType: ChatType = ChatType.USER_CHAT;
+
   @Input() groupData: GroupChatData = {
     id: '',
     name: '',
@@ -39,6 +41,7 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     participants: [],
     messages: []
   }
+
   @Input() friendData: FriendChatData = {
     id: '',
     name: '',
@@ -56,6 +59,20 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     },
     blocked: []
   };
+
+  @Input() botData: ChatbotChatData = {
+    id: '',
+    name: '',
+    founder: '',
+    description: '',
+    settings: {
+      nickname: '',
+      PIN: 0,
+    },
+    modelAPI: '',
+    messages: []
+  }
+
   ChatType = ChatType;
   loggedUserSubscription: Subscription;
   loggedUser: User | null = null;
@@ -66,6 +83,7 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     nickname: '',
     avatar: ''
   }
+  defaultAvatar = './../../../../assets/img/Blank-Avatar.jpg';
 
   constructor(private datePipe: DatePipe, private storeService: StoreService, private elementRef: ElementRef) {
     this.loggedUserSubscription = this.storeService.loggedUser$.subscribe(user => {

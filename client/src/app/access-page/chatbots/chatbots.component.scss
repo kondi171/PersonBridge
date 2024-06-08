@@ -1,0 +1,136 @@
+@import './../../../assets/scss/variables.scss';
+@import './../../../assets/scss/placeholders.scss';
+@import './../../../assets/scss/mixins.scss';
+
+
+.chatbots {
+  height: 100vh;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  .heading {
+    @extend %sectionHeading;
+    margin-bottom: 15vmin;
+  }
+
+  .cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .card {
+      @include card($primaryColor);
+      height: 35vmax;
+      display: flex;
+      flex-direction: column;
+      // justify-content: space-between;
+      padding: 0;
+
+      .name {
+        padding: 2vmin 0;
+        font-size: 5vmin;
+        background-color: $blackColor;
+        border-top-left-radius: 2vmin;
+        border-top-right-radius: 2vmin;
+        border-bottom: .7vmin solid $primaryColor;
+        width: 100%;
+        margin: 0;
+      }
+
+      .founder {
+        font-size: 4vmin;
+        color: $secondaryColor;
+        margin-top: 2vmin;
+      }
+
+      .description {
+        display: block;
+        text-align: center;
+        color: $textColor;
+        padding: 2vmin;
+        font-size: 3vmin;
+        text-align: justify;
+        text-align-last: center;
+      }
+
+      button {
+        color: $bgColor;
+        margin-top: auto;
+
+        &:hover {
+          background-color: $bgColor;
+          border: 2px solid $primaryColor;
+          color: $primaryColor;
+        }
+      }
+
+    }
+  }
+
+  .footer {
+    margin-top: 15vmin;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+
+  .chatbots {
+
+    h3 {
+      font-size: 4vmin;
+    }
+
+    .cards {
+      .card {
+        @include card($primaryColor);
+        height: 45vh;
+        display: flex;
+        flex-direction: column;
+
+        .name {
+          padding: 2vmin 0;
+          font-size: 3vmin;
+          background-color: $blackColor;
+          border-top-left-radius: 2vmin;
+          border-top-right-radius: 2vmin;
+          border-bottom: .3vmin solid $primaryColor;
+        }
+
+        .founder {
+          font-size: 2.7vmin;
+          color: $secondaryColor;
+          margin-top: 2vmin;
+        }
+
+        .description {
+          display: block;
+          text-align: center;
+          color: $textColor;
+          padding: 2vmin;
+          font-size: 2.5vmin;
+          text-align: justify;
+          text-align-last: center;
+        }
+
+        button {
+          color: $bgColor;
+          margin-top: auto;
+
+          &:hover {
+            background-color: $bgColor;
+            border: 2px solid $primaryColor;
+            color: $primaryColor;
+          }
+        }
+
+      }
+    }
+  }
+}

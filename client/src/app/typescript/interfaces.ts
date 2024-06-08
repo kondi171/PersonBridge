@@ -60,6 +60,23 @@ export interface GroupChatData {
     messages: Message[]
 }
 
+export interface ChatbotChatData {
+    id: string,
+    name: string,
+    founder: string,
+    description: string,
+    settings: FriendSettings,
+    modelAPI: string,
+    messages: Message[]
+}
+
+export interface Chatbot {
+    _id: string,
+    name: string,
+    founder: string,
+    description: string
+}
+
 export interface FriendSettingsData {
     id: string,
     name: string,
@@ -79,6 +96,15 @@ export interface GroupSettingsData {
     participants: Participant[],
     accessibility: Accessibility,
     messages: Message[]
+}
+
+export interface ChatbotSettingsData {
+    id: string,
+    name: string,
+    founder: string,
+    description: string,
+    messagesCounter: number,
+    settings: FriendSettings
 }
 
 export interface MessageRow {

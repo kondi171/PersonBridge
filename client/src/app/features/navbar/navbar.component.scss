@@ -125,7 +125,8 @@
             height: 12vmin;
             border-bottom: .3vmin solid $primaryColor;
             margin-top: 0;
-            margin-bottom: 12vmin;
+            // margin-bottom: 12vmin;
+            margin-bottom: 17.5vmin;
             background-color: $blackColor;
             padding-right: 10vw;
 
@@ -145,7 +146,8 @@
 
           &:last-of-type {
             background-color: $blackColor;
-            margin-top: 12vmin;
+            // margin-top: 12vmin;
+            margin-top: 17.5vmin;
             padding-right: 10vw;
             border-top: .3vmin solid $primaryColor;
             height: 9vh;

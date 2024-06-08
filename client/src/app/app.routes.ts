@@ -5,7 +5,7 @@ import { AccessPageComponent } from './access-page/access-page.component';
 import { PeopleComponent } from './access-page/people/people.component';
 import { ExploreComponent } from './access-page/explore/explore.component';
 import { SettingsComponent } from './access-page/settings/settings.component';
-import { personbotsComponent } from './access-page/personbots/personbots.component';
+import { ChabotsComponent } from './access-page/chatbots/chatbots.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { LoaderComponent } from './features/loader/loader.component';
 import { RedirectGuard } from './services/redirect-guard.service';
@@ -14,6 +14,8 @@ import { UserChatComponent } from './access-page/chats/user-chat/user-chat.compo
 import { UserSettingsComponent } from './access-page/chats/user-chat/user-settings/user-settings.component';
 import { GroupChatComponent } from './access-page/chats/group-chat/group-chat.component';
 import { GroupSettingsComponent } from './access-page/chats/group-chat/group-settings/group-settings.component';
+import { BotChatComponent } from './access-page/chats/bot-chat/bot-chat.component';
+import { BotSettingsComponent } from './access-page/chats/bot-chat/bot-settings/bot-settings.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -31,12 +33,14 @@ export const routes: Routes = [
           { path: 'user/:id', component: UserChatComponent },
           { path: 'user/:id/settings', component: UserSettingsComponent },
           { path: 'group/:id', component: GroupChatComponent },
-          { path: 'group/:id/settings', component: GroupSettingsComponent }
+          { path: 'group/:id/settings', component: GroupSettingsComponent },
+          { path: 'bot/:id', component: BotChatComponent },
+          { path: 'bot/:id/settings', component: BotSettingsComponent }
         ]
       },
       { path: 'people', component: PeopleComponent },
       { path: 'explore', component: ExploreComponent },
-      { path: 'personbots', component: personbotsComponent },
+      { path: 'chatbots', component: ChabotsComponent },
       { path: 'settings', component: SettingsComponent }
     ]
   },

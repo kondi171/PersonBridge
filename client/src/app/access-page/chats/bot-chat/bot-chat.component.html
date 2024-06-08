@@ -1,0 +1,63 @@
+<section class="chat">
+  <header class="header">
+    <div class="info" @fadeIn>
+      <a routerLink="/access" routerLinkActive="active" class="icon-back">
+        <fa-icon class="fa" [icon]="icons.back"></fa-icon>
+      </a>
+      <div class="identifier">
+        {{chatbotChatData.settings.nickname !== chatbotChatData.name ? chatbotChatData.settings.nickname : chatbotChatData.name }}
+      </div>
+      <div class="icons">
+        <div class="icon-wrapper hidden">
+          <fa-icon class="fa icon" [icon]="icons.audio"></fa-icon>
+          <span class="text">Audio Call</span>
+        </div>
+        <div class="icon-wrapper hidden">
+          <fa-icon class="fa icon" [icon]="icons.video"></fa-icon>
+          <span class="text">Video Call</span>
+        </div>
+        <a class="icon-wrapper" (click)="navigateToSettings()">
+          <fa-icon class="fa icon" [icon]="icons.settings"></fa-icon>
+          <span class="text">Settings</span>
+        </a>
+      </div>
+    </div>
+  </header>
+  <div #messagesContainer class="messages">
+    <div *ngIf="chatbotChatData.messages.length === 0 && isInitialized && accessGranted" class="start-chat">
+      Send a message to start chatting.
+    </div>
+    <div *ngIf="chatbotChatData.settings.PIN !== 0 && !accessGranted" class="pin">
+      <app-bot-pin [correctPIN]="chatbotChatData.settings.PIN" [yourID]="yourID"
+        (accessGranted)="onAccessGranted($event)">
+      </app-bot-pin>
+    </div>
+    <div *ngIf="chatbotChatData.settings.PIN === 0 || accessGranted">
+      <button *ngIf="chatbotChatData.messages.length >= 20" class="load-more-messages" (click)="loadMoreMessages()">Load
+        More</button>
+      <!-- <div #messagesContainer class="message" *ngFor="let message of messages" (click)="regenerateAnswer(message)"> -->
+      <div #messagesContainer class="message" *ngFor="let message of messages">
+        <app-message-box @messageAnimation [botData]="chatbotChatData" [message]="message"
+          [chatType]="ChatType.BOT_CHAT">
+        </app-message-box>
+      </div>
+    </div>
+  </div>
+  <div class="type-message" @fadeIn>
+    <div class="input-container">
+      <textarea [(ngModel)]="messageContent" name="messageContent" class="input-container__input"
+        placeholder="Type your message..." (keydown)="handleKeyDown($event)"></textarea>
+      <fa-icon class="input-container__icon" [icon]="icons.emoticons" (click)="toggleEmojiPicker()"></fa-icon>
+      <emoji-mart class="emoji-picker-container" *ngIf="showEmojiPicker" (emojiClick)="addEmoji($event)" set="google">
+      </emoji-mart>
+    </div>
+    <button (click)="sendMessage()" class="type-message__btn">
+      Send
+      <fa-icon class="fa icon" [icon]="icons.send"></fa-icon>
+    </button>
+  </div>
+</section>
+
+<ng-template #noMessagesTemplate>
+  <app-no-messages></app-no-messages>
+</ng-template>

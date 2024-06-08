@@ -7,7 +7,7 @@ const router: Router = express.Router();
 router.get('/v1/group/settings/:yourID/:groupID', getGroupSettings);
 
 router.post('/v1/group/settings/avatar/:id', uploadGroupAvatar.single('avatar'), uploadAvatar);
-router.post('/v1/group/settings/avatar/', notifyAvatarChange);
+router.post('/v1/group/settings/avatar', notifyAvatarChange);
 
 router.patch('/v1/group/settings/name', editGroupName);
 

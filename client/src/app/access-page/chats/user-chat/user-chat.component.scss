@@ -115,6 +115,10 @@
           flex-direction: column;
           position: relative;
 
+          &.hidden {
+            visibility: hidden;
+          }
+
           .icon {
             color: $primaryColor;
             font-size: 6vmin;

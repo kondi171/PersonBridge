@@ -16,8 +16,8 @@ export default function startSocketServer(app: any) {
     const server = createServer(app);
     io = new SocketIOServer(server, {
         cors: {
-            // origin: "http://localhost:4200",
-            origin: "https://personbridge.netlify.app",
+            origin: "http://localhost:4200",
+            // origin: "https://personbridge.netlify.app",
             credentials: true
         }
     });

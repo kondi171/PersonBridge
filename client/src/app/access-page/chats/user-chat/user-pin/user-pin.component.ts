@@ -6,13 +6,13 @@ import { environment } from '../../../../app.environment';
 import { AudioService } from '../../../../services/audio.service';
 
 @Component({
-  selector: 'app-pin',
+  selector: 'app-user-pin',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './pin.component.html',
-  styleUrls: ['./pin.component.scss']
+  templateUrl: './user-pin.component.html',
+  styleUrls: ['./user-pin.component.scss']
 })
-export class PINComponent {
+export class UserPINComponent {
   @Input() correctPIN = 1;
   @Input() yourID = '';
   @Output() accessGranted = new EventEmitter<boolean>();

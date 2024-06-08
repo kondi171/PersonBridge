@@ -1,0 +1,23 @@
+<div class="chatbots">
+  <h2 class="heading">
+    <a routerLink="/access" routerLinkActive="active" class="icon-back">
+      <fa-icon class="fa" [icon]="icons.back" />
+    </a>
+    <span @fadeIn>Chatbots</span>
+    <fa-icon @fadeIn class="fa icon" [icon]="icons.section" />
+  </h2>
+
+  <div class="cards">
+    <div *ngFor="let chatbot of chatbots" class="card">
+      <div class="card-border-top"></div>
+      <span class="name">{{chatbot.name}}</span>
+      <p class="mail founder">{{ chatbot.founder }}</p>
+      <span class="description">{{chatbot.description}}</span>
+      <button (click)="showMessages(chatbot._id)">Message</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <app-footer [position]="Position.FIXED" />
+  </footer>
+</div>

@@ -66,10 +66,10 @@
         #emailInput>
       <input [(ngModel)]="loginData.password" class="input" type="password" name="password" id="password"
         placeholder="Password" #passwordInput>
-      <span class="forgot-password"><a href="#">Forgot Password?</a></span>
+      <!-- <span class="forgot-password"><a href="#">Forgot Password?</a></span> -->
       <button type="submit" class="login-button">Sign In</button>
     </form>
-    <nav class="change-login-method">
+    <!-- <nav class="change-login-method">
       <span class="change-login-method__title">Or Sign in with</span>
       <div class="change-login-method__btns">
         <button class="change-login-method__button">
@@ -89,7 +89,7 @@
           <span>Mail</span>
         </button>
       </div>
-    </nav>
+    </nav> -->
   </div>
   <button (click)="switchToRegisterPage()" class="register-btn" [@slideUp]>Don't have Account? Sign Up!</button>
 </section>

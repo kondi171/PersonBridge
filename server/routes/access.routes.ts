@@ -12,4 +12,5 @@ router.get('/v1/access/group/:id', getFriends);
 router.post('/v1/access/group', createGroup);
 router.post('/v1/access/group/:id', uploadGroupAvatar.single('avatar'), uploadAvatar);
 router.get('/v1/access/friends-and-groups/:id', getUserFriendsAndGroupsWithMessages);
+
 export default router;

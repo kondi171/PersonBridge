@@ -14,7 +14,24 @@ export interface UserDocument extends Document {
     requests: FriendRequests,
     groups: Group[],
     blocked: string[],
-    chatbots: any[]
+    chatbots: Chatbot[]
+}
+
+export interface ChatbotDocument extends Document {
+    name: string,
+    description: string,
+    founder: string,
+    modelAPI: string
+}
+
+export interface Chatbot {
+    id: string,
+    name: string,
+    founder: string,
+    description: string,
+    modelAPI: string
+    messages: Message[];
+    settings: FriendSettings;
 }
 
 export interface Friend {

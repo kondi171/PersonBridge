@@ -14,7 +14,6 @@ import { NoMessagesComponent } from '../no-messages/no-messages.component';
 import { ToastrService } from 'ngx-toastr';
 import { ChatType, UserStatus } from '../../../typescript/enums';
 import { GroupChatData, User, Message } from '../../../typescript/interfaces';
-import { PINComponent } from '../user-chat/pin/pin.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SocketService } from '../../../services/socket.service';
@@ -23,7 +22,7 @@ import { AudioService } from '../../../services/audio.service';
 @Component({
   selector: 'app-group-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PickerComponent, MessageBoxComponent, NoMessagesComponent, PINComponent],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, RouterModule, PickerComponent, MessageBoxComponent, NoMessagesComponent],
   templateUrl: './group-chat.component.html',
   styleUrls: ['./group-chat.component.scss'],
   animations: [

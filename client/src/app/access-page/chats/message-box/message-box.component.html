@@ -36,6 +36,42 @@
     </div>
   </ng-container>
 </ng-container>
+<ng-container *ngIf="chatType === ChatType.BOT_CHAT">
+  <ng-container *ngIf="message.sender === botData.id || message.sender === loggedUser?._id; else systemMessage">
+    <div class="message-box"
+      [ngClass]="{'is-you': message.sender === loggedUser?._id, 'is-friend': message.sender === botData.id}">
+      <div class="avatar">
+        <img [src]="message.sender === loggedUser?._id ? loggedUser?.avatar : defaultAvatar"
+          [alt]="message.sender === loggedUser?._id ? loggedUser?.name : botData.name" (error)="onImageError($event)">
+      </div>
+      <div class="message">
+        <div class="name">
+          {{ message.sender === loggedUser?._id ? loggedUser?.name : botData.name }}
+        </div>
+        <div class="container">
+          <div class="content-wrapper">
+            <div class="content" [innerHTML]="formatMessageContent(message.content)">
+            </div>
+            <div class="given-reactions" *ngIf="message.reactions.length > 0">
+              <span class="given-reactions__counter" *ngIf="message.reactions.length > 1">
+                {{ message.reactions.length }}</span>
+              <span class="given-reactions__emoticons" *ngFor="let reaction of message.reactions">{{ reaction.emoticon
+                }}</span>
+            </div>
+          </div>
+          <div class="reactions" *ngIf="visibleReactions">
+            <span (click)="handleAddReaction('👍',false)">👍</span>
+            <span (click)="handleAddReaction('❤️',false)">❤️</span>
+            <span (click)="handleAddReaction('😂',false)">😂</span>
+            <span (click)="handleAddReaction('😠',false)">😠</span>
+            <span (click)="handleAddReaction('😲',false)">😲</span>
+          </div>
+          <div class="date">{{ formattedDate }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
 <ng-container *ngIf="chatType === ChatType.GROUP_CHAT">
   <ng-container *ngIf="message.sender === activeUser.id || message.sender === loggedUser?._id; else removedUserMessage">
     <div class="message-box"

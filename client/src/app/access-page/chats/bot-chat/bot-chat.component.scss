@@ -15,6 +15,9 @@
   .header {
     position: relative;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     padding: 2vmin 1vmin;
     background-color: $blackColor;
@@ -40,25 +43,13 @@
       }
     }
 
-    .avatar {
-      width: 15vmin;
-      margin: 2vmin 5vmin;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      img {
-        width: 120%;
-        border-radius: 5vmin;
-        border: .7vmin solid $primaryColor;
-      }
-    }
-
     .info {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      align-items: center;
+      // justify-content: space-between;
       width: 100%;
+      position: relative;
 
       .identifier {
         color: $textColor;
@@ -67,47 +58,17 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-      }
-
-      .status {
-        display: flex;
-        align-items: center;
-        width: 50%;
-        margin-top: -4vmin;
-
-        &__dot {
-          min-width: 4vmin;
-          min-height: 4vmin;
-          border-radius: 50%;
-
-          &--online {
-            background-color: $onlineColor;
-          }
-
-          &--offline {
-            background-color: $offlineColor;
-          }
-        }
-
-        &__info {
-          margin-left: 2vmin;
-
-          &--online {
-            color: $onlineColor;
-          }
-
-          &--offline {
-            color: $offlineColor;
-          }
-        }
+        margin-left: 4vmin;
       }
 
       .icons {
         display: flex;
+        position: absolute;
+        right: 0;
         justify-content: space-evenly;
         align-items: center;
         width: 50%;
-        margin-top: -4vmin;
+        margin-top: 2vmin;
 
         .icon-wrapper {
           display: flex;
@@ -333,6 +294,16 @@
 @media screen and (min-width: 768px) {
   .chat {
     .header {
+      .avatar {
+
+        img {
+          width: 100px;
+          height: 100px;
+          border-radius: 5vmin;
+          border: .5vmin solid $primaryColor;
+        }
+      }
+
       .info {
         .status {
           font-size: 4vmin;
@@ -363,6 +334,15 @@
 @media screen and (min-width: 768px) and (orientation: landscape) {
   .chat {
     .header {
+      .avatar {
+        img {
+          width: 60px;
+          height: 60px;
+          border-radius: 5vmin;
+          border: .5vmin solid $primaryColor;
+        }
+      }
+
       .info {
         .identifier {
           margin-top: 1vmin;
@@ -473,6 +453,8 @@
         margin: 2vmin 5vmin;
 
         img {
+          width: 80px;
+          height: 80px;
           border: .3vmin solid $primaryColor;
         }
       }
